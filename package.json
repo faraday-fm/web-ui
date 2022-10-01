@@ -1,16 +1,17 @@
 {
   "name": "@far-more/web-ui",
   "private": false,
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "Web front-end for Far More file manager",
   "main": "index.js",
   "scripts": {
     "build": "echo Hi!",
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "semantic-release": "semantic-release --branches main"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/far-more/web-ui.git"
+    "url": "https://github.com/far-more/web-ui.git"
   },
   "keywords": [
     "far-more",
@@ -23,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/far-more/web-ui/issues"
   },
-  "homepage": "https://github.com/far-more/web-ui#readme"
+  "homepage": "https://github.com/far-more/web-ui#readme",
+  "devDependencies": {
+    "semantic-release": "^19.0.5"
+  }
 }
