@@ -6,5 +6,6 @@ export const Button = styled.button`
   font-family: var(--font-monospace);
   font-size: 1rem;
   border: none;
+  border-radius: 0;
   line-height: 1.2rem;
 `;
