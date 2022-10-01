@@ -1,1 +1,1 @@
-Far More UI
+Far More Web UI Component
