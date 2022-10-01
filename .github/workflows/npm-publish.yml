@@ -6,6 +6,8 @@ name: Node.js Package
 on:
   push:
     branches: main
+  pull_request:
+    branches: '*'
 
 jobs:
   build:
@@ -20,6 +22,7 @@ jobs:
 
   publish-npm:
     needs: build
+    if: ${{ github.ref == 'refs/head/main' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -28,6 +31,6 @@ jobs:
           node-version: 16
           registry-url: https://registry.npmjs.org/
       - run: npm ci
-      - run: npm publish --access public
+      - run: npm semantic-release
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
