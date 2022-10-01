@@ -1,5 +1,6 @@
 {
   "name": "@far-more/web-ui",
+  "private": false,
   "version": "1.0.0",
   "description": "Web front-end for Far More file manager",
   "main": "index.js",
