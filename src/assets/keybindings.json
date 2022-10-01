@@ -1,0 +1,21 @@
+[
+  { "key": "Tab", "command": "focusNextPanel", "when": "filePanel.focus"},
+  { "key": "Escape", "command": "focusActivePanel", "when": "terminal.focus"},
+  { "key": "ArrowUp", "command": "cursorUp", "when": "filePanel.focus" },
+  { "key": "ArrowDown", "command": "cursorDown", "when": "filePanel.focus" },
+  { "key": "ArrowLeft", "command": "cursorLeft", "when": "filePanel.focus" },
+  { "key": "ArrowRight", "command": "cursorRight", "when": "filePanel.focus" },
+  { "key": "Home", "command": "cursorStart", "when": "filePanel.focus" },
+  { "key": "End", "command": "cursorEnd", "when": "filePanel.focus" },
+  { "key": "PageUp", "command": "cursorPageUp", "when": "filePanel.focus" },
+  { "key": "PageDown", "command": "cursorPageDown", "when": "filePanel.focus" },
+  { "key": "Enter", "command": "open", "when": "filePanel.focus" },
+  { "key": "Space", "command": "focusTerminal", "when": "filePanel.focus" },
+  { "key": "Shift+Enter", "command": "openShell", "when": "filePanel.focus && isDesktop" },
+
+  { "key": "ArrowUp", "command": "cursorEnd", "when": "filePanel.focus && filePanel.firstItem" },
+  { "key": "ArrowDown", "command": "cursorStart", "when": "filePanel.focus && filePanel.lastItem" },
+
+  { "key": "Ctrl+Minus", "command": "switchView", "when": "filePanel.focus" },
+  { "key": "Ctrl+KeyO", "command": "togglePanels" }
+]

@@ -1,0 +1,94 @@
+@import "xterm/css/xterm.css";
+
+html,
+body,
+#root {
+  height: 100%;
+  line-height: initial;
+}
+
+body {
+  overflow: hidden;
+  margin: 0;
+  background-color: var(--color-00);
+  color: var(--color-15);
+  font-family: var(--font-monospace);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code,
+input {
+  font-family: var(--font-monospace);
+  font-size: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+input {
+  border: none;
+}
+
+input:focus {
+  outline: none;
+}
+
+a {
+  color: var(--color-09);
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-monospace);
+  font-size: 1rem;
+  border: none;
+}
+
+html {
+  font-size: 14px;
+}
+
+body {
+  --color-00: #002b36;
+  --color-01: #073642;
+  --color-02: #008080;
+  --color-03: #3182a4;
+  --color-04: #cb4b16;
+  --color-05: #9c36b6;
+  --color-06: #859900;
+  --color-07: #eee8d5;
+  --color-08: #93a1a1;
+  --color-09: #268bd2;
+  --color-10: #4fb636;
+  --color-11: #2aa198;
+  --color-12: #dc322f;
+  --color-13: #d33682;
+  --color-14: #b58900;
+  --color-15: #fdf6e3;
+  --font-monospace: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+}
+
+body,
+button {
+  line-height: 1.2rem;
+}
+
+/* .xterm .xterm-screen canvas {
+  top: initial;
+  bottom: 0;
+} */
+
+/* .xterm-viewport.xterm-viewport {
+  scrollbar-width: thin;
+}
+.xterm-viewport::-webkit-scrollbar {
+  width: 10px;
+}
+.xterm-viewport::-webkit-scrollbar-track {
+  opacity: 0;
+}
+.xterm-viewport::-webkit-scrollbar-thumb {
+  min-height: 20px;
+  background-color: #ffffff20;
+} */

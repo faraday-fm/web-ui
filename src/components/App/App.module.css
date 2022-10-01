@@ -1,0 +1,32 @@
+.app {
+  /* text-align: center; */
+  height: 100%;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  flex-direction: column;
+  direction: ltr;
+}
+
+.panels {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 17px;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  z-index: 0;
+}
+
+.terminal {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+}
+
+.appLink {
+  color: #61dafb;
+}
