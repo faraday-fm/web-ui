@@ -12,6 +12,10 @@
     "commit": "git-cz",
     "semantic-release": "semantic-release --branches main"
   },
+  "files": [
+    "src",
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/far-more/web-ui.git"
