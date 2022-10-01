@@ -4,6 +4,7 @@ import { QuickNavigationProvider } from "~/src/contexts/quickNavigationContext";
 import FocusTrap from "focus-trap-react";
 import { useCommandContext } from "~/src/hooks/useCommandContext";
 import styled from "styled-components";
+import { Button } from "~/src/components/Button/Button";
 
 type DialogPlaceholderProps = {
   open: boolean;
@@ -100,8 +101,8 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
                   </p>
                 </Border>
                 <Border>
-                  <button type="button">dfg</button>
-                  <button type="button">dfg</button>
+                  <Button>dfg</Button>
+                  <Button>dfg</Button>
                 </Border>
               </Border>
             </Content>
