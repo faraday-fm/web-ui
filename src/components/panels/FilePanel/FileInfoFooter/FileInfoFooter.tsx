@@ -1,5 +1,5 @@
-import { FsEntry } from "~/src/hooks/useFs";
 import styled from "styled-components";
+import { FsEntry } from "~/src/types";
 import { formatDateTime } from "~/src/utils/dateUtils";
 import { bytesToSize } from "~/src/utils/numberUtils";
 

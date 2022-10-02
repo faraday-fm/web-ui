@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { FsEntry } from "~/src/types";
 import { combinePath, isAbsolutePath } from "~/src/utils/pathUtils";
-
-import { FsEntry } from "../../hooks/useFs";
 
 export type Panel = {
   path: string;

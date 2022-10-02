@@ -1,8 +1,8 @@
 import { FilePanel, FilePanelActions } from "~/src/components/panels/FilePanel/FilePanel";
 import { setActivePanel, setPanelData } from "~/src/features/panels/panelsSlice";
-import { useFs } from "~/src/hooks/useFs";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "~/src/store";
+import { useFarMoreHost } from "~/src/contexts/farMoreHostContext";
 
 type ReduxFilePanelProps = { id: string };
 type ReduxFilePanelActions = FilePanelActions;
@@ -13,12 +13,12 @@ export const ReduxFilePanel = forwardRef<ReduxFilePanelActions, ReduxFilePanelPr
   const { path, items } = useAppSelector((state) => state.panels.states[id]);
   const panelRef = useRef<FilePanelActions>(null);
   useImperativeHandle(ref, () => ({ focus: () => panelRef.current?.focus() }));
-  const fs = useFs();
+  const host = useFarMoreHost();
   useEffect(() => {
-    fs.listDir(path).then((entries) => {
+    host.fs.listDir(path).then((entries) => {
       dispatch(setPanelData({ id, path, items: entries }));
     });
-  }, [dispatch, fs, id, path]);
+  }, [dispatch, host, id, path]);
   return (
     <FilePanel
       ref={panelRef}

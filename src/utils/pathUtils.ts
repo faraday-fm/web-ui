@@ -1,4 +1,4 @@
-import { FsEntry } from "hooks/useFs";
+import { FsEntry } from "../types";
 
 export function trimLastDir(path: string) {
   const lastPathSeparatorIndex = path.lastIndexOf("/");
