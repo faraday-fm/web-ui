@@ -27,18 +27,6 @@ export function combinePath(...parts: string[]) {
   return result;
 }
 
-export function flat(entry: FsEntry) {
-  let e: FsEntry | undefined = entry;
-  const stack: string[] = [];
-  while (e) {
-    stack.push(e.name);
-    e = e.parent;
-  }
-  stack.reverse();
-  if (stack.length > 1 && stack[0] === "/") stack[0] = "";
-  return stack.join("/");
-}
-
 export function isAbsolutePath(path: string) {
   return path.startsWith("/");
 }

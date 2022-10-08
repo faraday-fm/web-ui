@@ -9,11 +9,11 @@ type ReduxFilePanelActions = FilePanelActions;
 
 export const ReduxFilePanel = forwardRef<ReduxFilePanelActions, ReduxFilePanelProps>(({ id }, ref) => {
   const dispatch = useAppDispatch();
+  const host = useFarMoreHost();
   const isActive = useAppSelector((state) => state.panels.active === id);
   const { path, items } = useAppSelector((state) => state.panels.states[id]);
   const panelRef = useRef<FilePanelActions>(null);
   useImperativeHandle(ref, () => ({ focus: () => panelRef.current?.focus() }));
-  const host = useFarMoreHost();
   useEffect(() => {
     host.fs.listDir(path).then((entries) => {
       dispatch(setPanelData({ id, path, items: entries }));
