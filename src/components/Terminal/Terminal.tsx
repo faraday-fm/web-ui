@@ -176,7 +176,7 @@ export default function Terminal({ fullScreen, onRunStart, onRunEnd }: TerminalP
               } else if (command.trim() !== "") {
                 onRunStart?.();
                 xterm.writeln(command);
-                t.run(command).then(() => onRunEnd?.());
+                t.send(command).then(() => onRunEnd?.());
                 setCommand("");
               } else {
                 xterm.writeln(command);
