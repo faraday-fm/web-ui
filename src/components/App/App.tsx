@@ -1,16 +1,19 @@
-//import { invoke } from "@tauri-apps/api";
+// import { invoke } from "@tauri-apps/api";
+import styled from "styled-components";
+import FocusTrap from "focus-trap-react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { ReduxFilePanel } from "~/src/components/hocs/ReduxFilePanel";
 import { FilePanelActions } from "~/src/components/panels/FilePanel/FilePanel";
 import { useGlyphSize } from "~/src/contexts/glyphSizeContext";
-import FocusTrap from "focus-trap-react";
 import { useCommandBindings } from "~/src/hooks/useCommandBinding";
 import { useCommandContext } from "~/src/hooks/useCommandContext";
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useAppSelector } from "~/src/store";
-import styled from "styled-components";
 import { isRunningUnderTauri } from "~/src/utils/tauriUtils";
 
 import { ActionsBar } from "../ActionsBar/ActionsBar";
+import { useFarMoreHost } from "~/src/contexts/farMoreHostContext";
+import { LayoutContainer } from "../LayoutContainer/LayoutContainer";
+import { Layout } from "~/src/types";
 
 const DialogPlaceholder = lazy(() => import("~/src/components/DialogPlaceholder/DialogPlaceholder"));
 const Terminal = lazy(() => import("~/src/components/Terminal/Terminal"));
@@ -51,11 +54,14 @@ function App() {
   const [executing, setExecuting] = useState(false);
   const panel1Ref = useRef<FilePanelActions>(null);
   const panel2Ref = useRef<FilePanelActions>(null);
+  const [panelsLayout, setPanelsLayout] = useState<Layout>();
+  const host = useFarMoreHost();
 
   useEffect(() => {
+    host.config.getLayout().then((l) => setPanelsLayout(l.root));
     // invoke("show_main_window");
     // if (isRunningUnderTauri()) setTimeout(() => invoke("show_main_window"), 50);
-  }, []);
+  }, [host.config]);
 
   useCommandContext("isDesktop", isRunningUnderTauri());
 
@@ -84,59 +90,34 @@ function App() {
   const onRunEnd = useCallback(() => setExecuting(false), []);
 
   return (
-    <FocusTrap>
-      <AppDiv ref={rootRef}>
-        <div style={{ gridRow: 1, position: "relative", overflow: "hidden" }}>
-          <TerminalContainer>
-            {/* <Suspense fallback={<div />}>
+    // <FocusTrap>
+    <AppDiv ref={rootRef}>
+      <div style={{ gridRow: 1, position: "relative", overflow: "hidden" }}>
+        <TerminalContainer>
+          {/* <Suspense fallback={<div />}>
               <Terminal fullScreen={!panelsOpen} onRunStart={onRunStart} onRunEnd={onRunEnd} />
             </Suspense> */}
-          </TerminalContainer>
-          <PanelsContainer
-            style={{
-              display: "grid",
-              opacity: !executing && panelsOpen ? 1 : 0,
-              pointerEvents: !executing && panelsOpen ? "all" : "none",
-              bottom: glyphHeight,
-            }}
-          >
-            <ReduxFilePanel
-              id="left"
-              ref={panel1Ref}
-              // showCursorWhenBlurred={activePanel === 0}
-              // items={leftItems}
-              // view={
-              //   viewType % 2 === 0
-              //     ? {
-              //         type: "full",
-              //         columnDefs: [
-              //           { field: "name", name: "Name", width: "1fr" },
-              //           { field: "size", name: "Size" },
-              //           { field: "attr", name: "Attr" },
-              //         ],
-              //       }
-              //     : { type: "condenced", columnDef: { field: "name", name: "Name" } }
-              // }
-            />
-            <ReduxFilePanel id="right" ref={panel2Ref} />
-            {/* <FilePanel
-              ref={panel2Ref}
-              onFocus={() => setActivePanel(1)}
-              showCursorWhenBlurred={activePanel === 1}
-              items={Array.from(Array(30).keys()).map((i) => ({ name: i.toString() }))}
-              view={{ type: "condenced", columnDef: { field: "name", name: "Name" } }}
-            /> */}
-          </PanelsContainer>
-        </div>
-        <div style={{ gridRow: 2, overflow: "hidden" }}>
-          <ActionsBar />
-        </div>
-        <Suspense fallback={<div />}>
-          <DialogPlaceholder open={dialogOpen} onClose={() => setDialogOpen(false)} />
-        </Suspense>
-        {/* <TopMenu /> */}
-      </AppDiv>
-    </FocusTrap>
+        </TerminalContainer>
+        <PanelsContainer
+          style={{
+            display: "grid",
+            opacity: !executing && panelsOpen ? 1 : 0,
+            pointerEvents: !executing && panelsOpen ? "all" : "none",
+            bottom: glyphHeight,
+          }}
+        >
+          {panelsLayout && <LayoutContainer layout={panelsLayout} direction="h" />}
+        </PanelsContainer>
+      </div>
+      <div style={{ gridRow: 2, overflow: "hidden" }}>
+        <ActionsBar />
+      </div>
+      <Suspense fallback={<div />}>
+        <DialogPlaceholder open={dialogOpen} onClose={() => setDialogOpen(false)} />
+      </Suspense>
+      {/* <TopMenu /> */}
+    </AppDiv>
+    // </FocusTrap>
   );
 }
 

@@ -1,3 +1,11 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import { HiTerminal } from "react-icons/hi";
+import useResizeObserver from "use-resize-observer";
+import { Terminal as XTerm } from "xterm";
+import { FitAddon } from "xterm-addon-fit";
+import { Unicode11Addon } from "xterm-addon-unicode11";
+import { WebLinksAddon } from "xterm-addon-web-links";
+import { WebglAddon } from "xterm-addon-webgl";
 import { useGlyphSize } from "~/src/contexts/glyphSizeContext";
 import { changeDir } from "~/src/features/panels/panelsSlice";
 import { useCommandBinding } from "~/src/hooks/useCommandBinding";
@@ -5,15 +13,7 @@ import { useCommandContext } from "~/src/hooks/useCommandContext";
 import { useFocused } from "~/src/hooks/useFocused";
 import { useShell } from "~/src/hooks/useShell";
 import { useTerminal } from "~/src/hooks/useTerminal";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { HiTerminal } from "react-icons/hi";
 import { useAppDispatch, useAppSelector } from "~/src/store";
-import useResizeObserver from "use-resize-observer";
-import { Terminal as XTerm } from "xterm";
-import { FitAddon } from "xterm-addon-fit";
-import { Unicode11Addon } from "xterm-addon-unicode11";
-import { WebLinksAddon } from "xterm-addon-web-links";
-import { WebglAddon } from "xterm-addon-webgl";
 
 type TerminalProps = {
   fullScreen?: boolean;
@@ -27,7 +27,7 @@ export default function Terminal({ fullScreen, onRunStart, onRunEnd }: TerminalP
   const { height: glyphHeight } = useGlyphSize();
   const { ref: rootRef, width, height = 0 } = useResizeObserver();
   const [xtermElement, setXtermElement] = useState<HTMLElement>();
-  const { path } = useAppSelector((state) => state.panels.states[state.panels.active]);
+  const path = useAppSelector((state) => state.panels.states[state.panels.active]?.path) ?? "";
   const focused = useFocused(xtermElement);
   const ref = useRef<HTMLDivElement>(null);
   const fitAddon = useMemo(() => new FitAddon(), []);

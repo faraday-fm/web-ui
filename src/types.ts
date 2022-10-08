@@ -10,23 +10,38 @@ export type FsEntry = {
   modified?: number;
 };
 
-export type Layout = {
+export type RowLayout = {
+  type: "row";
+  id: string;
+  children: Layout[];
+};
 
+export type FilePanelLayout = {
+  type: "filePanel";
+  id: string;
+  path: string;
+  flex: number;
+};
+
+export type Layout = RowLayout | FilePanelLayout;
+
+export type FarMoreLayout = {
+  root: Layout;
 };
 
 export type FarMoreConfig = {
-    getLayout(): Promise<Layout>;
-    setLayout(layout: Layout): Promise<void>;
+  getLayout(): Promise<FarMoreLayout>;
+  setLayout(layout: FarMoreLayout): Promise<void>;
 };
 
 export type FarMoreFs = {
   listDir(dir: string, extraFields?: string[]): Promise<FsEntry[]>;
-  getHomeDir(): Promise<FsEntry>;
+  getHomeDir(): Promise<string>;
   getDirSeparator(): Promise<string>;
   normalisePath(path: string): Promise<string>;
 };
 
-export type TerminalSession = Symbol;
+export type TerminalSession = symbol;
 
 export type FarMoreTerminal = {
   createSession(command: string, cwd: string, onData: (data: Uint8Array) => void, initialTtySize: { rows: number; cols: number }): Promise<TerminalSession>;

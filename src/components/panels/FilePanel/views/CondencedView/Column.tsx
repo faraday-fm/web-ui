@@ -1,8 +1,8 @@
-import { Border } from "~/src/components/Border/Border";
-import { useGlyphSize } from "~/src/contexts/glyphSizeContext";
 import { useEffect, useMemo, useState } from "react";
 import styled, { useTheme } from "styled-components";
 import useResizeObserver from "use-resize-observer";
+import { useGlyphSize } from "~/src/contexts/glyphSizeContext";
+import { Border } from "~/src/components/Border/Border";
 import { clamp } from "~/src/utils/numberUtils";
 
 import { ColumnDef, CursorStyle } from "../../types";
@@ -103,6 +103,8 @@ export function Column({
         <ColumnHeader className="ColumnHeader">{columnDef.name}</ColumnHeader>
         <div
           ref={ref}
+          role="listbox"
+          tabIndex={0}
           style={{ overflow: "hidden" }}
           onMouseDown={(e) => {
             e.stopPropagation();

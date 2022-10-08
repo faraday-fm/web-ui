@@ -69,9 +69,5 @@ export function CondencedView({
       />
     );
   }
-  return (
-    <Columns ref={ref}>
-      {columns}
-    </Columns>
-  );
+  return <Columns ref={ref}>{columns}</Columns>;
 }

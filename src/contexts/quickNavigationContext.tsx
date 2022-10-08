@@ -41,7 +41,7 @@ export function QuickNavigationProvider({ children }: PropsWithChildren<unknown>
   );
   return (
     <QuickNavigationContext.Provider value={mapping}>
-      <div onKeyDownCapture={onKeyDown} tabIndex={0}>
+      <div onKeyDownCapture={onKeyDown} role="button" tabIndex={0}>
         {children}
       </div>
     </QuickNavigationContext.Provider>

@@ -1,13 +1,58 @@
 import Editor, { useMonaco } from "@monaco-editor/react";
 import classnames from "classnames";
 import { useEffect } from "react";
+import styled from "styled-components";
 import useResizeObserver from "use-resize-observer";
-
-import classes from "./QuickView.module.css";
 
 type QuickViewProps = {
   isActive: boolean;
 };
+
+const Root = styled.div`
+  position: relative;
+  background-color: var(--color-01);
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  overflow: hidden;
+  user-select: initial;
+  -webkit-user-select: initial;
+  & div {
+    cursor: initial;
+  }
+`;
+
+const HeaderText = styled.div<{ isActive: boolean }>`
+  position: absolute;
+  color: var(--color-11);
+  background-color: var(--color-01);
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  padding: 0 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 2rem);
+  text-align: left;
+  color: ${(p) => (p.isActive ? "var(--color-00)" : null)};
+  background-color: ${(p) => (p.isActive ? "var(--color-03)" : null)};
+`;
+
+const Content = styled.div`
+  display: grid;
+  margin: calc(0.5rem) calc(0.25rem - 1px);
+  border: 1px solid var(--color-11);
+  grid-template-rows: minmax(0, 1fr) auto;
+  padding: 1px 1px;
+  overflow: hidden;
+`;
+
+const EditorDiv = styled.div`
+  display: grid;
+  padding-top: calc(0.5rem);
+  border: 1px solid var(--color-11);
+  overflow: hidden;
+`;
 
 const markdown = `
   # remark-frontmatter
@@ -305,14 +350,14 @@ export function QuickView({ isActive }: QuickViewProps) {
   }, [monaco]);
 
   return (
-    <div className={classes.root}>
-      <div className={classnames(classes.headerText, isActive && classes.active)}>Quick View</div>
-      <div className={classes.content}>
-        <div ref={ref} className={classes.editor}>
+    <Root>
+      <HeaderText isActive={isActive}>Quick View</HeaderText>
+      <Content>
+        <EditorDiv ref={ref}>
           {monaco && <Editor theme="far-more" width={width} height={height} defaultLanguage="markdown" defaultValue={markdown} />}
-        </div>
+        </EditorDiv>
         {/* <div className={classes.footerPanel}>123</div> */}
-      </div>
-    </div>
+      </Content>
+    </Root>
   );
 }

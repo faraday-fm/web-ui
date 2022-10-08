@@ -1,9 +1,9 @@
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useReducer, useRef } from "react";
+import styled, { useTheme } from "styled-components";
 import { Border } from "~/src/components/Border/Border";
 import { executeBuiltInCommand, useCommandBindings } from "~/src/hooks/useCommandBinding";
 import { useCommandContext } from "~/src/hooks/useCommandContext";
 import { useFocused } from "~/src/hooks/useFocused";
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useReducer, useRef } from "react";
-import styled, { useTheme } from "styled-components";
 import { clamp } from "~/src/utils/numberUtils";
 
 import { FileInfoFooter } from "./FileInfoFooter/FileInfoFooter";

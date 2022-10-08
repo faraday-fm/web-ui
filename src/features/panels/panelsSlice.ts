@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { FsEntry } from "~/src/types";
+import { FsEntry, Layout } from "~/src/types";
 import { combinePath, isAbsolutePath } from "~/src/utils/pathUtils";
 
 export type Panel = {
@@ -9,42 +9,32 @@ export type Panel = {
 
 type SliceState = {
   active: string;
-  states: Record<string, Panel>;
+  layout?: Layout;
+  states: Record<string, Panel | undefined>;
 };
 
 export const panelsSlice = createSlice({
   name: "panels",
   initialState: {
-    active: "left",
-    states: {
-      left: {
-        items: [],
-        path: "/",
-      },
-      right: {
-        items: [],
-        path: "/Users",
-      },
-    },
+    states: {},
   } as SliceState,
   reducers: {
-    setActivePanel: (state, action: PayloadAction<string>) => {
-      state.active = action.payload;
+    setActivePanel(state, { payload }: PayloadAction<string>) {
+      state.active = payload;
     },
-    setPanelData: (state, action: PayloadAction<{ id: string; path: string; items: FsEntry[] }>) => {
-      state.states[action.payload.id].path = action.payload.path;
-      state.states[action.payload.id].items = action.payload.items;
+    setPanelData(state, { payload }: PayloadAction<{ id: string; path: string; items: FsEntry[] }>) {
+      state.states[payload.id] = payload;
     },
-    changeDir: (state, action: PayloadAction<string>) => {
-      if (isAbsolutePath(action.payload)) {
-        state.states[state.active].path = action.payload;
+    changeDir(state, { payload }: PayloadAction<string>) {
+      const panel = state.states[state.active];
+      if (!panel) return;
+      if (isAbsolutePath(payload)) {
+        panel.path = payload;
       } else {
-        state.states[state.active].path = combinePath(state.states[state.active].path, action.payload);
+        panel.path = combinePath(panel.path, payload);
       }
     },
   },
 });
 
 export const { setActivePanel, setPanelData, changeDir } = panelsSlice.actions;
-
-export default panelsSlice.reducer;

@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+import FocusTrap from "focus-trap-react";
+import styled from "styled-components";
 import { AutoHotKeyLabel } from "~/src/components/AutoHotKeyLabel/AutoHotKeyLabel";
 import { QuickNavigationProvider } from "~/src/contexts/quickNavigationContext";
-import FocusTrap from "focus-trap-react";
 import { useCommandContext } from "~/src/hooks/useCommandContext";
-import styled from "styled-components";
 import { Button } from "~/src/components/Button/Button";
 
 type DialogPlaceholderProps = {
@@ -50,7 +50,12 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
     <QuickNavigationProvider>
       <FocusTrap focusTrapOptions={{ onDeactivate: () => onClose?.() }}>
         <Backdrop role="dialog" aria-modal="true" onMouseDown={() => onClose?.()}>
-          <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }} onMouseDown={(e) => e.stopPropagation()}>
+          <div
+            style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}
+            onMouseDown={(e) => e.stopPropagation()}
+            role="tab"
+            tabIndex={0}
+          >
             <Content>
               <Border>
                 <Border>

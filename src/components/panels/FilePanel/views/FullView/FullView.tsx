@@ -62,9 +62,5 @@ export function FullView({
       />
     );
   }
-  return (
-    <Columns style={{ gridTemplateColumns }}>
-      {columns}
-    </Columns>
-  );
+  return <Columns style={{ gridTemplateColumns }}>{columns}</Columns>;
 }
