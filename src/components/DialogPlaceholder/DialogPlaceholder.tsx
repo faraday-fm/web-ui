@@ -1,9 +1,10 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+import FocusTrap from "focus-trap-react";
+import styled from "styled-components";
+import { useId } from "react";
 import { AutoHotKeyLabel } from "~/src/components/AutoHotKeyLabel/AutoHotKeyLabel";
 import { QuickNavigationProvider } from "~/src/contexts/quickNavigationContext";
-import FocusTrap from "focus-trap-react";
 import { useCommandContext } from "~/src/hooks/useCommandContext";
-import styled from "styled-components";
 import { Button } from "~/src/components/Button/Button";
 
 type DialogPlaceholderProps = {
@@ -18,6 +19,13 @@ const Backdrop = styled.div`
   top: 0;
   right: 0;
   bottom: 0;
+`;
+
+const Centered = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 const Content = styled.div`
@@ -39,10 +47,18 @@ const Border = styled.div`
   border: 1px solid var(--color-01);
   border-bottom: none;
   padding: 1px;
+  &:last-child {
+    border-bottom: 1px solid var(--color-01);
+  }
+`;
+
+const DialogButton = styled(Button)`
+  margin: 0 10px;
 `;
 
 export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderProps) {
   useCommandContext("copyDialog", open);
+  const dialogId = useId();
 
   if (!open) return null;
 
@@ -50,63 +66,65 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
     <QuickNavigationProvider>
       <FocusTrap focusTrapOptions={{ onDeactivate: () => onClose?.() }}>
         <Backdrop role="dialog" aria-modal="true" onMouseDown={() => onClose?.()}>
-          <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }} onMouseDown={(e) => e.stopPropagation()}>
+          <Centered onMouseDown={(e) => e.stopPropagation()}>
             <Content>
               <Border>
                 <Border>
-                  <p>
-                    <AutoHotKeyLabel text="Copy to:" labelLocation="bottom">
-                      <input />
-                    </AutoHotKeyLabel>
+                  <p style={{ display: "flex", flexDirection: "column" }}>
+                    <AutoHotKeyLabel text="Copy to:" htmlFor={`${dialogId}copyTo`} />
+                    <input id={`${dialogId}copyTo`} />
                   </p>
                 </Border>
                 <Border>
                   <p>
-                    <AutoHotKeyLabel text="Already existing files:">
-                      <input />
-                    </AutoHotKeyLabel>
+                    <AutoHotKeyLabel text="Already existing files:" htmlFor={`${dialogId}alreadyExisting`} />
+                    <input id={`${dialogId}alreadyExisting`} />
                   </p>
                   <p>
-                    <AutoHotKeyLabel text="Process multiple destinations" labelLocation="right">
-                      <input type="checkbox" />
-                    </AutoHotKeyLabel>
+                    <AutoHotKeyLabel text="Process multiple destinations" htmlFor={`${dialogId}processMultDist`} />
+                    <input id={`${dialogId}processMultDist`} type="checkbox" />
                   </p>
                   <p>
-                    <AutoHotKeyLabel text="Copy files access mode" labelLocation="right">
-                      <input type="checkbox" />
-                    </AutoHotKeyLabel>
+                    <input id={`${dialogId}copyAccessMode`} type="checkbox" />
+                    <AutoHotKeyLabel text="Copy files access mode" htmlFor={`${dialogId}copyAccessMode`} />
                   </p>
                   <p>
-                    <AutoHotKeyLabel text="Copy extended attributes" labelLocation="right">
-                      <input type="checkbox" />
-                    </AutoHotKeyLabel>
+                    <input id={`${dialogId}copyAttributes`} type="checkbox" />
+                    <AutoHotKeyLabel text="Copy extended attributes" htmlFor={`${dialogId}copyAttributes`} />
                   </p>
                   <p>
-                    <AutoHotKeyLabel text="Disable write cache" labelLocation="right">
-                      <input type="checkbox" />
-                    </AutoHotKeyLabel>
+                    <input id={`${dialogId}disableCache`} type="checkbox" />
+                    <AutoHotKeyLabel text="Disable write cache" htmlFor={`${dialogId}disableCache`} />
                   </p>
                   <p>
-                    <AutoHotKeyLabel text="Produce sparse files" labelLocation="right">
-                      <input type="checkbox" />
-                    </AutoHotKeyLabel>
+                    <input id={`${dialogId}sparseFiles`} type="checkbox" />
+                    <AutoHotKeyLabel text="Produce sparse files" htmlFor={`${dialogId}sparseFiles`} />
                   </p>
                   <p>
-                    <AutoHotKeyLabel text="Use copy-on-write if possible" labelLocation="right">
-                      <input type="checkbox" />
-                    </AutoHotKeyLabel>
+                    <input id={`${dialogId}useCopyOnWrite`} type="checkbox" />
+                    <AutoHotKeyLabel text="Use copy-on-write if possible" htmlFor={`${dialogId}useCopyOnWrite`} />
                   </p>
                   <p>
                     <AutoHotKeyLabel text="With symlinks:" />
                   </p>
                 </Border>
                 <Border>
-                  <Button>dfg</Button>
-                  <Button>dfg</Button>
+                  <DialogButton>
+                    <AutoHotKeyLabel text="Copy" />
+                  </DialogButton>
+                  <DialogButton>
+                    <AutoHotKeyLabel text="F10-Tree" />
+                  </DialogButton>
+                  <DialogButton>
+                    <AutoHotKeyLabel text="Filter" />
+                  </DialogButton>
+                  <DialogButton>
+                    <AutoHotKeyLabel text="Cancel" />
+                  </DialogButton>
                 </Border>
               </Border>
             </Content>
-          </div>
+          </Centered>
         </Backdrop>
       </FocusTrap>
     </QuickNavigationProvider>

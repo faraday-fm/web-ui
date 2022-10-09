@@ -1,50 +1,112 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { FsEntry } from "~/src/types";
-import { combinePath, isAbsolutePath } from "~/src/utils/pathUtils";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AppDispatch, RootState } from "~/src/store";
+import { FsEntry, PanelsLayout } from "~/src/types";
+import { traverseLayout } from "~/src/utils/layout";
 
 export type Panel = {
-  path: string;
   items: FsEntry[];
 };
 
 type SliceState = {
   active: string;
-  states: Record<string, Panel>;
+  layout?: PanelsLayout;
+  states: Record<string, Panel | undefined>;
 };
+
+export const listDir = createAsyncThunk<
+  FsEntry[],
+  { dir: string },
+  {
+    dispatch: AppDispatch;
+    state: RootState;
+  }
+>("panels/listDir", async ({ dir }, thunkAPI) => {
+  const state = thunkAPI.getState();
+  const response = await state.host.fs.listDir(dir);
+  return response;
+});
 
 export const panelsSlice = createSlice({
   name: "panels",
   initialState: {
-    active: "left",
-    states: {
-      left: {
-        items: [],
-        path: "/",
-      },
-      right: {
-        items: [],
-        path: "/Users",
-      },
-    },
+    states: {},
   } as SliceState,
   reducers: {
-    setActivePanel: (state, action: PayloadAction<string>) => {
-      state.active = action.payload;
+    setPanelsLayout(state, { payload }: PayloadAction<PanelsLayout>) {
+      state.layout = payload;
     },
-    setPanelData: (state, action: PayloadAction<{ id: string; path: string; items: FsEntry[] }>) => {
-      state.states[action.payload.id].path = action.payload.path;
-      state.states[action.payload.id].items = action.payload.items;
+    setActivePanel(state, { payload }: PayloadAction<string>) {
+      state.active = payload;
     },
-    changeDir: (state, action: PayloadAction<string>) => {
-      if (isAbsolutePath(action.payload)) {
-        state.states[state.active].path = action.payload;
-      } else {
-        state.states[state.active].path = combinePath(state.states[state.active].path, action.payload);
+    setPanelData(state, { payload }: PayloadAction<{ id: string; items: FsEntry[] }>) {
+      state.states[payload.id] = payload;
+    },
+    focusNextPanel(state, { payload: { backward = false } }: PayloadAction<{ backward: boolean }>) {
+      if (state.layout) {
+        let lastPanelId: string | undefined;
+        let newActivePanelSet = false;
+        traverseLayout(
+          state.layout,
+          (panel) => {
+            if (lastPanelId && !newActivePanelSet && panel.id === state.active) {
+              state.active = lastPanelId;
+              newActivePanelSet = true;
+            }
+            lastPanelId = panel.id;
+          },
+          !backward
+        );
+        if (!newActivePanelSet && lastPanelId) {
+          state.active = lastPanelId;
+        }
+      }
+      // if (state.layout) {
+      //   let firstPanelId: string | undefined;
+      //   let activePanelFound = false;
+      //   let newActivePanelSet = false;
+      //   traverseLayout(state.layout, (panel) => {
+      //     if (!firstPanelId) {
+      //       firstPanelId = panel.id;
+      //     }
+      //     if (activePanelFound && !newActivePanelSet) {
+      //       state.active = panel.id;
+      //       newActivePanelSet = true;
+      //     }
+      //     if (!activePanelFound && panel.id === state.active) {
+      //       activePanelFound = true;
+      //     }
+      //   });
+      //   if (activePanelFound && !newActivePanelSet && firstPanelId) {
+      //     state.active = firstPanelId;
+      //   }
+      // }
+    },
+    focusPrevPanel(state) {
+      if (state.layout) {
+        let lastPanelId: string | undefined;
+        let newActivePanelSet = false;
+        traverseLayout(state.layout, (panel) => {
+          if (lastPanelId && !newActivePanelSet && panel.id === state.active) {
+            state.active = lastPanelId;
+            newActivePanelSet = true;
+          }
+          lastPanelId = panel.id;
+        });
+        if (!newActivePanelSet && lastPanelId) {
+          state.active = lastPanelId;
+        }
       }
     },
+    // changeDir(state, { payload }: PayloadAction<string>) {
+    //   const panel = state.states[state.active];
+    //   if (!panel) return;
+    //   if (isAbsolutePath(payload)) {
+    //     panel.path = payload;
+    //   } else {
+    //     panel.path = combinePath(panel.path, payload);
+    //   }
+    // },
   },
 });
 
-export const { setActivePanel, setPanelData, changeDir } = panelsSlice.actions;
-
-export default panelsSlice.reducer;
+export const { setPanelsLayout, setActivePanel, setPanelData, focusNextPanel, focusPrevPanel } = panelsSlice.actions;

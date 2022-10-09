@@ -2,10 +2,10 @@ import { useCallback } from "react";
 import styled from "styled-components";
 
 import { ColumnDef, CursorStyle } from "../../types";
-import { Column } from "../CondencedView/Column";
+import { Column } from "../CondensedView/Column";
 
 type FullViewProps = {
-  items: any;
+  items: { name: string }[];
   topMostPos: number;
   cursorPos: number;
   cursorStyle: CursorStyle;
@@ -62,9 +62,5 @@ export function FullView({
       />
     );
   }
-  return (
-    <Columns style={{ gridTemplateColumns }}>
-      {columns}
-    </Columns>
-  );
+  return <Columns style={{ gridTemplateColumns }}>{columns}</Columns>;
 }

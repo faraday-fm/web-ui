@@ -14,5 +14,3 @@ export const settingsSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const { setWheelSensitivity } = settingsSlice.actions;
-
-export default settingsSlice.reducer;

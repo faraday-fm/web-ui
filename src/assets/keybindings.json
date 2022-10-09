@@ -1,5 +1,6 @@
 [
   { "key": "Tab", "command": "focusNextPanel", "when": "filePanel.focus"},
+  { "key": "Shift+Tab", "command": "focusPrevPanel", "when": "filePanel.focus"},
   { "key": "Escape", "command": "focusActivePanel", "when": "terminal.focus"},
   { "key": "ArrowUp", "command": "cursorUp", "when": "filePanel.focus" },
   { "key": "ArrowDown", "command": "cursorDown", "when": "filePanel.focus" },

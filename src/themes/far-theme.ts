@@ -33,15 +33,15 @@ const farTheme = (t: DefaultTheme) => {
         },
       },
       fileInfo: {
-        border: { margin: "none", radius: 0 },
+        border: { margin: "0", radius: 0 },
       },
       column: {
         border: {
           radius: 0,
-          margin: "none",
+          margin: "0",
           extension: {
-            borderRight: "none",
-            borderBottom: "none",
+            borderRight: "0",
+            borderBottom: "0",
             "&:last-child": {
               borderRight: "1px solid",
             },

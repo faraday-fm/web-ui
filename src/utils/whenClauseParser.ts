@@ -1,7 +1,7 @@
 import { alt, createLanguage, optWhitespace, Parser, regexp, seq, seqMap, string } from "parsimmon";
 
 type Var = { _: "v"; val: string };
-type Const = { _: "c"; val: any };
+type Const = { _: "c"; val: unknown };
 type Not = { _: "!"; node: Node };
 type Eq = { _: "==" | "!="; left: Node; right: Node };
 type Or = { _: "||"; left: Node; right: Node };

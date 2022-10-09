@@ -14,6 +14,7 @@ export type BuiltInCommand =
   | "cursorPageUp"
   | "cursorPageDown"
   | "focusNextPanel"
+  | "focusPrevPanel"
   | "focusActivePanel"
   | "switchView"
   | "open"
@@ -68,11 +69,6 @@ export function useCommandBindings(commandBindings: PartialRecord<BuiltInCommand
   }, [commandBindings, isActive]);
 }
 
-export async function executeBuiltInCommand(command: BuiltInCommand, args?: any): Promise<boolean> {
-  return executeCommand(command, args);
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function executeCommand(command: string, args?: any): Promise<boolean> {
   const callbacks = bindings.get(command);
   if (!callbacks || callbacks.size !== 1) {
@@ -87,4 +83,8 @@ export async function executeCommand(command: string, args?: any): Promise<boole
     return result;
   }
   return false;
+}
+
+export async function executeBuiltInCommand(command: BuiltInCommand, args?: any): Promise<boolean> {
+  return executeCommand(command, args);
 }

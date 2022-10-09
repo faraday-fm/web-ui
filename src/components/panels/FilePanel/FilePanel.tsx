@@ -1,20 +1,20 @@
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useReducer, useRef } from "react";
+import styled, { useTheme } from "styled-components";
 import { Border } from "~/src/components/Border/Border";
 import { executeBuiltInCommand, useCommandBindings } from "~/src/hooks/useCommandBinding";
 import { useCommandContext } from "~/src/hooks/useCommandContext";
 import { useFocused } from "~/src/hooks/useFocused";
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useReducer, useRef } from "react";
-import styled, { useTheme } from "styled-components";
 import { clamp } from "~/src/utils/numberUtils";
 
 import { FileInfoFooter } from "./FileInfoFooter/FileInfoFooter";
 import { ColumnDef, CursorStyle, FilePanelAction, PanelItem } from "./types";
-import { CondencedView } from "./views/CondencedView/CondencedView";
+import { CondensedView } from "./views/CondensedView/CondensedView";
 import { FullView } from "./views/FullView/FullView";
 
 type FullView = { type: "full"; columnDefs: ColumnDef[] };
-type CondencedView = { type: "condenced"; columnDef: ColumnDef };
+type CondensedView = { type: "condensed"; columnDef: ColumnDef };
 
-type FilePanelView = FullView | CondencedView;
+type FilePanelView = FullView | CondensedView;
 
 export type FilePanelProps = {
   items: PanelItem[];
@@ -115,11 +115,14 @@ export type FilePanelActions = {
 };
 
 const PanelRoot = styled.div`
+  width: 100%;
+  height: 100%;
   position: relative;
   color: ${(p) => p.theme.filePanel.color};
   background: ${(p) => p.theme.filePanel.bg};
   display: grid;
   overflow: hidden;
+  outline: none;
   ${(p) => p.theme.filePanel.extension}
 `;
 
@@ -180,9 +183,9 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(({ items, 
     maxItemsPerColumn: 1,
     displayedItems: 0,
   });
-  const contentRef = useRef<HTMLDivElement>(null);
-  const focused = useFocused(contentRef);
-  useImperativeHandle(ref, () => ({ focus: () => contentRef.current?.focus() }));
+  const panelRootRef = useRef<HTMLDivElement>(null);
+  const focused = useFocused(panelRootRef);
+  useImperativeHandle(ref, () => ({ focus: () => panelRootRef.current?.focus() }));
 
   useEffect(() => {
     dispatch({ type: "setItems", items });
@@ -229,19 +232,16 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(({ items, 
   const theme = useTheme();
 
   return (
-    <PanelRoot>
+    <PanelRoot ref={panelRootRef} tabIndex={0} onFocus={() => onFocus?.()}>
       <Border {...theme.filePanel.border}>
         <PanelContent>
           <PanelHeader active={focused}>{title}</PanelHeader>
           <PanelColumns
-            ref={contentRef}
             onWheel={(e) => dispatch({ type: "scroll", delta: Math.sign(e.deltaY), followCursor: true })}
-            tabIndex={0}
             onKeyDown={(e) => {
               dispatch({ type: "findFirst", char: e.key });
               e.preventDefault();
             }}
-            onFocus={() => onFocus?.()}
           >
             {view.type === "full" ? (
               <FullView
@@ -256,7 +256,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(({ items, 
                 columnDefs={view.columnDefs}
               />
             ) : (
-              <CondencedView
+              <CondensedView
                 cursorStyle={cursorStyle}
                 items={state.panelItems}
                 topMostPos={state.topMostPos}

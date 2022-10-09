@@ -1,11 +1,11 @@
-import { Highlight } from "~/src/components/Highlight/Highlight";
-import { useQuickNavigation } from "~/src/contexts/quickNavigationContext";
 import { PropsWithChildren, ReactElement, useRef } from "react";
 import styled from "styled-components";
+import { Highlight } from "~/src/components/Highlight/Highlight";
+import { useQuickNavigation } from "~/src/contexts/quickNavigationContext";
 
 type AutoHotKeyLabelProps = {
   text: string;
-  labelLocation?: "left" | "right" | "bottom";
+  htmlFor?: string;
 } & PropsWithChildren<unknown>;
 
 const Label = styled.label`
@@ -15,30 +15,13 @@ const Label = styled.label`
   }
 `;
 
-export function AutoHotKeyLabel({ text, labelLocation = "left", children }: AutoHotKeyLabelProps): ReactElement {
+export function AutoHotKeyLabel({ text, htmlFor }: AutoHotKeyLabelProps): ReactElement {
   const ref = useRef<HTMLLabelElement>(null);
   const key = useQuickNavigation(text, ref);
 
-  const items = [];
-
-  switch (labelLocation) {
-    case "left":
-      items.push(<Highlight text={text} highlight={key} />);
-      items.push(children);
-      break;
-    case "right":
-      items.push(children);
-      items.push(<Highlight text={text} highlight={key} />);
-      break;
-    case "bottom":
-      items.push(<Highlight text={text} highlight={key} />);
-      items.push(<br />);
-      items.push(children);
-      break;
-  }
-
   return (
-    // eslint-disable-next-line jsx-a11y/label-has-associated-control
-    <Label ref={ref}>{items}</Label>
+    <Label ref={ref} htmlFor={htmlFor}>
+      <Highlight text={text} highlight={key} />
+    </Label>
   );
 }

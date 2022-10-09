@@ -1,19 +1,29 @@
-import { AutoHotKeyLabel } from "components/AutoHotKeyLabel/AutoHotKeyLabel";
-
-import classes from "./TopMenuItem.module.css";
+import styled from "styled-components";
+import { AutoHotKeyLabel } from "~/src/components/AutoHotKeyLabel/AutoHotKeyLabel";
 
 type TopMenuItemProps = {
   header: string;
 };
 
+const Item = styled.div`
+  position: relative;
+  padding: 0 1em;
+`;
+
+const Label = styled.div`
+  position: absolute;
+  top: 100%;
+  background-color: red;
+`;
+
 export function TopMenuItem({ header }: TopMenuItemProps) {
   return (
-    <div className={classes.topMenuItem} style={{ position: "relative" }}>
+    <Item>
       <AutoHotKeyLabel text={header} />
       {/* <HotKey>{(k) => <Highlight text={header} highlight={k} />}</HotKey> */}
-      <div style={{ position: "absolute", top: "100%", backgroundColor: "red" }}>
+      <Label>
         <AutoHotKeyLabel text="12345" />
-      </div>
-    </div>
+      </Label>
+    </Item>
   );
 }

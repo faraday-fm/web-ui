@@ -1,7 +1,7 @@
-import { executeCommand } from "~/src/hooks/useCommandBinding";
-import { isInContext } from "~/src/hooks/useCommandContext";
 import { alt, regexp, seq, string } from "parsimmon";
 import { createContext, PropsWithChildren, useCallback, useEffect, useMemo } from "react";
+import { executeCommand } from "~/src/hooks/useCommandBinding";
+import { isInContext } from "~/src/hooks/useCommandContext";
 
 type KeyCombination =
   | { error: true }

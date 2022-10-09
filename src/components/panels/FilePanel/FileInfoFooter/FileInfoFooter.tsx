@@ -10,6 +10,7 @@ type FileInfoFooterProps = {
 const FileRoot = styled.div`
   display: flex;
   overflow: hidden;
+  padding: 0.5rem 0;
 `;
 const FileName = styled.div`
   text-overflow: ellipsis;

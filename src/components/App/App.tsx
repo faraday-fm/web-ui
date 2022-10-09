@@ -1,19 +1,17 @@
-//import { invoke } from "@tauri-apps/api";
-import { ReduxFilePanel } from "~/src/components/hocs/ReduxFilePanel";
-import { FilePanelActions } from "~/src/components/panels/FilePanel/FilePanel";
-import { useGlyphSize } from "~/src/contexts/glyphSizeContext";
+import styled from "styled-components";
 import FocusTrap from "focus-trap-react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { useGlyphSize } from "~/src/contexts/glyphSizeContext";
 import { useCommandBindings } from "~/src/hooks/useCommandBinding";
 import { useCommandContext } from "~/src/hooks/useCommandContext";
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { useAppSelector } from "~/src/store";
-import styled from "styled-components";
-import { isRunningUnderTauri } from "~/src/utils/tauriUtils";
-
+import { useAppDispatch, useAppSelector } from "~/src/store";
 import { ActionsBar } from "../ActionsBar/ActionsBar";
+import { useFarMoreHost } from "~/src/contexts/farMoreHostContext";
+import { LayoutContainer } from "../LayoutContainer/LayoutContainer";
+import { focusNextPanel, focusPrevPanel, setPanelsLayout } from "~/src/features/panels/panelsSlice";
 
 const DialogPlaceholder = lazy(() => import("~/src/components/DialogPlaceholder/DialogPlaceholder"));
-const Terminal = lazy(() => import("~/src/components/Terminal/Terminal"));
+// const Terminal = lazy(() => import("~/src/components/Terminal/Terminal"));
 
 const AppDiv = styled.div`
   height: 100%;
@@ -45,19 +43,20 @@ const PanelsContainer = styled.div`
 
 function App() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const activePanel = useAppSelector((state) => state.panels.active);
+  const dispatch = useAppDispatch();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [panelsOpen, setPanelsOpen] = useState(true);
   const [executing, setExecuting] = useState(false);
-  const panel1Ref = useRef<FilePanelActions>(null);
-  const panel2Ref = useRef<FilePanelActions>(null);
+  const panelsLayout = useAppSelector((state) => state.panels.layout);
+  const host = useFarMoreHost();
 
   useEffect(() => {
+    host.config.getLayout().then((l) => dispatch(setPanelsLayout(l)));
     // invoke("show_main_window");
     // if (isRunningUnderTauri()) setTimeout(() => invoke("show_main_window"), 50);
-  }, []);
+  }, [dispatch, host.config]);
 
-  useCommandContext("isDesktop", isRunningUnderTauri());
+  useCommandContext("isDesktop", host.config.isDesktop());
 
   const [viewType, setViewType] = useState(0);
   useCommandBindings({
@@ -65,12 +64,14 @@ function App() {
       setPanelsOpen((p) => !p);
     },
     focusNextPanel: () => {
-      if (activePanel === "left") panel2Ref.current?.focus();
-      if (activePanel === "right") panel1Ref.current?.focus();
+      dispatch(focusNextPanel({ backward: false }));
+    },
+    focusPrevPanel: () => {
+      dispatch(focusNextPanel({ backward: true }));
     },
     focusActivePanel: () => {
-      if (activePanel === "left") panel1Ref.current?.focus();
-      if (activePanel === "right") panel2Ref.current?.focus();
+      // if (activePanel === "left") panel1Ref.current?.focus();
+      // if (activePanel === "right") panel2Ref.current?.focus();
     },
     switchView: () => setViewType((vt) => vt + 1),
     open: () => setDialogOpen(true),
@@ -82,6 +83,10 @@ function App() {
 
   const onRunStart = useCallback(() => setExecuting(true), []);
   const onRunEnd = useCallback(() => setExecuting(false), []);
+
+  if (!panelsLayout) {
+    return null;
+  }
 
   return (
     <FocusTrap>
@@ -100,32 +105,7 @@ function App() {
               bottom: glyphHeight,
             }}
           >
-            <ReduxFilePanel
-              id="left"
-              ref={panel1Ref}
-              // showCursorWhenBlurred={activePanel === 0}
-              // items={leftItems}
-              // view={
-              //   viewType % 2 === 0
-              //     ? {
-              //         type: "full",
-              //         columnDefs: [
-              //           { field: "name", name: "Name", width: "1fr" },
-              //           { field: "size", name: "Size" },
-              //           { field: "attr", name: "Attr" },
-              //         ],
-              //       }
-              //     : { type: "condenced", columnDef: { field: "name", name: "Name" } }
-              // }
-            />
-            <ReduxFilePanel id="right" ref={panel2Ref} />
-            {/* <FilePanel
-              ref={panel2Ref}
-              onFocus={() => setActivePanel(1)}
-              showCursorWhenBlurred={activePanel === 1}
-              items={Array.from(Array(30).keys()).map((i) => ({ name: i.toString() }))}
-              view={{ type: "condenced", columnDef: { field: "name", name: "Name" } }}
-            /> */}
+            {panelsLayout && <LayoutContainer layout={panelsLayout} direction="h" />}
           </PanelsContainer>
         </div>
         <div style={{ gridRow: 2, overflow: "hidden" }}>

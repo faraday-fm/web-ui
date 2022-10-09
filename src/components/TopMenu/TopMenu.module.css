@@ -1,9 +1,0 @@
-.root {
-  display: flex;
-  background-color: var(--color-03);
-  color: var(--color-00);
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-}

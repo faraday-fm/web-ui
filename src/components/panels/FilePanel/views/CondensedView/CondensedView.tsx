@@ -5,7 +5,7 @@ import useResizeObserver from "use-resize-observer";
 import { ColumnDef, CursorStyle } from "../../types";
 import { Column } from "./Column";
 
-type CondencedViewProps = {
+type CondensedViewProps = {
   items: any;
   topMostPos: number;
   cursorPos: number;
@@ -26,7 +26,7 @@ const Columns = styled.div`
   overflow: hidden;
 `;
 
-export function CondencedView({
+export function CondensedView({
   cursorStyle,
   items,
   topMostPos,
@@ -38,7 +38,7 @@ export function CondencedView({
   onColumnsCountChanged,
   onItemClicked,
   onItemActivated,
-}: CondencedViewProps) {
+}: CondensedViewProps) {
   const [maxItemsPerColumn, setMaxItemsPerColumn] = useState(1);
   const { ref, width = 1 } = useResizeObserver();
 
@@ -69,9 +69,5 @@ export function CondencedView({
       />
     );
   }
-  return (
-    <Columns ref={ref}>
-      {columns}
-    </Columns>
-  );
+  return <Columns ref={ref}>{columns}</Columns>;
 }
