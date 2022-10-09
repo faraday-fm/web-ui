@@ -12,26 +12,24 @@ export type FsEntry = {
 
 export type RowLayout = {
   type: "row";
-  id: string;
-  children: Layout[];
+  children: PanelsLayout[];
 };
 
 export type FilePanelLayout = {
-  type: "filePanel";
-  id: string;
+  type: "file-panel";
   path: string;
-  flex: number;
+  topmostFileName?: string;
+  selectedFileName?: string;
 };
 
-export type Layout = RowLayout | FilePanelLayout;
+export type PanelLayout = FilePanelLayout;
 
-export type FarMoreLayout = {
-  root: Layout;
-};
+export type PanelsLayout = (RowLayout | PanelLayout) & { id: string; flex?: number };
 
 export type FarMoreConfig = {
-  getLayout(): Promise<FarMoreLayout>;
-  setLayout(layout: FarMoreLayout): Promise<void>;
+  isDesktop(): boolean;
+  getLayout(): Promise<PanelsLayout>;
+  setLayout(layout: PanelsLayout): Promise<void>;
 };
 
 export type FarMoreFs = {

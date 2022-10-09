@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { useEffect, useMemo, useState } from "react";
 import styled, { useTheme } from "styled-components";
 import useResizeObserver from "use-resize-observer";
@@ -9,7 +10,7 @@ import { ColumnDef, CursorStyle } from "../../types";
 import { Row } from "./Row";
 
 type ColumnProps = {
-  items: any[];
+  items: { name: string }[];
   topMostPos: number;
   cursorStyle: CursorStyle;
   cursorPos: number;
@@ -103,8 +104,6 @@ export function Column({
         <ColumnHeader className="ColumnHeader">{columnDef.name}</ColumnHeader>
         <div
           ref={ref}
-          role="listbox"
-          tabIndex={0}
           style={{ overflow: "hidden" }}
           onMouseDown={(e) => {
             e.stopPropagation();

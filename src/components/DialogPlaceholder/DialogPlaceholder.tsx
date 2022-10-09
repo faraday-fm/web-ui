@@ -20,6 +20,13 @@ const Backdrop = styled.div`
   bottom: 0;
 `;
 
+const Centered = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+`;
+
 const Content = styled.div`
   background-color: var(--color-07);
   color: var(--color-01);
@@ -39,6 +46,13 @@ const Border = styled.div`
   border: 1px solid var(--color-01);
   border-bottom: none;
   padding: 1px;
+  &:last-child {
+    border-bottom: 1px solid var(--color-01);
+  }
+`;
+
+const DialogButton = styled(Button)`
+  margin: 0 10px;
 `;
 
 export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderProps) {
@@ -50,12 +64,7 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
     <QuickNavigationProvider>
       <FocusTrap focusTrapOptions={{ onDeactivate: () => onClose?.() }}>
         <Backdrop role="dialog" aria-modal="true" onMouseDown={() => onClose?.()}>
-          <div
-            style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}
-            onMouseDown={(e) => e.stopPropagation()}
-            role="tab"
-            tabIndex={0}
-          >
+          <Centered onMouseDown={(e) => e.stopPropagation()}>
             <Content>
               <Border>
                 <Border>
@@ -106,12 +115,22 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
                   </p>
                 </Border>
                 <Border>
-                  <Button>dfg</Button>
-                  <Button>dfg</Button>
+                  <DialogButton>
+                    <AutoHotKeyLabel text="Copy" />
+                  </DialogButton>
+                  <DialogButton>
+                    <AutoHotKeyLabel text="F10-Tree" />
+                  </DialogButton>
+                  <DialogButton>
+                    <AutoHotKeyLabel text="Filter" />
+                  </DialogButton>
+                  <DialogButton>
+                    <AutoHotKeyLabel text="Cancel" />
+                  </DialogButton>
                 </Border>
               </Border>
             </Content>
-          </div>
+          </Centered>
         </Backdrop>
       </FocusTrap>
     </QuickNavigationProvider>

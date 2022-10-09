@@ -14,6 +14,7 @@ export type BuiltInCommand =
   | "cursorPageUp"
   | "cursorPageDown"
   | "focusNextPanel"
+  | "focusPrevPanel"
   | "focusActivePanel"
   | "switchView"
   | "open"

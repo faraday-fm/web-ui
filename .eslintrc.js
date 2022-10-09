@@ -13,5 +13,6 @@ module.exports = {
     "react/jsx-props-no-spreading": "off",
     "@typescript-eslint/no-shadow": "off",
     "@typescript-eslint/no-unused-vars": "warn",
+    "jsx-a11y/no-static-element-interactions": "off",
   },
 };

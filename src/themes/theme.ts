@@ -125,14 +125,14 @@ const baseTheme = (colors: typeof darkColors): DefaultTheme => ({
         radius: "3px",
         thickness: "1px",
         margin: "1px",
-        padding: "none",
+        padding: "0",
       },
     },
   },
   modalDialog: {
     bg: colors.filePanelBorder,
     color: colors.filePanelBorder,
-    border: { color: colors.filePanelBorder, radius: "1px", thickness: "1px", margin: "none", padding: "none" },
+    border: { color: colors.filePanelBorder, radius: "1px", thickness: "1px", margin: "0", padding: "0" },
     shadow: "none",
   },
 });
