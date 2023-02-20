@@ -14,5 +14,6 @@ module.exports = {
     "@typescript-eslint/no-shadow": "off",
     "@typescript-eslint/no-unused-vars": "warn",
     "jsx-a11y/no-static-element-interactions": "off",
+    "no-restricted-syntax": "off",
   },
 };

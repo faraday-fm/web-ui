@@ -2,7 +2,7 @@ import { createContext, PropsWithChildren, RefObject, useCallback, useContext, u
 
 const QuickNavigationContext = createContext(new Map<string, RefObject<HTMLElement>>());
 
-export function useQuickNavigation(text: string, ref: RefObject<HTMLElement>) {
+export function useQuickNavigation(ref: RefObject<HTMLElement>, text: string) {
   const context = useContext(QuickNavigationContext);
   const [hotKey, setHotKey] = useState<string>();
 

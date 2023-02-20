@@ -16,14 +16,14 @@ const Root = styled.span`
 `;
 
 const FnKey = styled.span`
-  color: var(--color-07);
+  color: ${(p) => p.theme.actionsBar.fnKey.color};
 `;
 
 const HeaderButton = styled.div`
   text-align: left;
   width: 100%;
-  background-color: var(--color-03);
-  color: var(--color-00);
+  background-color: ${(p) => p.theme.actionsBar.bg};
+  color: ${(p) => p.theme.actionsBar.color};
   padding: 0;
   cursor: pointer;
 `;

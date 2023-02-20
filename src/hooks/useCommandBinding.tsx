@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 
-type Callback = (args?: any) => Promise<boolean> | boolean | void;
+type Callback = (args?: unknown) => Promise<boolean> | boolean | void;
 
-const bindings = new Map<string, Set<Callback>>();
+type CommandBindingContext = Map<string, Set<Callback>>;
+
+const bindingsContext = React.createContext<CommandBindingContext>(new Map());
 
 export type BuiltInCommand =
   | "cursorLeft"
@@ -27,6 +29,7 @@ type PartialRecord<K extends keyof never, T> = {
 };
 
 export function useCommandBinding(command: BuiltInCommand, callback: Callback, isActive = true) {
+  const bindings = useContext(bindingsContext);
   useEffect(() => {
     if (!isActive) return undefined;
     let callbacks = bindings.get(command);
@@ -41,10 +44,11 @@ export function useCommandBinding(command: BuiltInCommand, callback: Callback, i
         bindings.delete(command);
       }
     };
-  }, [command, callback, isActive]);
+  }, [command, callback, isActive, bindings]);
 }
 
 export function useCommandBindings(commandBindings: PartialRecord<BuiltInCommand, Callback>, isActive = true) {
+  const bindings = useContext(bindingsContext);
   useEffect(() => {
     if (!isActive) return undefined;
     Object.entries(commandBindings).forEach(([command, callback]) => {
@@ -66,25 +70,36 @@ export function useCommandBindings(commandBindings: PartialRecord<BuiltInCommand
         }
       });
     };
-  }, [commandBindings, isActive]);
+  }, [bindings, commandBindings, isActive]);
 }
 
-export async function executeCommand(command: string, args?: any): Promise<boolean> {
-  const callbacks = bindings.get(command);
-  if (!callbacks || callbacks.size !== 1) {
-    return false;
-  }
-  // eslint-disable-next-line no-unreachable-loop, no-restricted-syntax
-  for (const cb of callbacks) {
-    const result = cb(args);
-    if (typeof result === "undefined") {
-      return true;
-    }
-    return result;
-  }
-  return false;
+export function useExecuteCommand() {
+  const bindings = useContext(bindingsContext);
+  const executor = useCallback(
+    (command: string, args?: unknown) => {
+      const callbacks = bindings.get(command);
+      if (!callbacks || callbacks.size !== 1) {
+        return false;
+      }
+      // eslint-disable-next-line no-unreachable-loop
+      for (const cb of callbacks.values()) {
+        const result = cb(args);
+        if (typeof result === "undefined") {
+          return true;
+        }
+        return result;
+      }
+      return false;
+    },
+    [bindings]
+  );
+
+  return executor;
 }
 
-export async function executeBuiltInCommand(command: BuiltInCommand, args?: any): Promise<boolean> {
-  return executeCommand(command, args);
+export function useExecuteBuiltInCommand() {
+  const executor = useExecuteCommand();
+  return (command: BuiltInCommand, args?: unknown) => {
+    return executor(command, args);
+  };
 }

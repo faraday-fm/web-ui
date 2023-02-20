@@ -36,7 +36,7 @@ export type FarMoreFs = {
   listDir(dir: string, extraFields?: string[]): Promise<FsEntry[]>;
   getHomeDir(): Promise<string>;
   getDirSeparator(): Promise<string>;
-  normalisePath(path: string): Promise<string>;
+  normalizePath(path: string): Promise<string>;
 };
 
 export type TerminalSession = symbol;

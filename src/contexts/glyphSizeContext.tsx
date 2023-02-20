@@ -20,6 +20,8 @@ export function GlyphSizeProvider({ children }: PropsWithChildren<unknown>) {
           opacity: 0,
           userSelect: "none",
           pointerEvents: "none",
+          left: -1000,
+          top: -1000,
         }}
       >
         W

@@ -1,24 +1,37 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import FocusTrap from "focus-trap-react";
-import styled from "styled-components";
 import { useId } from "react";
+import styled, { keyframes, useTheme } from "styled-components";
 import { AutoHotKeyLabel } from "~/src/components/AutoHotKeyLabel/AutoHotKeyLabel";
+import { Button } from "~/src/components/Button/Button";
 import { QuickNavigationProvider } from "~/src/contexts/quickNavigationContext";
 import { useCommandContext } from "~/src/hooks/useCommandContext";
-import { Button } from "~/src/components/Button/Button";
+import { Border } from "../Border/Border";
 
 type DialogPlaceholderProps = {
   open: boolean;
   onClose?: () => void;
 };
 
+const backdropAnimation = keyframes`
+ 0% { opacity: 0 }
+ 100% { opacity: 1 }
+`;
+
+const centeredAnimation = keyframes`
+ 0% { transform: translate(-50%, -55%);}
+ 100% { transform: translate(-50%, -50%); }
+`;
+
 const Backdrop = styled.div`
-  background-color: #0003;
+  background-color: ${(p) => p.theme.modalDialog.backdropColor};
   position: absolute;
   left: 0;
   top: 0;
   right: 0;
   bottom: 0;
+  animation-name: ${backdropAnimation};
+  animation-duration: 0.2s;
 `;
 
 const Centered = styled.div`
@@ -26,12 +39,14 @@ const Centered = styled.div`
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  animation-name: ${centeredAnimation};
+  animation-duration: 0.2s;
 `;
 
 const Content = styled.div`
-  background-color: var(--color-07);
-  color: var(--color-01);
-  box-shadow: 1rem 1rem 0 0 rgb(0 0 0 / 40%);
+  background-color: ${(p) => p.theme.modalDialog.bg};
+  color: ${(p) => p.theme.modalDialog.color};
+  box-shadow: ${(p) => p.theme.modalDialog.shadow};
   padding: 0.5rem;
   p {
     margin: 0;
@@ -42,22 +57,24 @@ const Content = styled.div`
   }
 `;
 
-const Border = styled.div`
-  position: relative;
-  border: 1px solid var(--color-01);
-  border-bottom: none;
-  padding: 1px;
-  &:last-child {
-    border-bottom: 1px solid var(--color-01);
-  }
-`;
-
 const DialogButton = styled(Button)`
-  margin: 0 10px;
+  margin: 0 0.25em;
+  background-color: transparent;
+  &:before {
+    content: "[ ";
+  }
+  &:after {
+    content: " ]";
+  }
+  &:focus {
+    background-color: var(--color-11);
+    outline: none;
+  }
 `;
 
 export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderProps) {
   useCommandContext("copyDialog", open);
+  const theme = useTheme();
   const dialogId = useId();
 
   if (!open) return null;
@@ -68,21 +85,21 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
         <Backdrop role="dialog" aria-modal="true" onMouseDown={() => onClose?.()}>
           <Centered onMouseDown={(e) => e.stopPropagation()}>
             <Content>
-              <Border>
-                <Border>
+              <Border {...theme.modalDialog.border}>
+                <Border {...theme.modalDialog.border}>
                   <p style={{ display: "flex", flexDirection: "column" }}>
                     <AutoHotKeyLabel text="Copy to:" htmlFor={`${dialogId}copyTo`} />
                     <input id={`${dialogId}copyTo`} />
                   </p>
                 </Border>
-                <Border>
+                <Border {...theme.modalDialog.border}>
                   <p>
                     <AutoHotKeyLabel text="Already existing files:" htmlFor={`${dialogId}alreadyExisting`} />
                     <input id={`${dialogId}alreadyExisting`} />
                   </p>
                   <p>
-                    <AutoHotKeyLabel text="Process multiple destinations" htmlFor={`${dialogId}processMultDist`} />
                     <input id={`${dialogId}processMultDist`} type="checkbox" />
+                    <AutoHotKeyLabel text="Process multiple destinations" htmlFor={`${dialogId}processMultDist`} />
                   </p>
                   <p>
                     <input id={`${dialogId}copyAccessMode`} type="checkbox" />
@@ -108,18 +125,18 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
                     <AutoHotKeyLabel text="With symlinks:" />
                   </p>
                 </Border>
-                <Border>
-                  <DialogButton>
-                    <AutoHotKeyLabel text="Copy" />
+                <Border {...theme.modalDialog.border}>
+                  <DialogButton id={`${dialogId}copy`}>
+                    <AutoHotKeyLabel text="Copy" htmlFor={`${dialogId}copy`} />
                   </DialogButton>
-                  <DialogButton>
-                    <AutoHotKeyLabel text="F10-Tree" />
+                  <DialogButton id={`${dialogId}tree`}>
+                    <AutoHotKeyLabel text="F10-Tree" htmlFor={`${dialogId}tree`} />
                   </DialogButton>
-                  <DialogButton>
-                    <AutoHotKeyLabel text="Filter" />
+                  <DialogButton id={`${dialogId}filter`}>
+                    <AutoHotKeyLabel text="Filter" htmlFor={`${dialogId}filter`} />
                   </DialogButton>
-                  <DialogButton>
-                    <AutoHotKeyLabel text="Cancel" />
+                  <DialogButton id={`${dialogId}cancel`}>
+                    <AutoHotKeyLabel text="Cancel" htmlFor={`${dialogId}cancel`} />
                   </DialogButton>
                 </Border>
               </Border>

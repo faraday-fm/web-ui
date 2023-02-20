@@ -2,8 +2,8 @@
 import { useEffect, useMemo, useState } from "react";
 import styled, { useTheme } from "styled-components";
 import useResizeObserver from "use-resize-observer";
-import { useGlyphSize } from "~/src/contexts/glyphSizeContext";
 import { Border } from "~/src/components/Border/Border";
+import { useGlyphSize } from "~/src/contexts/glyphSizeContext";
 import { clamp } from "~/src/utils/numberUtils";
 
 import { ColumnDef, CursorStyle } from "../../types";
@@ -39,7 +39,7 @@ const ColumnRoot = styled.div`
 `;
 const ColumnHeader = styled.div`
   text-align: center;
-  color: var(--color-14);
+  color: ${(p) => p.theme.filePanel.column.color};
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 0 calc(0.25rem - 1px);
@@ -74,9 +74,9 @@ export function Column({
   selectItem,
   activateItem,
 }: ColumnProps) {
-  const { ref, height } = useResizeObserver<HTMLDivElement>();
+  const { ref, height } = useResizeObserver<HTMLDivElement>({ round: (n) => n });
   const { height: glyphHeight } = useGlyphSize();
-  const maxItemsCount = useMemo(() => (height ? Math.max(1, Math.trunc(height / glyphHeight)) : undefined), [glyphHeight, height]);
+  const maxItemsCount = useMemo(() => (height ? Math.max(1, Math.trunc(height / Math.ceil(glyphHeight))) : undefined), [glyphHeight, height]);
   const [autoscroll, setAutoscroll] = useState(0);
 
   useEffect(() => {

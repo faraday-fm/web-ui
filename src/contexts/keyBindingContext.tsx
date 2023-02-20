@@ -1,7 +1,7 @@
 import { alt, regexp, seq, string } from "parsimmon";
 import { createContext, PropsWithChildren, useCallback, useEffect, useMemo } from "react";
-import { executeCommand } from "~/src/hooks/useCommandBinding";
-import { isInContext } from "~/src/hooks/useCommandContext";
+import { useExecuteCommand } from "~/src/hooks/useCommandBinding";
+import { useIsInCommandContext } from "~/src/hooks/useCommandContext";
 
 type KeyCombination =
   | { error: true }
@@ -43,7 +43,7 @@ export type KeyBinding = {
   key: string;
   command: string;
   when?: string;
-  args?: any;
+  args?: unknown;
 };
 
 const KeyBindingContext = createContext<KeyBinding[]>([]);
@@ -81,6 +81,9 @@ export function KeyBindingProvider({ bindings, children }: KeyBindingProviderPro
     [getKeyCombination]
   );
 
+  const isInContext = useIsInCommandContext();
+  const executeCommand = useExecuteCommand();
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       const keyCodeStr = [e.ctrlKey ? "Ctrl" : "", e.altKey ? "Alt" : "", e.shiftKey ? "Shift" : "", e.metaKey ? "Meta" : "", e.code]
@@ -100,7 +103,7 @@ export function KeyBindingProvider({ bindings, children }: KeyBindingProviderPro
     };
     window.addEventListener("keydown", onKeyDown, { capture: true });
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [bindings, matchKey]);
+  }, [bindings, executeCommand, isInContext, matchKey]);
 
   return <KeyBindingContext.Provider value={bindings}>{children}</KeyBindingContext.Provider>;
 }
