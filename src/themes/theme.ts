@@ -83,7 +83,7 @@ const baseTheme = (colors: Palette): DefaultTheme => ({
       radius: "0",
       thickness: "1px",
       margin: "0.5em calc(0.5ch - 1px)",
-      padding: "none",
+      padding: "0",
     },
     header: {
       activeBg: colors.bgColor3,
