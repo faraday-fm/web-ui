@@ -1,5 +1,4 @@
 import Editor, { useMonaco } from "@monaco-editor/react";
-import classnames from "classnames";
 import { useEffect } from "react";
 import styled from "styled-components";
 import useResizeObserver from "use-resize-observer";

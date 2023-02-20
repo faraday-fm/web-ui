@@ -1,11 +1,11 @@
 import deepmerge from "deepmerge";
-import { DefaultTheme } from "styled-components";
+import { DefaultTheme, Palette } from "styled-components";
 
 type RecursivePartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends object ? RecursivePartial<T[P]> : T[P];
 };
 
-const murenaPalette = {
+const murenaPalette: Palette = {
   bgColor0: "#000000",
   bgColor1: "#004164",
   bgColor2: "#008000",
@@ -24,7 +24,7 @@ const murenaPalette = {
   fgColor7: "#ffffff",
 };
 
-const darkPalette = {
+const darkPalette: Palette = {
   bgColor0: "#002b36",
   bgColor1: "#073642",
   bgColor2: "#008080",
@@ -44,75 +44,66 @@ const darkPalette = {
 };
 
 const lightPalette = {
-  bgColor0: "white",
-  bgColor1: "white",
-  bgColor2: "white",
+  bgColor0: "#3182a4",
+  bgColor1: "#3182a4",
+  bgColor2: "#3182a4",
   bgColor3: "#3182a4",
-  bgColor4: "white",
-  bgColor5: "white",
-  bgColor6: "white",
-  bgColor7: "white",
-  fgColor0: "black",
-  fgColor1: "black",
-  fgColor2: "black",
+  bgColor4: "#3182a4",
+  bgColor5: "#3182a4",
+  bgColor6: "#3182a4",
+  bgColor7: "#3182a4",
+  fgColor0: "#d8d8d8",
+  fgColor1: "#d8d8d8",
+  fgColor2: "#d8d8d8",
   fgColor3: "#d8d8d8",
-  fgColor4: "black",
-  fgColor5: "black",
-  fgColor6: "black",
-  fgColor7: "black",
+  fgColor4: "#d8d8d8",
+  fgColor5: "#d8d8d8",
+  fgColor6: "#d8d8d8",
+  fgColor7: "#d8d8d8",
 };
 
-const murenaColors = {
-  filePanelBg: murenaPalette.bgColor1,
-  filePanelText: murenaPalette.fgColor3,
-  filePanelBorder: murenaPalette.fgColor3,
-  filePanelCursorBg: murenaPalette.bgColor3,
-};
-
-const darkColors = {
-  filePanelBg: darkPalette.bgColor1,
-  filePanelText: darkPalette.fgColor3,
-  filePanelBorder: darkPalette.fgColor3,
-  filePanelCursorBg: darkPalette.bgColor3,
-};
-
-const lightColors = {
-  filePanelBg: lightPalette.bgColor1,
-  filePanelText: lightPalette.fgColor2,
-  filePanelBorder: lightPalette.fgColor3,
-  filePanelCursorBg: lightPalette.bgColor3,
-};
-
-const baseTheme = (colors: typeof darkColors): DefaultTheme => ({
+const baseTheme = (colors: Palette): DefaultTheme => ({
+  // fontFamily: "Verdana, Geneva, sans-serif",
+  fontFamily: "ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace",
+  primaryBg: colors.bgColor0,
+  primaryText: colors.fgColor0,
+  actionsBar: {
+    bg: colors.bgColor3,
+    color: colors.bgColor0,
+    fnKey: {
+      color: colors.bgColor7,
+    },
+  },
   filePanel: {
-    bg: colors.filePanelBg,
-    color: colors.filePanelText,
+    bg: colors.bgColor1,
+    activeBg: colors.bgColor3,
+    color: colors.fgColor2,
     border: {
-      color: colors.filePanelBorder,
+      color: colors.fgColor3,
       radius: "0",
       thickness: "1px",
-      margin: "0.5em calc(0.25em - 1px)",
+      margin: "0.5em calc(0.5ch - 1px)",
       padding: "none",
     },
     header: {
-      activeBg: colors.filePanelCursorBg,
-      inactiveBg: colors.filePanelBg,
-      activeColor: colors.filePanelBg,
-      inactiveColor: colors.filePanelText,
+      activeBg: colors.bgColor3,
+      inactiveBg: colors.bgColor1,
+      activeColor: colors.bgColor1,
+      inactiveColor: colors.fgColor2,
       extension: {
-        border: `1px solid ${colors.filePanelBorder}`,
+        border: `1px solid ${colors.fgColor3}`,
         marginBottom: 1,
       },
     },
     content: { margin: "1px" },
     footer: {
-      bg: colors.filePanelBg,
-      color: colors.filePanelText,
+      bg: colors.bgColor1,
+      color: colors.fgColor2,
     },
     fileInfo: {
       border: {
-        color: colors.filePanelBorder,
-        radius: "3px",
+        color: colors.fgColor3,
+        radius: "0",
         thickness: "1px",
         margin: "1px",
         padding: "1px 1px",
@@ -120,9 +111,10 @@ const baseTheme = (colors: typeof darkColors): DefaultTheme => ({
     },
     column: {
       bg: "none",
+      color: colors.fgColor6,
       border: {
-        color: colors.filePanelBorder,
-        radius: "3px",
+        color: colors.fgColor3,
+        radius: "0",
         thickness: "1px",
         margin: "1px",
         padding: "0",
@@ -130,10 +122,26 @@ const baseTheme = (colors: typeof darkColors): DefaultTheme => ({
     },
   },
   modalDialog: {
-    bg: colors.filePanelBorder,
-    color: colors.filePanelBorder,
-    border: { color: colors.filePanelBorder, radius: "1px", thickness: "1px", margin: "0", padding: "0" },
-    shadow: "none",
+    bg: colors.fgColor7,
+    color: colors.bgColor0,
+    border: {
+      color: colors.bgColor0,
+      radius: "0",
+      thickness: "1px",
+      margin: "0",
+      padding: "1px",
+      extension: {
+        borderBottomWidth: 0,
+        "&:last-child": {
+          borderBottomWidth: "1px",
+        },
+      },
+    },
+    backdropColor: "#0003",
+    shadow: "1rem 1rem 0 0 rgb(0 0 0 / 40%)",
+  },
+  misc: {
+    hotKeyText: colors.fgColor6,
   },
 });
 
@@ -141,5 +149,5 @@ export function extend(base: DefaultTheme, extension: RecursivePartial<DefaultTh
   return deepmerge(base, extension) as DefaultTheme;
 }
 
-export const theme = baseTheme(murenaColors);
-// export const theme = farTheme(baseTheme(murenaColors));
+export const lightTheme = baseTheme(lightPalette);
+export const darkTheme = baseTheme(darkPalette);

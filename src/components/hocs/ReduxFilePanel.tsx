@@ -1,8 +1,8 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { FilePanel, FilePanelActions } from "~/src/components/panels/FilePanel/FilePanel";
+import { useFarMoreHost } from "~/src/contexts/farMoreHostContext";
 import { setActivePanel, setPanelData } from "~/src/features/panels/panelsSlice";
 import { useAppDispatch, useAppSelector } from "~/src/store";
-import { useFarMoreHost } from "~/src/contexts/farMoreHostContext";
 import { FilePanelLayout } from "~/src/types";
 
 type ReduxFilePanelProps = { layout: FilePanelLayout & { id: string } };

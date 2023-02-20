@@ -1,11 +1,11 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useReducer, useRef } from "react";
 import styled, { useTheme } from "styled-components";
 import { Border } from "~/src/components/Border/Border";
-import { executeBuiltInCommand, useCommandBindings } from "~/src/hooks/useCommandBinding";
+import { useCommandBindings, useExecuteBuiltInCommand } from "~/src/hooks/useCommandBinding";
 import { useCommandContext } from "~/src/hooks/useCommandContext";
 import { useFocused } from "~/src/hooks/useFocused";
 import { clamp } from "~/src/utils/numberUtils";
-
+import { Breadcrumb } from "../../Breadcrumb/Breadcrumb";
 import { FileInfoFooter } from "./FileInfoFooter/FileInfoFooter";
 import { ColumnDef, CursorStyle, FilePanelAction, PanelItem } from "./types";
 import { CondensedView } from "./views/CondensedView/CondensedView";
@@ -124,11 +124,12 @@ const PanelRoot = styled.div`
   overflow: hidden;
   outline: none;
   ${(p) => p.theme.filePanel.extension}
+  user-select: none;
 `;
 
 const PanelContent = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
   overflow: hidden;
   margin: ${(p) => p.theme.filePanel.content.margin};
 `;
@@ -215,9 +216,11 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(({ items, 
     focused
   );
 
+  const executeBuiltInCommand = useExecuteBuiltInCommand();
+
   const onResize = useCallback((maxItemsPerColumn: number) => dispatch({ type: "resize", maxItemsPerColumn }), [dispatch]);
   const onItemClicked = useCallback((pos: number) => dispatch({ type: "moveCursorToPos", pos }), [dispatch]);
-  const onItemActivated = useCallback(() => executeBuiltInCommand("open"), []);
+  const onItemActivated = useCallback(() => executeBuiltInCommand("open"), [executeBuiltInCommand]);
   const onColumnsCountChanged = useCallback((count: number) => dispatch({ type: "setColumnsCount", count }), [dispatch]);
 
   let cursorStyle: CursorStyle;
@@ -235,7 +238,15 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(({ items, 
     <PanelRoot ref={panelRootRef} tabIndex={0} onFocus={() => onFocus?.()}>
       <Border {...theme.filePanel.border}>
         <PanelContent>
-          <PanelHeader active={focused}>{title}</PanelHeader>
+          <Breadcrumb backgroundColor={focused ? theme.filePanel.header.activeBg : theme.filePanel.header.inactiveBg}>
+            {title
+              ?.split("/")
+              .filter((x) => x)
+              .map((x, i) => (
+                <Breadcrumb.Item key={i}>{x}</Breadcrumb.Item>
+              ))}
+          </Breadcrumb>
+          {/* <PanelHeader active={focused}>{title}</PanelHeader> */}
           <PanelColumns
             onWheel={(e) => dispatch({ type: "scroll", delta: Math.sign(e.deltaY), followCursor: true })}
             onKeyDown={(e) => {

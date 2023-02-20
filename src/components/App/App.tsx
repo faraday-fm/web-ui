@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import FocusTrap from "focus-trap-react";
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useGlyphSize } from "~/src/contexts/glyphSizeContext";
 import { useCommandBindings } from "~/src/hooks/useCommandBinding";
 import { useCommandContext } from "~/src/hooks/useCommandContext";
@@ -8,12 +8,21 @@ import { useAppDispatch, useAppSelector } from "~/src/store";
 import { ActionsBar } from "../ActionsBar/ActionsBar";
 import { useFarMoreHost } from "~/src/contexts/farMoreHostContext";
 import { LayoutContainer } from "../LayoutContainer/LayoutContainer";
-import { focusNextPanel, focusPrevPanel, setPanelsLayout } from "~/src/features/panels/panelsSlice";
+import { focusNextPanel, setPanelsLayout } from "~/src/features/panels/panelsSlice";
+import DialogPlaceholder from "../DialogPlaceholder/DialogPlaceholder";
 
-const DialogPlaceholder = lazy(() => import("~/src/components/DialogPlaceholder/DialogPlaceholder"));
 // const Terminal = lazy(() => import("~/src/components/Terminal/Terminal"));
 
 const AppDiv = styled.div`
+  button,
+  input {
+    font-family: inherit;
+    text-rendering: inherit;
+    font-size: inherit;
+  }
+  font-family: ${(p) => p.theme.fontFamily};
+  text-rendering: geometricPrecision;
+  background-color: ${(p) => p.theme.primaryBg};
   height: 100%;
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
@@ -111,9 +120,7 @@ function App() {
         <div style={{ gridRow: 2, overflow: "hidden" }}>
           <ActionsBar />
         </div>
-        <Suspense fallback={<div />}>
-          <DialogPlaceholder open={dialogOpen} onClose={() => setDialogOpen(false)} />
-        </Suspense>
+        <DialogPlaceholder open={dialogOpen} onClose={() => setDialogOpen(false)} />
         {/* <TopMenu /> */}
       </AppDiv>
     </FocusTrap>

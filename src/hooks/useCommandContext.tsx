@@ -1,12 +1,20 @@
-import { useEffect, useId } from "react";
+import React, { PropsWithChildren, useContext, useEffect, useId, useState } from "react";
 import { Node, parser } from "~/src/utils/whenClauseParser";
 
-const context = new Map<string, Map<string, unknown>>();
+type CommandContext = Map<string, Map<string, unknown>>;
+
+const context = React.createContext<CommandContext>(new Map());
+
+export function CommandContextProvider({ children }: PropsWithChildren) {
+  const [ctx] = useState<CommandContext>(new Map());
+  return <context.Provider value={ctx}>{children}</context.Provider>;
+}
 
 export function useCommandContext(variables: string[], isActive?: boolean): void;
 export function useCommandContext(variable: string, isActive?: boolean): void;
 export function useCommandContext(variables: Record<string, unknown>, isActive?: boolean): void;
 export function useCommandContext(arg: unknown, isActive?: boolean): void {
+  const ctx = useContext(context);
   const id = useId();
   useEffect(() => {
     if (!isActive) return undefined;
@@ -19,29 +27,29 @@ export function useCommandContext(arg: unknown, isActive?: boolean): void {
       variables = arg as Record<string, unknown>;
     }
     Object.keys(variables).forEach((v) => {
-      let values = context.get(v);
+      let values = ctx.get(v);
       if (!values) {
         values = new Map();
-        context.set(v, values);
+        ctx.set(v, values);
       }
       values.set(id, variables[v]);
     });
     return () => {
       Object.keys(variables).forEach((v) => {
-        const values = context.get(v);
+        const values = ctx.get(v);
         if (values) {
           values.delete(id);
           if (values.size === 0) {
-            context.delete(v);
+            ctx.delete(v);
           }
         }
       });
     };
-  }, [id, isActive, arg]);
+  }, [id, isActive, arg, ctx]);
 }
 
-function getContextValue(variable: string) {
-  const values = context.get(variable);
+function getContextValue(ctx: CommandContext, variable: string) {
+  const values = ctx.get(variable);
   if (!values) {
     return undefined;
   }
@@ -57,16 +65,16 @@ function getContextValue(variable: string) {
   return r;
 }
 
-function visitNode(node: Node, stack: any[]) {
+function visitNode(ctx: CommandContext, node: Node, stack: unknown[]) {
   switch (node._) {
     case "c":
       stack.push(node.val);
       break;
     case "v":
-      stack.push(getContextValue(node.val));
+      stack.push(getContextValue(ctx, node.val));
       break;
     case "!":
-      visitNode(node.node, stack);
+      visitNode(ctx, node.node, stack);
       stack.push(!stack.pop());
       break;
     case "==":
@@ -74,8 +82,8 @@ function visitNode(node: Node, stack: any[]) {
     case "&&":
     case "||":
       {
-        visitNode(node.left, stack);
-        visitNode(node.right, stack);
+        visitNode(ctx, node.left, stack);
+        visitNode(ctx, node.right, stack);
         const right = stack.pop();
         const left = stack.pop();
         if (node._ === "==") stack.push(left === right);
@@ -87,16 +95,19 @@ function visitNode(node: Node, stack: any[]) {
   }
 }
 
-function evaluate(node: Node) {
-  const stack: any[] = [];
-  visitNode(node, stack);
+function evaluate(ctx: CommandContext, node: Node) {
+  const stack: [] = [];
+  visitNode(ctx, node, stack);
   return !!stack.pop();
 }
 
-export function isInContext(expression: string) {
-  const ast = parser.parse(expression);
-  if (ast.status) {
-    return evaluate(ast.value);
-  }
-  return false;
+export function useIsInCommandContext() {
+  const ctx = useContext(context);
+  return (expression: string) => {
+    const ast = parser.parse(expression);
+    if (ast.status) {
+      return evaluate(ctx, ast.value);
+    }
+    return false;
+  };
 }

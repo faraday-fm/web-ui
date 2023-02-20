@@ -1,11 +1,11 @@
 import { DefaultTheme } from "styled-components";
 
-import { extend, theme as baseTheme } from "./theme";
+import { extend, lightTheme } from "./theme";
 
 const farTheme = (t: DefaultTheme) => {
   return extend(t, {
     filePanel: {
-      border: { radius: "3px" },
+      border: { radius: 0 },
       header: {
         extension: {
           border: "none",
@@ -13,7 +13,7 @@ const farTheme = (t: DefaultTheme) => {
           top: "0",
           left: "50%",
           transform: "translate(-50%, 0)",
-          padding: "0 0.25em",
+          padding: "0 0.5ch",
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -52,4 +52,4 @@ const farTheme = (t: DefaultTheme) => {
   });
 };
 
-export const theme = farTheme(baseTheme);
+export const theme = farTheme(lightTheme);

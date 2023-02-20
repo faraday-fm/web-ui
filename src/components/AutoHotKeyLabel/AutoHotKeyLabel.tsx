@@ -9,15 +9,16 @@ type AutoHotKeyLabelProps = {
 } & PropsWithChildren<unknown>;
 
 const Label = styled.label`
+  cursor: pointer;
   em {
     font-style: normal;
-    color: var(--color-14);
+    color: ${(p) => p.theme.misc.hotKeyText};
   }
 `;
 
 export function AutoHotKeyLabel({ text, htmlFor }: AutoHotKeyLabelProps): ReactElement {
   const ref = useRef<HTMLLabelElement>(null);
-  const key = useQuickNavigation(text, ref);
+  const key = useQuickNavigation(ref, text);
 
   return (
     <Label ref={ref} htmlFor={htmlFor}>
