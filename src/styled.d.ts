@@ -1,6 +1,6 @@
 import "styled-components";
 
-import { Border } from "~/src/themes/types";
+import { Border } from "@themes/types";
 
 type Color = CSSProperties["color"];
 type BoxShadow = CSSProperties["boxShadow"];

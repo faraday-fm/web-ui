@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { TopMenuItem } from "./TopMenuItem";
-import { QuickNavigationProvider } from "~/src/contexts/quickNavigationContext";
+import { QuickNavigationProvider } from "@contexts/quickNavigationContext";
 
 const Root = styled.div`
   display: flex;

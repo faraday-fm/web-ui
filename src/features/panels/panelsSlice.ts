@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppDispatch, RootState } from "~/src/store";
-import { FsEntry, PanelsLayout } from "~/src/types";
-import { traverseLayout } from "~/src/utils/layout";
+import { AppDispatch, RootState } from "@store";
+import { FsEntry, PanelsLayout } from "@types";
+import { traverseLayout } from "@utils/layout";
 
 export type Panel = {
   items: FsEntry[];

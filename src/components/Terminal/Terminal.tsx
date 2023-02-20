@@ -6,14 +6,14 @@ import { FitAddon } from "xterm-addon-fit";
 import { Unicode11Addon } from "xterm-addon-unicode11";
 import { WebLinksAddon } from "xterm-addon-web-links";
 import { WebglAddon } from "xterm-addon-webgl";
-import { useGlyphSize } from "~/src/contexts/glyphSizeContext";
-// import { changeDir } from "~/src/features/panels/panelsSlice";
-import { useCommandBinding } from "~/src/hooks/useCommandBinding";
-import { useCommandContext } from "~/src/hooks/useCommandContext";
-import { useFocused } from "~/src/hooks/useFocused";
-import { useShell } from "~/src/hooks/useShell";
-import { useTerminal } from "~/src/hooks/useTerminal";
-import { useAppDispatch, useAppSelector } from "~/src/store";
+import { useGlyphSize } from "@contexts/glyphSizeContext";
+// import { changeDir } from "@features/panels/panelsSlice";
+import { useCommandBinding } from "@hooks/useCommandBinding";
+import { useCommandContext } from "@hooks/useCommandContext";
+import { useFocused } from "@hooks/useFocused";
+import { useShell } from "@hooks/useShell";
+import { useTerminal } from "@hooks/useTerminal";
+import { useAppDispatch, useAppSelector } from "@store";
 
 type TerminalProps = {
   fullScreen?: boolean;

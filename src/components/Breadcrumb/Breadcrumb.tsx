@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react";
 import styled from "styled-components";
-import { Color } from "~/src/styled";
+import { Color } from "@styled";
 import { BreadcrumbItem } from "./BreadcrumbItem";
 
 const NavWithBackgroundProp = styled.nav<{ backgroundColor: Color }>`

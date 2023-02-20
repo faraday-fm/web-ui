@@ -2,10 +2,10 @@
 import FocusTrap from "focus-trap-react";
 import { useId } from "react";
 import styled, { keyframes, useTheme } from "styled-components";
-import { AutoHotKeyLabel } from "~/src/components/AutoHotKeyLabel/AutoHotKeyLabel";
-import { Button } from "~/src/components/Button/Button";
-import { QuickNavigationProvider } from "~/src/contexts/quickNavigationContext";
-import { useCommandContext } from "~/src/hooks/useCommandContext";
+import { AutoHotKeyLabel } from "@components/AutoHotKeyLabel/AutoHotKeyLabel";
+import { Button } from "@components/Button/Button";
+import { QuickNavigationProvider } from "@contexts/quickNavigationContext";
+import { useCommandContext } from "@hooks/useCommandContext";
 import { Border } from "../Border/Border";
 
 type DialogPlaceholderProps = {

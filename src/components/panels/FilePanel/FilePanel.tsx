@@ -1,10 +1,10 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useReducer, useRef } from "react";
 import styled, { useTheme } from "styled-components";
-import { Border } from "~/src/components/Border/Border";
-import { useCommandBindings, useExecuteBuiltInCommand } from "~/src/hooks/useCommandBinding";
-import { useCommandContext } from "~/src/hooks/useCommandContext";
-import { useFocused } from "~/src/hooks/useFocused";
-import { clamp } from "~/src/utils/numberUtils";
+import { Border } from "@components/Border/Border";
+import { useCommandBindings, useExecuteBuiltInCommand } from "@hooks/useCommandBinding";
+import { useCommandContext } from "@hooks/useCommandContext";
+import { useFocused } from "@hooks/useFocused";
+import { clamp } from "@utils/numberUtils";
 import { Breadcrumb } from "../../Breadcrumb/Breadcrumb";
 import { FileInfoFooter } from "./FileInfoFooter/FileInfoFooter";
 import { ColumnDef, CursorStyle, FilePanelAction, PanelItem } from "./types";
