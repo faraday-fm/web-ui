@@ -17,6 +17,7 @@ specifiers:
   eslint-config-airbnb-typescript-prettier: ^5.0.0
   eslint-plugin-simple-import-sort: ^8.0.0
   focus-trap-react: ^10.0.0
+  git-cz: ^4.9.0
   parsimmon: ^1.18.1
   prettier: ^2.8.4
   prettier-plugin-organize-imports: ^3.2.2
@@ -69,6 +70,7 @@ devDependencies:
   eslint: 8.34.0
   eslint-config-airbnb-typescript-prettier: 5.0.0_ztlnmuobvwn63gpuifwwrjpt4i
   eslint-plugin-simple-import-sort: 8.0.0_eslint@8.34.0
+  git-cz: 4.9.0
   prettier: 2.8.4
   prettier-plugin-organize-imports: 3.2.2_silln3pw57har7jydmecgzoypa
   rollup: 3.17.2
@@ -2533,6 +2535,11 @@ packages:
     dependencies:
       call-bind: 1.0.2
       get-intrinsic: 1.2.0
+    dev: true
+
+  /git-cz/4.9.0:
+    resolution: {integrity: sha512-cSRL8IIOXU7UFLdbziCYqg8f8InwLwqHezkiRHNSph7oZqGv0togId1kMTfKil6gzK0VaSXeVBb4oDl0fQCHiw==}
+    hasBin: true
     dev: true
 
   /git-log-parser/1.2.0:
