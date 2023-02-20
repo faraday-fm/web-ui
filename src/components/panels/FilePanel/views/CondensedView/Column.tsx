@@ -111,7 +111,7 @@ export function Column({
           }}
           onDoubleClick={(e) => {
             e.stopPropagation();
-            activateItem?.(topMostPos + displayedItems.length - 1, e.getModifierState("shift"));
+            activateItem?.(topMostPos + displayedItems.length - 1, e.getModifierState("Shift"));
           }}
         >
           {displayedItems.map((item, idx) => (
@@ -120,13 +120,19 @@ export function Column({
               cursorStyle={idx + topMostPos !== cursorPos ? "hidden" : cursorStyle}
               data={item}
               field={columnDef.field}
+              onMouseOver={(e) => {
+                if (e.buttons === 1) {
+                  e.stopPropagation();
+                  selectItem?.(idx + topMostPos);
+                }
+              }}
               onMouseDown={(e) => {
                 e.stopPropagation();
                 selectItem?.(idx + topMostPos);
               }}
               onDoubleClick={(e) => {
                 e.stopPropagation();
-                activateItem?.(idx + topMostPos, e.getModifierState("shift"));
+                activateItem?.(idx + topMostPos, e.getModifierState("Shift"));
               }}
             />
           ))}
