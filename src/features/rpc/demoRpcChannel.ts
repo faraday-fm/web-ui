@@ -1,5 +1,5 @@
-import { FsEntry } from "~/src/types";
-import { splitPath } from "~/src/utils/pathUtils";
+import { FsEntry } from "@types";
+import { splitPath } from "@utils/pathUtils";
 import { IRpcChannel } from "./rpcChannel";
 
 type File = Omit<FsEntry, "dir" | "file" | "symlink"> & { dir: false; file: true; size: number };

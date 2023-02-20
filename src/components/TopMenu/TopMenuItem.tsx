@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { AutoHotKeyLabel } from "~/src/components/AutoHotKeyLabel/AutoHotKeyLabel";
+import { AutoHotKeyLabel } from "@components/AutoHotKeyLabel/AutoHotKeyLabel";
 
 type TopMenuItemProps = {
   header: string;

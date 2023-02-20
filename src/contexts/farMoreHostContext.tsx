@@ -1,7 +1,7 @@
 import { createContext, PropsWithChildren, useContext } from "react";
-import { DummyFarMoreHost } from "~/src/features/rpc/dummyRpcChannel";
+import { DummyFarMoreHost } from "@features/rpc/dummyRpcChannel";
 
-import { FarMoreHost } from "~/src/types";
+import { FarMoreHost } from "@types";
 
 const FarMoreHostContext = createContext<FarMoreHost>(new DummyFarMoreHost());
 

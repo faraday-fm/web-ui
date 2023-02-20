@@ -1,17 +1,17 @@
-import styled from "styled-components";
+import { ActionsBar } from "@components/ActionsBar/ActionsBar";
+import { useCommandBindings } from "@hooks/useCommandBinding";
+import { useCommandContext } from "@hooks/useCommandContext";
+import { useAppDispatch, useAppSelector } from "@store";
 import FocusTrap from "focus-trap-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useGlyphSize } from "~/src/contexts/glyphSizeContext";
-import { useCommandBindings } from "~/src/hooks/useCommandBinding";
-import { useCommandContext } from "~/src/hooks/useCommandContext";
-import { useAppDispatch, useAppSelector } from "~/src/store";
-import { ActionsBar } from "../ActionsBar/ActionsBar";
-import { useFarMoreHost } from "~/src/contexts/farMoreHostContext";
-import { LayoutContainer } from "../LayoutContainer/LayoutContainer";
-import { focusNextPanel, setPanelsLayout } from "~/src/features/panels/panelsSlice";
-import DialogPlaceholder from "../DialogPlaceholder/DialogPlaceholder";
+import styled from "styled-components";
+import { useFarMoreHost } from "@contexts/farMoreHostContext";
+import { useGlyphSize } from "@contexts/glyphSizeContext";
+import { focusNextPanel, setPanelsLayout } from "@features/panels/panelsSlice";
+import { LayoutContainer } from "@components/LayoutContainer/LayoutContainer";
+import DialogPlaceholder from "@components/DialogPlaceholder/DialogPlaceholder";
 
-// const Terminal = lazy(() => import("~/src/components/Terminal/Terminal"));
+// const Terminal = lazy(() => import("@components/Terminal/Terminal"));
 
 const AppDiv = styled.div`
   button,

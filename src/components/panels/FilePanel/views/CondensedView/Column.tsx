@@ -2,9 +2,9 @@
 import { useEffect, useMemo, useState } from "react";
 import styled, { useTheme } from "styled-components";
 import useResizeObserver from "use-resize-observer";
-import { Border } from "~/src/components/Border/Border";
-import { useGlyphSize } from "~/src/contexts/glyphSizeContext";
-import { clamp } from "~/src/utils/numberUtils";
+import { Border } from "@components/Border/Border";
+import { useGlyphSize } from "@contexts/glyphSizeContext";
+import { clamp } from "@utils/numberUtils";
 
 import { ColumnDef, CursorStyle } from "../../types";
 import { Row } from "./Row";

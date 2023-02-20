@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { FarMoreHost } from "~/src/types";
+import { FarMoreHost } from "@types";
 
 export class DummyFarMoreHost implements FarMoreHost {
   config: any;

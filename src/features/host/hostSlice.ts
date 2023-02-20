@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { FarMoreHost } from "~/src/types";
+import { FarMoreHost } from "@types";
 import { DummyFarMoreHost } from "../rpc/dummyRpcChannel";
 
 export const hostSlice = createSlice({
