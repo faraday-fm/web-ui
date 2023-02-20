@@ -2,20 +2,17 @@ import { PropsWithChildren, useRef, useState } from "react";
 import styled from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
-type LiProps = {
-  showOverflow: boolean;
-  splitter: string;
-};
-
-const Li = styled.div<LiProps>`
+const Li = styled.div<{ showOverflow: boolean; splitter: string }>`
   position: relative;
   overflow: hidden;
   white-space: nowrap;
   flex-shrink: 1;
   min-width: 2ch;
   transition: flex-shrink 0.2s;
+  cursor: default;
   &:hover {
     flex-shrink: 0;
+    /* text-decoration: underline; */
     &::after {
       opacity: 0;
     }
@@ -33,10 +30,10 @@ const Li = styled.div<LiProps>`
     content: "";
   }
   &::before {
-    /* content: "›"; */
-    content: "/";
-    /* font-size: small; */
-    /* margin: 0 5px; */
+    content: "${(p) => p.splitter ?? "/"}";
+    /* content: "›";
+    font-size: small;
+    margin: 0 5px; */
   }
   &::after {
     position: absolute;
@@ -65,7 +62,7 @@ export function BreadcrumbItem({ children }: PropsWithChildren) {
   });
 
   return (
-    <Li ref={ref} splitter="›" showOverflow={showOverflowAdorner}>
+    <Li ref={ref} splitter="/" showOverflow={showOverflowAdorner}>
       {children}
     </Li>
   );
