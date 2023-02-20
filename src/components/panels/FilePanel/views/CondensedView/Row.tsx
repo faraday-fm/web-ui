@@ -21,6 +21,7 @@ function getColor(theme: DefaultTheme, name: string, dir: boolean | undefined, s
 
 const Root = styled.div<{ cursorStyle: CursorStyle }>`
   display: flex;
+  cursor: default;
   background-color: ${(p) => (p.cursorStyle === "firm" || p.cursorStyle === "inactive" ? p.theme.filePanel.activeBg : null)};
 `;
 
