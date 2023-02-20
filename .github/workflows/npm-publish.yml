@@ -20,6 +20,9 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
       - run: pnpm ci
       - run: pnpm build
       - run: pnpm semantic-release
