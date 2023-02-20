@@ -4,11 +4,11 @@ import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
 import { KeyBindingProvider } from "@contexts/keyBindingContext";
 import { Provider as ReduxProvider } from "react-redux";
 import { ThemeProvider } from "styled-components";
-import { FarMoreHostProvider } from "./contexts/farMoreHostContext";
-import { useMediaQuery } from "./hooks/useMediaQuery";
-import { store } from "./store";
-import { darkTheme, lightTheme } from "./themes/theme";
-import { FarMoreHost } from "./types";
+import { FarMoreHostProvider } from "@contexts/farMoreHostContext";
+import { useMediaQuery } from "@hooks/useMediaQuery";
+import { store } from "@store";
+import { darkTheme, lightTheme } from "@themes/theme";
+import { FarMoreHost } from "@types";
 
 export type FarMoreProps = {
   host: FarMoreHost;
