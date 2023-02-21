@@ -1,8 +1,8 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { FarMoreHost } from "@types";
 import { DummyFarMoreHost } from "../rpc/dummyRpcChannel";
 
-export const hostSlice = createSlice({
+export const hostSlice: Slice<FarMoreHost> = createSlice({
   name: "host",
   initialState: new DummyFarMoreHost() as FarMoreHost,
   reducers: {

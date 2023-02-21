@@ -4,7 +4,6 @@ module.exports = {
     "default-case": "off",
     "no-case-declarations": "off",
     "class-methods-use-this": "off",
-    "import/no-unresolved": [2, { ignore: ["^~/"] }],
     "import/extensions": "off",
     "import/prefer-default-export": "off",
     "no-param-reassign": "off",
