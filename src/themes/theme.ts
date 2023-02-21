@@ -44,22 +44,22 @@ const darkPalette: Palette = {
 };
 
 const lightPalette = {
-  bgColor0: "#3182a4",
-  bgColor1: "#3182a4",
-  bgColor2: "#3182a4",
-  bgColor3: "#3182a4",
-  bgColor4: "#3182a4",
-  bgColor5: "#3182a4",
-  bgColor6: "#3182a4",
-  bgColor7: "#3182a4",
-  fgColor0: "#d8d8d8",
-  fgColor1: "#d8d8d8",
-  fgColor2: "#d8d8d8",
-  fgColor3: "#d8d8d8",
-  fgColor4: "#d8d8d8",
-  fgColor5: "#d8d8d8",
-  fgColor6: "#d8d8d8",
-  fgColor7: "#d8d8d8",
+  bgColor0: "#000000",
+  bgColor1: "#004164",
+  bgColor2: "#008000",
+  bgColor3: "#008080",
+  bgColor4: "#080000",
+  bgColor5: "#800080",
+  bgColor6: "#008080",
+  bgColor7: "#0c0c0c",
+  fgColor0: "#808080",
+  fgColor1: "#0000ff",
+  fgColor2: "#87c576",
+  fgColor3: "#00ffff",
+  fgColor4: "#ff4b00",
+  fgColor5: "#e68cd7",
+  fgColor6: "#ffff00",
+  fgColor7: "#ffffff",
 };
 
 const baseTheme = (colors: Palette): DefaultTheme => ({
