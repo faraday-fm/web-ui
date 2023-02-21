@@ -18,7 +18,7 @@ const projectRootDir = path.resolve(__dirname);
 
 export default defineConfig(() => {
   // dev build if watching, prod build if not
-  const watch = !process.env.ROLLUP_WATCH;
+  const watch = !!process.env.ROLLUP_WATCH;
 
   return [
     {
@@ -35,6 +35,7 @@ export default defineConfig(() => {
           format: "esm",
         },
       ],
+      context: "window",
       plugins: [
         peerDepsExternal(),
         nodeResolve(),
