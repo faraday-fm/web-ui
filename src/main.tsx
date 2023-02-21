@@ -10,6 +10,8 @@ import { store } from "@store";
 import { darkTheme, lightTheme } from "@themes/theme";
 import { FarMoreHost } from "@types";
 
+export type { FarMoreHost, FarMoreTerminal, TerminalSession, FarMoreFs, FarMoreConfig, FsEntry, PanelsLayout } from "@types";
+
 export type FarMoreProps = {
   host: FarMoreHost;
 };
