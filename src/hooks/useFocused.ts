@@ -3,7 +3,9 @@ import { RefObject, useEffect, useState } from "react";
 export function useFocused(ref: RefObject<HTMLElement> | HTMLElement | null | undefined) {
   const [focused, setFocused] = useState(false);
   useEffect(() => {
-    if (!ref) return undefined;
+    if (!ref) {
+      return undefined;
+    }
     let el: HTMLElement | null;
     if (ref instanceof HTMLElement) {
       el = ref;
@@ -13,7 +15,9 @@ export function useFocused(ref: RefObject<HTMLElement> | HTMLElement | null | un
     if (document.activeElement === el) {
       setFocused(true);
     }
-    if (!el) return undefined;
+    if (!el) {
+      return undefined;
+    }
     const focus = () => setFocused(true);
     const blur = () => setFocused(false);
     el.addEventListener("focus", focus);
