@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "@store";
 import { FsEntry, PanelsLayout } from "@types";
 import { traverseLayout } from "@utils/layout";
@@ -26,7 +26,7 @@ export const listDir = createAsyncThunk<
   return response;
 });
 
-export const panelsSlice = createSlice({
+export const panelsSlice: Slice<SliceState> = createSlice({
   name: "panels",
   initialState: {
     states: {},

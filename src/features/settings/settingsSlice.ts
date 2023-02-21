@@ -1,6 +1,10 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 
-export const settingsSlice = createSlice({
+type SliceState = {
+  wheelSensitivity: number;
+};
+
+export const settingsSlice: Slice<SliceState> = createSlice({
   name: "settings",
   initialState: {
     wheelSensitivity: 64,
