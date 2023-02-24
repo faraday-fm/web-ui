@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import { Border as BorderProps } from "@themes/types";
+import styled from "styled-components";
 
 export const Border = styled.div<BorderProps>`
   border: ${(p) => p.thickness} solid ${(p) => p.color};

@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import styled from "styled-components";
 
 import { ColumnDef, CursorStyle } from "../../types";
@@ -10,7 +9,6 @@ type FullViewProps = {
   cursorPos: number;
   cursorStyle: CursorStyle;
   columnDefs: ColumnDef[];
-  initialMaxItemsCount: number;
   onMaxVisibleItemsChanged?: (count: number) => void;
   onItemClicked?: (pos: number) => void;
   onItemActivated?: (pos: number) => void;
@@ -24,27 +22,10 @@ grid-auto-flow: column; */
   /* grid-template-columns: 1fr auto; */
 `;
 
-export function FullView({
-  items,
-  topMostPos,
-  cursorPos,
-  cursorStyle,
-  columnDefs,
-  initialMaxItemsCount,
-  onMaxVisibleItemsChanged,
-  onItemClicked,
-  onItemActivated,
-}: FullViewProps) {
+export function FullView({ items, topMostPos, cursorPos, cursorStyle, columnDefs, onMaxVisibleItemsChanged, onItemClicked, onItemActivated }: FullViewProps) {
   const columns = new Array(columnDefs.length);
 
   const gridTemplateColumns = columnDefs.map((def) => def.width ?? "auto").join(" ");
-
-  const onMaxItemsCountChange = useCallback(
-    (maxCount: number) => {
-      onMaxVisibleItemsChanged?.(maxCount);
-    },
-    [onMaxVisibleItemsChanged]
-  );
 
   for (let i = 0; i < columnDefs.length; i += 1) {
     columns.push(
@@ -55,8 +36,7 @@ export function FullView({
         topMostPos={topMostPos}
         cursorPos={cursorPos}
         cursorStyle={cursorStyle}
-        initialMaxItemsCount={initialMaxItemsCount}
-        onMaxItemsCountChange={onMaxItemsCountChange}
+        onMaxItemsCountChange={onMaxVisibleItemsChanged}
         selectItem={onItemClicked}
         activateItem={onItemActivated}
       />

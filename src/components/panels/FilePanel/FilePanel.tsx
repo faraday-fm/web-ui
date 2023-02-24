@@ -1,114 +1,113 @@
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useReducer, useRef } from "react";
-import styled, { useTheme } from "styled-components";
 import { Border } from "@components/Border/Border";
 import { useCommandBindings, useExecuteBuiltInCommand } from "@hooks/useCommandBinding";
 import { useCommandContext } from "@hooks/useCommandContext";
 import { useFocused } from "@hooks/useFocused";
+import { FilePanelView } from "@types";
 import { clamp } from "@utils/numberUtils";
+import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from "react";
+import styled, { useTheme } from "styled-components";
+
 import { Breadcrumb } from "../../Breadcrumb/Breadcrumb";
 import { FileInfoFooter } from "./FileInfoFooter/FileInfoFooter";
-import { ColumnDef, CursorStyle, FilePanelAction, PanelItem } from "./types";
+import { CursorStyle, PanelItem } from "./types";
 import { CondensedView } from "./views/CondensedView/CondensedView";
 import { FullView } from "./views/FullView/FullView";
 
-type FullView = { type: "full"; columnDefs: ColumnDef[] };
-type CondensedView = { type: "condensed"; columnDef: ColumnDef };
-
-type FilePanelView = FullView | CondensedView;
-
 export type FilePanelProps = {
   items: PanelItem[];
+  topMostPos: number;
+  cursorPos: number;
   view: FilePanelView;
   title?: string;
   showCursorWhenBlurred?: boolean;
   onFocus?: () => void;
+  onCursorPositionChange: (newTopMostPos: number, newCursorPos: number) => void;
 };
 
-type FilePanelState = {
-  originalItems: PanelItem[];
-  panelItems: PanelItem[];
-  topMostPos: number;
-  cursorPos: number;
-  columnsCount: number;
-  maxItemsPerColumn: number;
-  displayedItems: number;
-};
+// type FilePanelState = {
+//   panelItems: PanelItem[];
+//   topMostPos: number;
+//   cursorPos: number;
+//   columnsCount: number;
+//   maxItemsPerColumn: number;
+//   displayedItems: number;
+// };
 
-function reducer(state: FilePanelState, action: FilePanelAction): FilePanelState {
-  let { originalItems, panelItems, topMostPos, cursorPos, columnsCount, maxItemsPerColumn, displayedItems } = state;
+// function reducer(state: FilePanelState, action: FilePanelAction): FilePanelState {
+//   let { panelItems, topMostPos, cursorPos, columnsCount, maxItemsPerColumn, displayedItems } = state;
 
-  switch (action.type) {
-    case "scroll":
-      cursorPos += action.delta;
-      if (action.followCursor) {
-        topMostPos += action.delta;
-      }
-      break;
-    case "moveCursorToPos":
-      cursorPos = action.pos;
-      break;
-    case "moveCursorLeftRight":
-      if (action.direction === "right") {
-        cursorPos += maxItemsPerColumn;
-        if (cursorPos >= topMostPos + displayedItems) {
-          topMostPos += maxItemsPerColumn;
-        }
-      } else if (action.direction === "left") {
-        cursorPos -= maxItemsPerColumn;
-        if (cursorPos < topMostPos) {
-          topMostPos -= maxItemsPerColumn;
-        }
-      }
-      break;
-    case "moveCursorPage":
-      if (action.direction === "up") {
-        cursorPos -= displayedItems - 1;
-        topMostPos -= displayedItems - 1;
-      } else if (action.direction === "down") {
-        cursorPos += displayedItems - 1;
-        topMostPos += displayedItems - 1;
-      }
-      break;
-    case "resize":
-      maxItemsPerColumn = action.maxItemsPerColumn;
-      break;
-    case "setItems":
-      originalItems = action.items;
-      panelItems = action.items;
-      break;
-    case "setColumnsCount":
-      columnsCount = action.count;
-      while (cursorPos >= topMostPos + action.count * maxItemsPerColumn) {
-        topMostPos += maxItemsPerColumn;
-      }
-      break;
-    case "findFirst":
-      // panelItems = originalItems.filter((i) => i.name.startsWith(action.char));
-      const idx = panelItems.slice(cursorPos).findIndex((i) => i.name.startsWith(action.char));
-      if (idx >= 0) {
-        cursorPos += idx;
-      }
-      break;
-  }
-  displayedItems = Math.min(panelItems.length, maxItemsPerColumn * columnsCount);
-  cursorPos = clamp(0, cursorPos, panelItems.length - 1);
-  topMostPos = clamp(0, topMostPos, panelItems.length - displayedItems);
-  topMostPos = clamp(cursorPos - displayedItems + 1, topMostPos, cursorPos);
+//   switch (action.type) {
+//     case "scroll":
+//       cursorPos += action.delta;
+//       if (action.followCursor) {
+//         topMostPos += action.delta;
+//       }
+//       break;
+//     case "moveCursorToPos":
+//       cursorPos = action.pos;
+//       break;
+//     case "moveCursorLeftRight":
+//       if (action.direction === "right") {
+//         cursorPos += maxItemsPerColumn;
+//         if (cursorPos >= topMostPos + displayedItems) {
+//           topMostPos += maxItemsPerColumn;
+//         }
+//       } else if (action.direction === "left") {
+//         cursorPos -= maxItemsPerColumn;
+//         if (cursorPos < topMostPos) {
+//           topMostPos -= maxItemsPerColumn;
+//         }
+//       }
+//       break;
+//     case "moveCursorPage":
+//       if (action.direction === "up") {
+//         cursorPos -= displayedItems - 1;
+//         topMostPos -= displayedItems - 1;
+//       } else if (action.direction === "down") {
+//         cursorPos += displayedItems - 1;
+//         topMostPos += displayedItems - 1;
+//       }
+//       break;
+//     case "resize":
+//       maxItemsPerColumn = action.maxItemsPerColumn;
+//       break;
+//     case "setItems":
+//       panelItems = action.items;
+//       // originalItems = Array.from(action.items);
+//       // panelItems = Array.from(originalItems).sort((a, b) => collator.compare(a.name, b.name));
+//       break;
+//     case "setColumnsCount":
+//       columnsCount = action.count;
+//       while (cursorPos >= topMostPos + action.count * maxItemsPerColumn) {
+//         topMostPos += maxItemsPerColumn;
+//       }
+//       break;
+//     case "findFirst":
+//       // panelItems = originalItems.filter((i) => i.name.startsWith(action.char));
+//       const idx = panelItems.slice(cursorPos).findIndex((i) => i.name.startsWith(action.char));
+//       if (idx >= 0) {
+//         cursorPos += idx;
+//       }
+//       break;
+//   }
+//   displayedItems = Math.min(panelItems.length, maxItemsPerColumn * columnsCount);
+//   cursorPos = clamp(0, cursorPos, panelItems.length - 1);
+//   topMostPos = clamp(0, topMostPos, panelItems.length - displayedItems);
+//   topMostPos = clamp(cursorPos - displayedItems + 1, topMostPos, cursorPos);
 
-  // FIXME: Why do we need this check? See console log.
-  if (
-    state.originalItems === originalItems &&
-    state.panelItems === panelItems &&
-    state.topMostPos === topMostPos &&
-    state.cursorPos === cursorPos &&
-    state.columnsCount === columnsCount &&
-    state.maxItemsPerColumn === maxItemsPerColumn &&
-    state.displayedItems === displayedItems
-  ) {
-    return state;
-  }
-  return { originalItems, panelItems, topMostPos, cursorPos, columnsCount, maxItemsPerColumn, displayedItems };
-}
+//   // FIXME: Why do we need this check? See console log.
+//   if (
+//     state.panelItems === panelItems &&
+//     state.topMostPos === topMostPos &&
+//     state.cursorPos === cursorPos &&
+//     state.columnsCount === columnsCount &&
+//     state.maxItemsPerColumn === maxItemsPerColumn &&
+//     state.displayedItems === displayedItems
+//   ) {
+//     return state;
+//   }
+//   return { panelItems, topMostPos, cursorPos, columnsCount, maxItemsPerColumn, displayedItems };
+// }
 
 export type FilePanelActions = {
   focus(): void;
@@ -174,122 +173,160 @@ const FileInfoPanel = styled.div`
   overflow: hidden;
 `;
 
-export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(({ items, view, title, showCursorWhenBlurred, onFocus }, ref) => {
-  const [state, dispatch] = useReducer(reducer, {
-    originalItems: [] as PanelItem[],
-    panelItems: [] as PanelItem[],
-    topMostPos: 0,
-    cursorPos: 0,
-    columnsCount: 1,
-    maxItemsPerColumn: 1,
-    displayedItems: 0,
-  });
-  const panelRootRef = useRef<HTMLDivElement>(null);
-  const focused = useFocused(panelRootRef);
-  useImperativeHandle(ref, () => ({ focus: () => panelRootRef.current?.focus() }));
+export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
+  ({ items, topMostPos, cursorPos, view, title, showCursorWhenBlurred, onFocus, onCursorPositionChange }, ref) => {
+    const [maxItemsPerColumn, setMaxItemsPerColumn] = useState<number>();
+    const columnsCount = view.type === "full" ? 1 : view.columnsCount;
 
-  useEffect(() => {
-    dispatch({ type: "setItems", items });
-  }, [dispatch, items]);
+    const displayedItems = maxItemsPerColumn ? Math.min(items.length, maxItemsPerColumn * columnsCount) : 1;
 
-  useEffect(() => {
-    if (view.type === "full") {
-      dispatch({ type: "setColumnsCount", count: 1 });
+    function clampPos() {
+      cursorPos = clamp(0, cursorPos, items.length - 1);
+      topMostPos = clamp(0, topMostPos, items.length - displayedItems);
+      topMostPos = clamp(cursorPos - displayedItems + 1, topMostPos, cursorPos);
     }
-  }, [dispatch, view]);
 
-  useCommandContext("filePanel.focus", focused);
-  useCommandContext({ "filePanel.firstItem": state.cursorPos === 0 }, focused);
-  useCommandContext({ "filePanel.lastItem": state.cursorPos === state.panelItems.length - 1 }, focused);
+    clampPos();
 
-  useCommandBindings(
-    {
-      cursorLeft: () => dispatch({ type: "moveCursorLeftRight", direction: "left" }),
-      cursorRight: () => dispatch({ type: "moveCursorLeftRight", direction: "right" }),
-      cursorUp: () => dispatch({ type: "scroll", delta: -1, followCursor: false }),
-      cursorDown: () => dispatch({ type: "scroll", delta: 1, followCursor: false }),
-      cursorStart: () => dispatch({ type: "moveCursorToPos", pos: 0 }),
-      cursorEnd: () => dispatch({ type: "moveCursorToPos", pos: state.panelItems.length - 1 }),
-      cursorPageUp: () => dispatch({ type: "moveCursorPage", direction: "up" }),
-      cursorPageDown: () => dispatch({ type: "moveCursorPage", direction: "down" }),
-    },
-    focused
-  );
+    const panelRootRef = useRef<HTMLDivElement>(null);
+    const focused = useFocused(panelRootRef);
+    useImperativeHandle(ref, () => ({
+      focus: () => panelRootRef.current?.focus(),
+    }));
 
-  const executeBuiltInCommand = useExecuteBuiltInCommand();
+    useCommandContext("filePanel.focus", focused);
+    useCommandContext({ "filePanel.firstItem": cursorPos === 0 }, focused);
+    useCommandContext({ "filePanel.lastItem": cursorPos === items.length - 1 }, focused);
 
-  const onResize = useCallback((maxItemsPerColumn: number) => dispatch({ type: "resize", maxItemsPerColumn }), [dispatch]);
-  const onItemClicked = useCallback((pos: number) => dispatch({ type: "moveCursorToPos", pos }), [dispatch]);
-  const onItemActivated = useCallback(() => executeBuiltInCommand("open"), [executeBuiltInCommand]);
-  const onColumnsCountChanged = useCallback((count: number) => dispatch({ type: "setColumnsCount", count }), [dispatch]);
+    function moveCursorLeftRight(direction: "left" | "right") {
+      if (direction === "right") {
+        cursorPos += maxItemsPerColumn ?? 0;
+        if (cursorPos >= topMostPos + displayedItems) {
+          topMostPos += maxItemsPerColumn ?? 0;
+        }
+      } else if (direction === "left") {
+        cursorPos -= maxItemsPerColumn ?? 0;
+        if (cursorPos < topMostPos) {
+          topMostPos -= maxItemsPerColumn ?? 0;
+        }
+      }
+      clampPos();
+      onCursorPositionChange(topMostPos, cursorPos);
+    }
 
-  let cursorStyle: CursorStyle;
-  if (focused) {
-    cursorStyle = "firm";
-  } else if (showCursorWhenBlurred) {
-    cursorStyle = "inactive";
-  } else {
-    cursorStyle = "hidden";
+    function scroll(delta: number, followCursor: boolean) {
+      cursorPos += delta;
+      if (followCursor) {
+        topMostPos += delta;
+      }
+      clampPos();
+      onCursorPositionChange(topMostPos, cursorPos);
+    }
+
+    function moveCursorToPos(pos: number) {
+      cursorPos = pos;
+      clampPos();
+      onCursorPositionChange(topMostPos, cursorPos);
+    }
+
+    function moveCursorPage(direction: "up" | "down") {
+      if (direction === "up") {
+        cursorPos -= displayedItems - 1;
+        topMostPos -= displayedItems - 1;
+      } else if (direction === "down") {
+        cursorPos += displayedItems - 1;
+        topMostPos += displayedItems - 1;
+      }
+      clampPos();
+      onCursorPositionChange(topMostPos, cursorPos);
+    }
+
+    useCommandBindings(
+      {
+        cursorLeft: () => moveCursorLeftRight("left"),
+        cursorRight: () => moveCursorLeftRight("right"),
+        cursorUp: () => scroll(-1, false),
+        cursorDown: () => scroll(1, false),
+        cursorStart: () => moveCursorToPos(0),
+        cursorEnd: () => moveCursorToPos(items.length - 1),
+        cursorPageUp: () => moveCursorPage("up"),
+        cursorPageDown: () => moveCursorPage("down"),
+      },
+      focused
+    );
+
+    const executeBuiltInCommand = useExecuteBuiltInCommand();
+
+    const onResize = useCallback((maxItemsPerColumn: number) => setMaxItemsPerColumn(maxItemsPerColumn), []);
+    const onItemClicked = useCallback((pos: number) => onCursorPositionChange(topMostPos, pos), [onCursorPositionChange, topMostPos]);
+    const onItemActivated = useCallback(() => executeBuiltInCommand("open"), [executeBuiltInCommand]);
+
+    let cursorStyle: CursorStyle;
+    if (focused) {
+      cursorStyle = "firm";
+    } else if (showCursorWhenBlurred) {
+      cursorStyle = "inactive";
+    } else {
+      cursorStyle = "hidden";
+    }
+
+    const theme = useTheme();
+
+    return (
+      <PanelRoot ref={panelRootRef} tabIndex={0} onFocus={() => onFocus?.()}>
+        <Border {...theme.filePanel.border}>
+          <PanelContent>
+            <Breadcrumb backgroundColor={focused ? theme.filePanel.header.activeBg : theme.filePanel.header.inactiveBg}>
+              {title
+                ?.split("/")
+                // .filter((x) => x)
+                .map((x, i) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <Breadcrumb.Item key={i}>{x}</Breadcrumb.Item>
+                ))}
+            </Breadcrumb>
+            {/* <PanelHeader active={focused}>{title}</PanelHeader> */}
+            <PanelColumns
+              onWheel={(e) => scroll(Math.sign(e.deltaY), true)}
+              onKeyDown={(e) => {
+                // dispatch({ type: "findFirst", char: e.key });
+                e.preventDefault();
+              }}
+            >
+              {view.type === "full" ? (
+                <FullView
+                  cursorStyle={cursorStyle}
+                  items={items}
+                  topMostPos={topMostPos}
+                  cursorPos={cursorPos}
+                  onItemClicked={onItemClicked}
+                  onItemActivated={onItemActivated}
+                  onMaxVisibleItemsChanged={onResize}
+                  columnDefs={view.columnDefs}
+                />
+              ) : (
+                <CondensedView
+                  cursorStyle={cursorStyle}
+                  items={items}
+                  topMostPos={topMostPos}
+                  cursorPos={cursorPos}
+                  columnsCount={columnsCount}
+                  onItemClicked={onItemClicked}
+                  onItemActivated={onItemActivated}
+                  onMaxItemsPerColumnChanged={onResize}
+                  columnDef={view.columnDef}
+                />
+              )}
+            </PanelColumns>
+            <FileInfoPanel>
+              <Border {...theme.filePanel.fileInfo.border}>
+                <FileInfoFooter file={items[cursorPos]} />
+              </Border>
+            </FileInfoPanel>
+            <PanelFooter>321</PanelFooter>
+          </PanelContent>
+        </Border>
+      </PanelRoot>
+    );
   }
-
-  const theme = useTheme();
-
-  return (
-    <PanelRoot ref={panelRootRef} tabIndex={0} onFocus={() => onFocus?.()}>
-      <Border {...theme.filePanel.border}>
-        <PanelContent>
-          <Breadcrumb backgroundColor={focused ? theme.filePanel.header.activeBg : theme.filePanel.header.inactiveBg}>
-            {title
-              ?.split("/")
-              .filter((x) => x)
-              .map((x, i) => (
-                <Breadcrumb.Item key={i}>{x}</Breadcrumb.Item>
-              ))}
-          </Breadcrumb>
-          {/* <PanelHeader active={focused}>{title}</PanelHeader> */}
-          <PanelColumns
-            onWheel={(e) => dispatch({ type: "scroll", delta: Math.sign(e.deltaY), followCursor: true })}
-            onKeyDown={(e) => {
-              dispatch({ type: "findFirst", char: e.key });
-              e.preventDefault();
-            }}
-          >
-            {view.type === "full" ? (
-              <FullView
-                cursorStyle={cursorStyle}
-                items={state.panelItems}
-                topMostPos={state.topMostPos}
-                cursorPos={state.cursorPos}
-                initialMaxItemsCount={state.maxItemsPerColumn}
-                onItemClicked={onItemClicked}
-                onItemActivated={onItemActivated}
-                onMaxVisibleItemsChanged={onResize}
-                columnDefs={view.columnDefs}
-              />
-            ) : (
-              <CondensedView
-                cursorStyle={cursorStyle}
-                items={state.panelItems}
-                topMostPos={state.topMostPos}
-                cursorPos={state.cursorPos}
-                initialMaxItemsCount={state.maxItemsPerColumn}
-                columnsCount={state.columnsCount}
-                onItemClicked={onItemClicked}
-                onItemActivated={onItemActivated}
-                onMaxItemsPerColumnChanged={onResize}
-                onColumnsCountChanged={onColumnsCountChanged}
-                columnDef={view.columnDef}
-              />
-            )}
-          </PanelColumns>
-          <FileInfoPanel>
-            <Border {...theme.filePanel.fileInfo.border}>
-              <FileInfoFooter file={state.panelItems[state.cursorPos]} />
-            </Border>
-          </FileInfoPanel>
-          <PanelFooter>321</PanelFooter>
-        </PanelContent>
-      </Border>
-    </PanelRoot>
-  );
-});
+);

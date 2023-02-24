@@ -1,7 +1,7 @@
-import { PropsWithChildren, ReactElement, useRef } from "react";
-import styled from "styled-components";
 import { Highlight } from "@components/Highlight/Highlight";
 import { useQuickNavigation } from "@contexts/quickNavigationContext";
+import { PropsWithChildren, ReactElement, useRef } from "react";
+import styled from "styled-components";
 
 type AutoHotKeyLabelProps = {
   text: string;

@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import { PanelsLayout } from "@types";
 import { ReduxFilePanel } from "@components/hocs/ReduxFilePanel";
+import { PanelsLayout } from "@types";
+import styled from "styled-components";
 
 type LayoutContainerProps = {
   layout: PanelsLayout;

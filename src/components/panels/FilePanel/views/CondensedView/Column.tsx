@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import { useEffect, useMemo, useState } from "react";
-import styled, { useTheme } from "styled-components";
-import useResizeObserver from "use-resize-observer";
 import { Border } from "@components/Border/Border";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { clamp } from "@utils/numberUtils";
+import { useEffect, useState } from "react";
+import styled, { useTheme } from "styled-components";
+import useResizeObserver from "use-resize-observer";
 
 import { ColumnDef, CursorStyle } from "../../types";
 import { Row } from "./Row";
@@ -15,7 +15,6 @@ type ColumnProps = {
   cursorStyle: CursorStyle;
   cursorPos: number;
   columnDef: ColumnDef;
-  initialMaxItemsCount: number;
   onMaxItemsCountChange?: (maxCount: number) => void;
   selectItem?: (position: number) => void;
   activateItem?: (position: number, shiftModifier: boolean) => void;
@@ -63,21 +62,11 @@ const BottomScroller = styled.div`
   cursor: s-resize;
 `;
 
-export function Column({
-  items,
-  topMostPos,
-  cursorPos,
-  cursorStyle,
-  columnDef,
-  initialMaxItemsCount,
-  onMaxItemsCountChange,
-  selectItem,
-  activateItem,
-}: ColumnProps) {
+export function Column({ items, topMostPos, cursorPos, cursorStyle, columnDef, onMaxItemsCountChange, selectItem, activateItem }: ColumnProps) {
   const { ref, height } = useResizeObserver<HTMLDivElement>({ round: (n) => n });
   const { height: glyphHeight } = useGlyphSize();
-  const maxItemsCount = useMemo(() => (height ? Math.max(1, Math.trunc(height / Math.ceil(glyphHeight))) : undefined), [glyphHeight, height]);
   const [autoscroll, setAutoscroll] = useState(0);
+  const maxItemsCount = height ? Math.max(1, Math.trunc(height / Math.ceil(glyphHeight))) : undefined;
 
   useEffect(() => {
     if (maxItemsCount) {
@@ -91,10 +80,7 @@ export function Column({
     return () => clearInterval(timer);
   }, [autoscroll, items.length, selectItem, cursorPos]);
 
-  const displayedItems = [];
-  for (let i = topMostPos; i < Math.min(items.length, topMostPos + (maxItemsCount ?? initialMaxItemsCount)); i += 1) {
-    displayedItems.push(items[i]);
-  }
+  const displayedItems = items.slice(topMostPos, Math.min(items.length, topMostPos + (maxItemsCount ?? 0)));
 
   const theme = useTheme();
 
@@ -114,28 +100,29 @@ export function Column({
             activateItem?.(topMostPos + displayedItems.length - 1, e.getModifierState("Shift"));
           }}
         >
-          {displayedItems.map((item, idx) => (
-            <Row
-              key={item.name}
-              cursorStyle={idx + topMostPos !== cursorPos ? "hidden" : cursorStyle}
-              data={item}
-              field={columnDef.field}
-              onMouseOver={(e) => {
-                if (e.buttons === 1) {
+          {maxItemsCount &&
+            displayedItems.map((item, idx) => (
+              <Row
+                key={item.name}
+                cursorStyle={idx + topMostPos !== cursorPos ? "hidden" : cursorStyle}
+                data={item}
+                field={columnDef.field}
+                onMouseOver={(e) => {
+                  if (e.buttons === 1) {
+                    e.stopPropagation();
+                    selectItem?.(idx + topMostPos);
+                  }
+                }}
+                onMouseDown={(e) => {
                   e.stopPropagation();
                   selectItem?.(idx + topMostPos);
-                }
-              }}
-              onMouseDown={(e) => {
-                e.stopPropagation();
-                selectItem?.(idx + topMostPos);
-              }}
-              onDoubleClick={(e) => {
-                e.stopPropagation();
-                activateItem?.(idx + topMostPos, e.getModifierState("Shift"));
-              }}
-            />
-          ))}
+                }}
+                onDoubleClick={(e) => {
+                  e.stopPropagation();
+                  activateItem?.(idx + topMostPos, e.getModifierState("Shift"));
+                }}
+              />
+            ))}
         </div>
         <TopScroller
           onMouseDown={(e) => {

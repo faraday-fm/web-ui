@@ -1,16 +1,17 @@
 import keyBindings from "@assets/keybindings.json" assert { type: "json" };
 import App from "@components/App/App";
+import { FarMoreHostProvider } from "@contexts/farMoreHostContext";
 import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
 import { KeyBindingProvider } from "@contexts/keyBindingContext";
-import { Provider as ReduxProvider } from "react-redux";
-import { ThemeProvider } from "styled-components";
-import { FarMoreHostProvider } from "@contexts/farMoreHostContext";
 import { useMediaQuery } from "@hooks/useMediaQuery";
 import { store } from "@store";
 import { darkTheme, lightTheme } from "@themes/theme";
 import { FarMoreHost } from "@types";
+import { Provider as ReduxProvider } from "react-redux";
+import { ThemeProvider } from "styled-components";
 
-export type { FarMoreHost, FarMoreTerminal, TerminalSession, FarMoreFs, FarMoreConfig, FsEntry, PanelsLayout } from "@types";
+export { createInMemoryFs } from "@features/fs/inMemoryFs";
+export type { FarMoreConfig, FarMoreHost, FileSystemProvider, FsEntry, Terminal, TerminalSession } from "@types";
 
 export type FarMoreProps = {
   host: FarMoreHost;

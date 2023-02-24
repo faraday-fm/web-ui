@@ -1,6 +1,6 @@
 // import { shell } from "@tauri-apps/api";
-import { useMemo } from "react";
 import { isRunningUnderTauri } from "@utils/tauriUtils";
+import { useMemo } from "react";
 
 export function useShell() {
   return useMemo(

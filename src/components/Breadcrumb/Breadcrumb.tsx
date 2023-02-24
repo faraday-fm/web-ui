@@ -1,9 +1,9 @@
 import { PropsWithChildren } from "react";
-import styled from "styled-components";
-import { Color } from "@styled";
+import styled, { CSSProperties } from "styled-components";
+
 import { BreadcrumbItem } from "./BreadcrumbItem";
 
-const NavWithBackgroundProp = styled.nav<{ backgroundColor: Color }>`
+const NavWithBackgroundProp = styled.nav<{ backgroundColor: CSSProperties["backgroundColor"] }>`
   --background: linear-gradient(to right, transparent, ${(p) => p.backgroundColor});
   background-color: ${(p) => p.backgroundColor};
   display: flex;
@@ -15,7 +15,7 @@ const NavWithBackgroundProp = styled.nav<{ backgroundColor: Color }>`
   }
 `;
 
-function BreadcrumbRoot({ children, backgroundColor }: PropsWithChildren & { backgroundColor: Color }) {
+function BreadcrumbRoot({ children, backgroundColor }: PropsWithChildren & { backgroundColor: CSSProperties["backgroundColor"] }) {
   return <NavWithBackgroundProp backgroundColor={backgroundColor}>{children}</NavWithBackgroundProp>;
 }
 

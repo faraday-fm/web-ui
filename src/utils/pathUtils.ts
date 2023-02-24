@@ -1,5 +1,3 @@
-import { FsEntry } from "../types";
-
 export function trimLastDir(path: string) {
   const lastPathSeparatorIndex = path.lastIndexOf("/");
   if (lastPathSeparatorIndex >= 0) {

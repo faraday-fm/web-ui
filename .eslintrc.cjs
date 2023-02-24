@@ -1,6 +1,9 @@
 module.exports = {
   extends: "airbnb-typescript-prettier",
+  plugins: ["import", "simple-import-sort"],
   rules: {
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
     "default-case": "off",
     "no-case-declarations": "off",
     "class-methods-use-this": "off",
@@ -14,5 +17,16 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": "warn",
     "jsx-a11y/no-static-element-interactions": "off",
     "no-restricted-syntax": "off",
+    "react-hooks/exhaustive-deps": "error",
+  },
+  settings: {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"],
+    },
+    "import/resolver": {
+      typescript: {
+        alwaysTryTypes: true, // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
+      },
+    },
   },
 };

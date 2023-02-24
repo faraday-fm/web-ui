@@ -1,11 +1,12 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import FocusTrap from "focus-trap-react";
-import { useId } from "react";
-import styled, { keyframes, useTheme } from "styled-components";
 import { AutoHotKeyLabel } from "@components/AutoHotKeyLabel/AutoHotKeyLabel";
 import { Button } from "@components/Button/Button";
 import { QuickNavigationProvider } from "@contexts/quickNavigationContext";
 import { useCommandContext } from "@hooks/useCommandContext";
+import FocusTrap from "focus-trap-react";
+import { useId } from "react";
+import styled, { keyframes, useTheme } from "styled-components";
+
 import { Border } from "../Border/Border";
 
 type DialogPlaceholderProps = {

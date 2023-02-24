@@ -1,5 +1,5 @@
-import React, { PropsWithChildren, useContext, useEffect, useId, useState } from "react";
 import { Node, parser } from "@utils/whenClauseParser";
+import React, { PropsWithChildren, useContext, useEffect, useId, useState } from "react";
 
 type CommandContext = Map<string, Map<string, unknown>>;
 

@@ -1,7 +1,3 @@
-import { useEffect, useMemo } from "react";
-import { useFarMoreHost } from "@contexts/farMoreHostContext";
-import { useAppSelector } from "@store";
-
 export function useTerminal() {
   // const path = useAppSelector((state) => state.panels.states[state.panels.active]?.path) ?? "";
   // const host = useFarMoreHost();

@@ -1,11 +1,3 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { HiTerminal } from "react-icons/hi";
-import useResizeObserver from "use-resize-observer";
-import { Terminal as XTerm } from "xterm";
-import { FitAddon } from "xterm-addon-fit";
-import { Unicode11Addon } from "xterm-addon-unicode11";
-import { WebLinksAddon } from "xterm-addon-web-links";
-import { WebglAddon } from "xterm-addon-webgl";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 // import { changeDir } from "@features/panels/panelsSlice";
 import { useCommandBinding } from "@hooks/useCommandBinding";
@@ -14,6 +6,14 @@ import { useFocused } from "@hooks/useFocused";
 import { useShell } from "@hooks/useShell";
 import { useTerminal } from "@hooks/useTerminal";
 import { useAppDispatch, useAppSelector } from "@store";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { HiTerminal } from "react-icons/hi";
+import useResizeObserver from "use-resize-observer";
+import { Terminal as XTerm } from "xterm";
+import { FitAddon } from "xterm-addon-fit";
+import { Unicode11Addon } from "xterm-addon-unicode11";
+import { WebLinksAddon } from "xterm-addon-web-links";
+import { WebglAddon } from "xterm-addon-webgl";
 
 type TerminalProps = {
   fullScreen?: boolean;

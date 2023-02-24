@@ -29,6 +29,7 @@
       "@features/*": ["features/*"],
       "@utils/*": ["utils/*"],
       "@themes/*": ["themes/*"],
+      "@common/*": ["common/*"],
     }  },
   "include": ["src"],
 }

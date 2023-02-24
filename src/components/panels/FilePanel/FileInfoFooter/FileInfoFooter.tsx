@@ -1,7 +1,7 @@
-import styled from "styled-components";
 import { FsEntry } from "@types";
 import { formatDateTime } from "@utils/dateUtils";
 import { bytesToSize } from "@utils/numberUtils";
+import styled from "styled-components";
 
 type FileInfoFooterProps = {
   file?: FsEntry;

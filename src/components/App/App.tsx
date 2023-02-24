@@ -1,17 +1,21 @@
 import { ActionsBar } from "@components/ActionsBar/ActionsBar";
+import DialogPlaceholder from "@components/DialogPlaceholder/DialogPlaceholder";
+import { LayoutContainer } from "@components/LayoutContainer/LayoutContainer";
+import { useFarMoreHost } from "@contexts/farMoreHostContext";
+import { useGlyphSize } from "@contexts/glyphSizeContext";
+import { changeDir, focusNextPanel, setPanelsLayout } from "@features/panels/panelsSlice";
 import { useCommandBindings } from "@hooks/useCommandBinding";
 import { useCommandContext } from "@hooks/useCommandContext";
 import { useAppDispatch, useAppSelector } from "@store";
+import { PanelsLayout } from "@types";
 import FocusTrap from "focus-trap-react";
+import JSON5 from "json5";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { useFarMoreHost } from "@contexts/farMoreHostContext";
-import { useGlyphSize } from "@contexts/glyphSizeContext";
-import { focusNextPanel, setPanelsLayout } from "@features/panels/panelsSlice";
-import { LayoutContainer } from "@components/LayoutContainer/LayoutContainer";
-import DialogPlaceholder from "@components/DialogPlaceholder/DialogPlaceholder";
 
 // const Terminal = lazy(() => import("@components/Terminal/Terminal"));
+
+const decoder = new TextDecoder();
 
 const AppDiv = styled.div`
   button,
@@ -60,10 +64,14 @@ function App() {
   const host = useFarMoreHost();
 
   useEffect(() => {
-    host.config.getLayout().then((l) => dispatch(setPanelsLayout(l)));
+    (async () => {
+      const layoutContent = await host.fs.readFile(new URL("far-more:/layout.json"));
+      const layout = JSON5.parse(decoder.decode(layoutContent)) as PanelsLayout;
+      dispatch(setPanelsLayout(layout));
+    })();
     // invoke("show_main_window");
     // if (isRunningUnderTauri()) setTimeout(() => invoke("show_main_window"), 50);
-  }, [dispatch, host.config]);
+  }, [dispatch, host.config, host.fs]);
 
   useCommandContext("isDesktop", host.config.isDesktop());
 
@@ -83,7 +91,10 @@ function App() {
       // if (activePanel === "right") panel2Ref.current?.focus();
     },
     switchView: () => setViewType((vt) => vt + 1),
-    open: () => setDialogOpen(true),
+    // open: () => setDialogOpen(true),
+    open: () => {
+      dispatch(changeDir());
+    },
     openShell: () => console.error("OPEN_SHELL"),
   });
 

@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import useResizeObserver from "use-resize-observer";
 
 import { ColumnDef, CursorStyle } from "../../types";
 import { Column } from "./Column";
@@ -12,9 +11,7 @@ type CondensedViewProps = {
   cursorStyle: CursorStyle;
   columnsCount: number;
   columnDef: ColumnDef;
-  initialMaxItemsCount: number;
   onMaxItemsPerColumnChanged?: (count: number) => void;
-  onColumnsCountChanged?: (count: number) => void;
   onItemClicked?: (pos: number) => void;
   onItemActivated?: (pos: number) => void;
 };
@@ -33,18 +30,11 @@ export function CondensedView({
   cursorPos,
   columnsCount,
   columnDef,
-  initialMaxItemsCount,
   onMaxItemsPerColumnChanged,
-  onColumnsCountChanged,
   onItemClicked,
   onItemActivated,
 }: CondensedViewProps) {
   const [maxItemsPerColumn, setMaxItemsPerColumn] = useState(1);
-  const { ref, width = 1 } = useResizeObserver();
-
-  useEffect(() => {
-    onColumnsCountChanged?.(Math.ceil(width / 350));
-  }, [onColumnsCountChanged, width]);
 
   const columns = new Array(columnsCount);
 
@@ -54,7 +44,6 @@ export function CondensedView({
         key={i}
         items={items}
         columnDef={columnDef}
-        initialMaxItemsCount={initialMaxItemsCount}
         topMostPos={topMostPos + i * maxItemsPerColumn}
         cursorPos={cursorPos}
         cursorStyle={cursorStyle}
@@ -69,5 +58,5 @@ export function CondensedView({
       />
     );
   }
-  return <Columns ref={ref}>{columns}</Columns>;
+  return <Columns>{columns}</Columns>;
 }
