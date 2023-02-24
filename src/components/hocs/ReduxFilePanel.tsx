@@ -2,20 +2,17 @@ import { FilePanel, FilePanelActions } from "@components/panels/FilePanel/FilePa
 import { useFarMoreHost } from "@contexts/farMoreHostContext";
 import { setActivePanel, setPanelState } from "@features/panels/panelsSlice";
 import { useAppDispatch, useAppSelector } from "@store";
-import { CondensedView, FilePanelLayout, FsEntry } from "@types";
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import { FilePanelLayout, FsEntry } from "@types";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
 type ReduxFilePanelProps = { layout: FilePanelLayout & { id: string } };
-type ReduxFilePanelActions = FilePanelActions;
 
 const Root = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: stretch;
-  justify-content: stretch;
 `;
 
 const collator = new Intl.Collator(undefined, { numeric: true, usage: "sort", sensitivity: "case" });
@@ -26,7 +23,7 @@ function fsSort(a: FsEntry, b: FsEntry) {
   return collator.compare(a.name, b.name);
 }
 
-export const ReduxFilePanel = forwardRef<ReduxFilePanelActions, ReduxFilePanelProps>(({ layout }, ref) => {
+export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
   const { path, id } = layout;
   const dispatch = useAppDispatch();
   const panelRef = useRef<FilePanelActions>(null);
@@ -38,14 +35,12 @@ export const ReduxFilePanel = forwardRef<ReduxFilePanelActions, ReduxFilePanelPr
 
   const view = state?.view ?? layout.view;
 
-  useImperativeHandle(ref, () => ({ focus: () => panelRef.current?.focus() }));
+  const { ref: rootRef, width } = useResizeObserver();
 
-  const { ref: rootRef, width = 1 } = useResizeObserver();
-
-  const columnsCount = Math.ceil(width / 350);
+  const columnsCount = width ? Math.ceil(width / 350) : undefined;
 
   useEffect(() => {
-    if (view.type === "condensed" && columnsCount !== view.columnsCount) {
+    if (view.type === "condensed" && columnsCount && columnsCount !== view.columnsCount) {
       dispatch(setPanelState({ id, state: { items, path, view: { ...view, columnsCount }, cursorPos } }));
     }
   }, [columnsCount, cursorPos, dispatch, id, items, path, view]);
@@ -95,4 +90,4 @@ export const ReduxFilePanel = forwardRef<ReduxFilePanelActions, ReduxFilePanelPr
       />
     </Root>
   );
-});
+}

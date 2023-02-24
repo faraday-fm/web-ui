@@ -101,9 +101,5 @@
     "xterm-addon-unicode11": "^0.4.0",
     "xterm-addon-web-links": "^0.7.0",
     "xterm-addon-webgl": "^0.13.0"
-  },
-  "prettier": {
-    "printWidth": 160,
-    "tabWidth": 2
   }
 }

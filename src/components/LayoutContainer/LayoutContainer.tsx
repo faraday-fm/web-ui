@@ -1,4 +1,5 @@
 import { ReduxFilePanel } from "@components/hocs/ReduxFilePanel";
+import { QuickView } from "@components/panels/QuickView/QuickView";
 import { PanelsLayout } from "@types";
 import styled from "styled-components";
 
@@ -34,6 +35,8 @@ export function LayoutContainer({ layout, direction }: LayoutContainerProps) {
       );
     case "file-panel":
       return <ReduxFilePanel layout={layout} />;
+    case "quick-view":
+      return <QuickView layout={layout} />;
     default:
       return null;
   }

@@ -66,7 +66,7 @@ export function Column({ items, topMostPos, cursorPos, cursorStyle, columnDef, o
   const { ref, height } = useResizeObserver<HTMLDivElement>({ round: (n) => n });
   const { height: glyphHeight } = useGlyphSize();
   const [autoscroll, setAutoscroll] = useState(0);
-  const maxItemsCount = height ? Math.max(1, Math.trunc(height / Math.ceil(glyphHeight))) : undefined;
+  const maxItemsCount = height ? Math.max(1, Math.trunc(height / glyphHeight)) : undefined;
 
   useEffect(() => {
     if (maxItemsCount) {

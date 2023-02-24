@@ -1,4 +1,5 @@
 import { Border } from "@components/Border/Border";
+import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
 import { useCommandBindings, useExecuteBuiltInCommand } from "@hooks/useCommandBinding";
 import { useCommandContext } from "@hooks/useCommandContext";
 import { useFocused } from "@hooks/useFocused";
@@ -23,91 +24,6 @@ export type FilePanelProps = {
   onFocus?: () => void;
   onCursorPositionChange: (newTopMostPos: number, newCursorPos: number) => void;
 };
-
-// type FilePanelState = {
-//   panelItems: PanelItem[];
-//   topMostPos: number;
-//   cursorPos: number;
-//   columnsCount: number;
-//   maxItemsPerColumn: number;
-//   displayedItems: number;
-// };
-
-// function reducer(state: FilePanelState, action: FilePanelAction): FilePanelState {
-//   let { panelItems, topMostPos, cursorPos, columnsCount, maxItemsPerColumn, displayedItems } = state;
-
-//   switch (action.type) {
-//     case "scroll":
-//       cursorPos += action.delta;
-//       if (action.followCursor) {
-//         topMostPos += action.delta;
-//       }
-//       break;
-//     case "moveCursorToPos":
-//       cursorPos = action.pos;
-//       break;
-//     case "moveCursorLeftRight":
-//       if (action.direction === "right") {
-//         cursorPos += maxItemsPerColumn;
-//         if (cursorPos >= topMostPos + displayedItems) {
-//           topMostPos += maxItemsPerColumn;
-//         }
-//       } else if (action.direction === "left") {
-//         cursorPos -= maxItemsPerColumn;
-//         if (cursorPos < topMostPos) {
-//           topMostPos -= maxItemsPerColumn;
-//         }
-//       }
-//       break;
-//     case "moveCursorPage":
-//       if (action.direction === "up") {
-//         cursorPos -= displayedItems - 1;
-//         topMostPos -= displayedItems - 1;
-//       } else if (action.direction === "down") {
-//         cursorPos += displayedItems - 1;
-//         topMostPos += displayedItems - 1;
-//       }
-//       break;
-//     case "resize":
-//       maxItemsPerColumn = action.maxItemsPerColumn;
-//       break;
-//     case "setItems":
-//       panelItems = action.items;
-//       // originalItems = Array.from(action.items);
-//       // panelItems = Array.from(originalItems).sort((a, b) => collator.compare(a.name, b.name));
-//       break;
-//     case "setColumnsCount":
-//       columnsCount = action.count;
-//       while (cursorPos >= topMostPos + action.count * maxItemsPerColumn) {
-//         topMostPos += maxItemsPerColumn;
-//       }
-//       break;
-//     case "findFirst":
-//       // panelItems = originalItems.filter((i) => i.name.startsWith(action.char));
-//       const idx = panelItems.slice(cursorPos).findIndex((i) => i.name.startsWith(action.char));
-//       if (idx >= 0) {
-//         cursorPos += idx;
-//       }
-//       break;
-//   }
-//   displayedItems = Math.min(panelItems.length, maxItemsPerColumn * columnsCount);
-//   cursorPos = clamp(0, cursorPos, panelItems.length - 1);
-//   topMostPos = clamp(0, topMostPos, panelItems.length - displayedItems);
-//   topMostPos = clamp(cursorPos - displayedItems + 1, topMostPos, cursorPos);
-
-//   // FIXME: Why do we need this check? See console log.
-//   if (
-//     state.panelItems === panelItems &&
-//     state.topMostPos === topMostPos &&
-//     state.cursorPos === cursorPos &&
-//     state.columnsCount === columnsCount &&
-//     state.maxItemsPerColumn === maxItemsPerColumn &&
-//     state.displayedItems === displayedItems
-//   ) {
-//     return state;
-//   }
-//   return { panelItems, topMostPos, cursorPos, columnsCount, maxItemsPerColumn, displayedItems };
-// }
 
 export type FilePanelActions = {
   focus(): void;
@@ -274,58 +190,63 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
 
     return (
       <PanelRoot ref={panelRootRef} tabIndex={0} onFocus={() => onFocus?.()}>
-        <Border {...theme.filePanel.border}>
-          <PanelContent>
-            <Breadcrumb backgroundColor={focused ? theme.filePanel.header.activeBg : theme.filePanel.header.inactiveBg}>
-              {title
-                ?.split("/")
-                // .filter((x) => x)
-                .map((x, i) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <Breadcrumb.Item key={i}>{x}</Breadcrumb.Item>
-                ))}
-            </Breadcrumb>
-            {/* <PanelHeader active={focused}>{title}</PanelHeader> */}
-            <PanelColumns
-              onWheel={(e) => scroll(Math.sign(e.deltaY), true)}
-              onKeyDown={(e) => {
-                // dispatch({ type: "findFirst", char: e.key });
-                e.preventDefault();
-              }}
-            >
-              {view.type === "full" ? (
-                <FullView
-                  cursorStyle={cursorStyle}
-                  items={items}
-                  topMostPos={topMostPos}
-                  cursorPos={cursorPos}
-                  onItemClicked={onItemClicked}
-                  onItemActivated={onItemActivated}
-                  onMaxVisibleItemsChanged={onResize}
-                  columnDefs={view.columnDefs}
-                />
-              ) : (
-                <CondensedView
-                  cursorStyle={cursorStyle}
-                  items={items}
-                  topMostPos={topMostPos}
-                  cursorPos={cursorPos}
-                  columnsCount={columnsCount}
-                  onItemClicked={onItemClicked}
-                  onItemActivated={onItemActivated}
-                  onMaxItemsPerColumnChanged={onResize}
-                  columnDef={view.columnDef}
-                />
-              )}
-            </PanelColumns>
-            <FileInfoPanel>
-              <Border {...theme.filePanel.fileInfo.border}>
-                <FileInfoFooter file={items[cursorPos]} />
-              </Border>
-            </FileInfoPanel>
-            <PanelFooter>321</PanelFooter>
-          </PanelContent>
-        </Border>
+        <GlyphSizeProvider>
+          <Border {...theme.filePanel.border}>
+            <PanelContent>
+              <Breadcrumb
+                color={focused ? theme.filePanel.header.activeColor : theme.filePanel.header.inactiveColor}
+                backgroundColor={focused ? theme.filePanel.header.activeBg : theme.filePanel.header.inactiveBg}
+              >
+                {title
+                  ?.split("/")
+                  // .filter((x) => x)
+                  .map((x, i) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <Breadcrumb.Item key={i}>{x}</Breadcrumb.Item>
+                  ))}
+              </Breadcrumb>
+              {/* <PanelHeader active={focused}>{title}</PanelHeader> */}
+              <PanelColumns
+                onWheel={(e) => scroll(Math.sign(e.deltaY), true)}
+                onKeyDown={(e) => {
+                  // dispatch({ type: "findFirst", char: e.key });
+                  e.preventDefault();
+                }}
+              >
+                {view.type === "full" ? (
+                  <FullView
+                    cursorStyle={cursorStyle}
+                    items={items}
+                    topMostPos={topMostPos}
+                    cursorPos={cursorPos}
+                    onItemClicked={onItemClicked}
+                    onItemActivated={onItemActivated}
+                    onMaxVisibleItemsChanged={onResize}
+                    columnDefs={view.columnDefs}
+                  />
+                ) : (
+                  <CondensedView
+                    cursorStyle={cursorStyle}
+                    items={items}
+                    topMostPos={topMostPos}
+                    cursorPos={cursorPos}
+                    columnsCount={columnsCount}
+                    onItemClicked={onItemClicked}
+                    onItemActivated={onItemActivated}
+                    onMaxItemsPerColumnChanged={onResize}
+                    columnDef={view.columnDef}
+                  />
+                )}
+              </PanelColumns>
+              <FileInfoPanel>
+                <Border {...theme.filePanel.fileInfo.border}>
+                  <FileInfoFooter file={items[cursorPos]} />
+                </Border>
+              </FileInfoPanel>
+              <PanelFooter>321</PanelFooter>
+            </PanelContent>
+          </Border>
+        </GlyphSizeProvider>
       </PanelRoot>
     );
   }

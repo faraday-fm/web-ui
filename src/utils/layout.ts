@@ -13,6 +13,8 @@ export function traverseLayout(layout: PanelsLayout, callback: (panel: PanelLayo
       }
       break;
     case "file-panel":
+    case "quick-view":
       callback(layout);
+      break;
   }
 }

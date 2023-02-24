@@ -12,20 +12,28 @@ export function useFocused(ref: RefObject<HTMLElement> | HTMLElement | null | un
     } else {
       el = ref.current;
     }
-    if (document.activeElement === el) {
-      setFocused(true);
-    }
     if (!el) {
       return undefined;
     }
-    const focus = () => setFocused(true);
-    const blur = () => setFocused(false);
-    el.addEventListener("focus", focus);
-    el.addEventListener("blur", blur);
-    return () => {
-      el?.removeEventListener("focus", focus);
-      el?.removeEventListener("blur", blur);
+    const focus = (e: FocusEvent) => {
+      setFocused(el?.contains(e.target as Element) ?? false);
     };
+    document.addEventListener("focus", focus, { capture: true });
+    return () => {
+      document.removeEventListener("focus", focus);
+    };
+
+    // console.error(document.activeElement);
+    // setFocused(el === document.activeElement || el.contains(document.activeElement));
+    // const focus = () => setFocused(true);
+    // const blur = () => setFocused(false);
+    // return undefined;
+    // el.addEventListener("focusin", focus);
+    // el.addEventListener("focusout", blur);
+    // return () => {
+    //   el?.removeEventListener("focusin", focus);
+    //   el?.removeEventListener("focusout", blur);
+    // };
   }, [ref]);
   return focused;
 }

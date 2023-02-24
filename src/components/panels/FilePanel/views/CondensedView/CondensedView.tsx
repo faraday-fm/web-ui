@@ -34,7 +34,7 @@ export function CondensedView({
   onItemClicked,
   onItemActivated,
 }: CondensedViewProps) {
-  const [maxItemsPerColumn, setMaxItemsPerColumn] = useState(1);
+  const [maxItemsPerColumn, setMaxItemsPerColumn] = useState(1000);
 
   const columns = new Array(columnsCount);
 

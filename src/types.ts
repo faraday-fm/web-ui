@@ -32,7 +32,12 @@ export type FullView = { type: "full"; columnDefs: ColumnDef[] };
 export type CondensedView = { type: "condensed"; columnsCount: number; columnDef: ColumnDef };
 export type FilePanelView = FullView | CondensedView;
 
-export type PanelLayout = FilePanelLayout;
+export type QuickViewLayout = {
+  type: "quick-view";
+  path: string;
+};
+
+export type PanelLayout = FilePanelLayout | QuickViewLayout;
 
 export type PanelsLayout = (RowLayout | PanelLayout) & { id: string; flex?: number };
 

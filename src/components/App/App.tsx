@@ -18,6 +18,7 @@ import styled from "styled-components";
 const decoder = new TextDecoder();
 
 const AppDiv = styled.div`
+  font-size: 14px;
   button,
   input {
     font-family: inherit;

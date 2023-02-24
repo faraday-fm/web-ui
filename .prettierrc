@@ -1,3 +1,4 @@
 {
-  "plugins": ["prettier-organize-imports"]
+  "printWidth": 160,
+  "tabWidth": 2
 }
