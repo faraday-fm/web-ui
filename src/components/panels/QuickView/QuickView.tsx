@@ -131,7 +131,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
           const content = await fs.readFile(new URL(activePath));
           setQuickViewContent(new TextDecoder().decode(content));
         } catch {
-          setQuickViewContent("");
+          setQuickViewContent("Cannot load the file.");
         }
       } else {
         setQuickViewContent("");
@@ -158,6 +158,13 @@ export function QuickView({ layout }: QuickViewPanelProps) {
                   renderLineHighlight: "none",
                   scrollbar: { horizontal: "hidden", vertical: "hidden" },
                   folding: false,
+                  lineNumbersMinChars: 0,
+                  lineDecorationsWidth: 0,
+                  overviewRulerBorder: false,
+                  codeLens: false,
+                  scrollBeyondLastLine: false,
+                  stickyScroll: { enabled: true },
+                  overviewRulerLanes: 0,
                 }}
               />
             )}
