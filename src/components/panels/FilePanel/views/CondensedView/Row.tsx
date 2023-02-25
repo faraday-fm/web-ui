@@ -13,10 +13,10 @@ type RowProps = {
 };
 
 function getColor(theme: DefaultTheme, name: string, dir: boolean | undefined, selected: boolean) {
-  if (dir && name !== "..") return "var(--color-15)";
-  if (name.startsWith(".")) return selected ? "var(--color-01)" : "var(--color-02)";
-  if (name.endsWith(".toml") || name.endsWith(".json")) return selected ? "var(--color-01)" : "var(--color-10)";
-  return selected ? "var(--color-01)" : "var(--color-11)";
+  if (dir) return selected ? theme.filePanel.entries.dir.activeColor : theme.filePanel.entries.dir.inactiveColor;
+  // if (name.startsWith(".")) return selected ? "var(--color-01)" : "var(--color-02)";
+  // if (name.endsWith(".toml") || name.endsWith(".json")) return selected ? "var(--color-01)" : "var(--color-10)";
+  return selected ? theme.filePanel.entries.file.activeColor : theme.filePanel.entries.file.inactiveColor;
 }
 
 const Root = styled.div<{ cursorStyle: CursorStyle }>`
@@ -25,13 +25,13 @@ const Root = styled.div<{ cursorStyle: CursorStyle }>`
   background-color: ${(p) => (p.cursorStyle === "firm" || p.cursorStyle === "inactive" ? p.theme.filePanel.activeBg : null)};
 `;
 
-const LineItem = styled.span<{ $data: { name: string; dir: boolean | undefined }; $cursorStyle: CursorStyle }>`
+const LineItem = styled.span<{ $data: { name: string; isDir: boolean | undefined }; $cursorStyle: CursorStyle }>`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   padding: 0 calc(0.25rem - 1px);
   flex-grow: 1;
-  color: ${(p) => getColor(p.theme, p.$data.name, p.$data.dir, p.$cursorStyle === "firm")};
+  color: ${(p) => getColor(p.theme, p.$data.name, p.$data.isDir, p.$cursorStyle === "firm")};
 `;
 
 export function Row({ cursorStyle, data, field, onMouseDown, onMouseOver, onDoubleClick }: RowProps) {

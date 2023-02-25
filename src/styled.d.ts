@@ -26,6 +26,7 @@ declare module "styled-components" {
   };
 
   export interface DefaultTheme {
+    palette: Palette;
     fontFamily: string;
     primaryBg: Color;
     primaryText: Color;
@@ -51,6 +52,7 @@ declare module "styled-components" {
       };
       content: {
         margin: string;
+        extension?: CSSObject;
       };
       footer: {
         bg: Color;
@@ -59,6 +61,10 @@ declare module "styled-components" {
       };
       fileInfo: {
         border: Border;
+      };
+      entries: {
+        dir: { activeColor: Color; inactiveColor: Color };
+        file: { activeColor: Color; inactiveColor: Color };
       };
       column: {
         bg: Color;

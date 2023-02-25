@@ -6,6 +6,7 @@ import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { changeDir, focusNextPanel, setPanelsLayout } from "@features/panels/panelsSlice";
 import { useCommandBindings } from "@hooks/useCommandBinding";
 import { useCommandContext } from "@hooks/useCommandContext";
+import { useFs } from "@hooks/useFs";
 import { useAppDispatch, useAppSelector } from "@store";
 import { PanelsLayout } from "@types";
 import FocusTrap from "focus-trap-react";
@@ -63,20 +64,20 @@ function App() {
   const [executing, setExecuting] = useState(false);
   const panelsLayout = useAppSelector((state) => state.panels.layout);
   const host = useFarMoreHost();
+  const fs = useFs();
 
   useEffect(() => {
     (async () => {
-      const layoutContent = await host.fs.readFile(new URL("far-more:/layout.json"));
+      const layoutContent = await fs.readFile(new URL("far-more:/layout.json"));
       const layout = JSON5.parse(decoder.decode(layoutContent)) as PanelsLayout;
       dispatch(setPanelsLayout(layout));
     })();
     // invoke("show_main_window");
     // if (isRunningUnderTauri()) setTimeout(() => invoke("show_main_window"), 50);
-  }, [dispatch, host.config, host.fs]);
+  }, [dispatch, fs]);
 
   useCommandContext("isDesktop", host.config.isDesktop());
 
-  const [viewType, setViewType] = useState(0);
   useCommandBindings({
     togglePanels: () => {
       setPanelsOpen((p) => !p);
@@ -87,11 +88,6 @@ function App() {
     focusPrevPanel: () => {
       dispatch(focusNextPanel({ backward: true }));
     },
-    focusActivePanel: () => {
-      // if (activePanel === "left") panel1Ref.current?.focus();
-      // if (activePanel === "right") panel2Ref.current?.focus();
-    },
-    switchView: () => setViewType((vt) => vt + 1),
     // open: () => setDialogOpen(true),
     open: () => {
       dispatch(changeDir());

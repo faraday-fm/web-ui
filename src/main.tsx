@@ -5,6 +5,7 @@ import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
 import { KeyBindingProvider } from "@contexts/keyBindingContext";
 import { useMediaQuery } from "@hooks/useMediaQuery";
 import { store } from "@store";
+import { theme as farTheme } from "@themes/far-theme";
 import { darkTheme, lightTheme } from "@themes/theme";
 import { FarMoreHost } from "@types";
 import { Provider as ReduxProvider } from "react-redux";
@@ -21,7 +22,7 @@ export function FarMore({ host }: FarMoreProps) {
   const dark = useMediaQuery("(prefers-color-scheme: dark)");
   return (
     <ReduxProvider store={store}>
-      <ThemeProvider theme={dark ? darkTheme : lightTheme}>
+      <ThemeProvider theme={dark ? darkTheme : farTheme}>
         <KeyBindingProvider bindings={keyBindings}>
           <GlyphSizeProvider>
             <FarMoreHostProvider host={host}>

@@ -22,6 +22,11 @@ const farTheme = (t: DefaultTheme) => {
           zIndex: "1",
         },
       },
+      content: {
+        extension: {
+          gridTemplateRows: "1fr auto auto",
+        },
+      },
       footer: {
         extension: {
           position: "absolute",
@@ -43,7 +48,7 @@ const farTheme = (t: DefaultTheme) => {
             borderRight: "0",
             borderBottom: "0",
             "&:last-child": {
-              borderRight: "1px solid",
+              borderRight: `1px solid ${t.palette.fgColor3}`,
             },
           },
         },

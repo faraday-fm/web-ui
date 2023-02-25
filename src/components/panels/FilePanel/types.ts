@@ -1,3 +1,5 @@
+import { FsEntry } from "@types";
+
 export type ColumnDef = {
   name: string;
   field: string;
@@ -10,7 +12,7 @@ type MoveCursorToPosAction = { type: "moveCursorToPos"; pos: number };
 type MoveCursorLeftRightAction = { type: "moveCursorLeftRight"; direction: "left" | "right" };
 type MoveCursorPageAction = { type: "moveCursorPage"; direction: "up" | "down" };
 type ResizeAction = { type: "resize"; maxItemsPerColumn: number };
-type SetItemsAction = { type: "setItems"; items: PanelItem[] };
+type SetItemsAction = { type: "setItems"; items: FsEntry[] };
 type SetColumnsCountAction = { type: "setColumnsCount"; count: number };
 type FindFirstAction = { type: "findFirst"; char: string };
 
@@ -23,7 +25,5 @@ export type FilePanelAction =
   | SetItemsAction
   | SetColumnsCountAction
   | FindFirstAction;
-
-export type PanelItem = { name: string };
 
 export type CursorStyle = "firm" | "inactive" | "hidden";

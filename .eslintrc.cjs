@@ -18,6 +18,7 @@ module.exports = {
     "jsx-a11y/no-static-element-interactions": "off",
     "no-restricted-syntax": "off",
     "react-hooks/exhaustive-deps": "error",
+    "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
   },
   settings: {
     "import/parsers": {

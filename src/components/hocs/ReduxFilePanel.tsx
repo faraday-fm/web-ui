@@ -1,6 +1,7 @@
 import { FilePanel, FilePanelActions } from "@components/panels/FilePanel/FilePanel";
 import { useFarMoreHost } from "@contexts/farMoreHostContext";
 import { setActivePanel, setPanelState } from "@features/panels/panelsSlice";
+import { useFs } from "@hooks/useFs";
 import { useAppDispatch, useAppSelector } from "@store";
 import { FilePanelLayout, FsEntry } from "@types";
 import { useCallback, useEffect, useMemo, useRef } from "react";
@@ -27,7 +28,7 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
   const { path, id } = layout;
   const dispatch = useAppDispatch();
   const panelRef = useRef<FilePanelActions>(null);
-  const host = useFarMoreHost();
+  const fs = useFs();
   const isActive = useAppSelector((state) => state.panels.activePanelId === id);
   const state = useAppSelector((state) => state.panels.states[id]);
   const items = useMemo(() => state?.items ?? [], [state?.items]);
@@ -55,9 +56,10 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
     (async () => {
       if (path) {
         try {
-          const entries = await host.fs.readDirectory(new URL(`far-more:${path}`));
+          const url = new URL(path);
+          const entries = await fs.readDirectory(url);
           const items = Array.from(entries).sort(fsSort);
-          if (path !== "/") {
+          if (url.pathname !== "/") {
             items.unshift({ name: "..", isDir: true });
           }
           dispatch(setPanelState({ id, state: { items, path, view, cursorPos: { selected: 0, topmost: 0 } } }));
@@ -66,7 +68,7 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
         }
       }
     })();
-  }, [dispatch, host, id, path, view]);
+  }, [dispatch, fs, id, path, view]);
 
   const onCursorPositionChange = useCallback(
     (newTopMostPos: number, newCursorPos: number) => {

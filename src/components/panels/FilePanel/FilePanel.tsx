@@ -3,19 +3,19 @@ import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
 import { useCommandBindings, useExecuteBuiltInCommand } from "@hooks/useCommandBinding";
 import { useCommandContext } from "@hooks/useCommandContext";
 import { useFocused } from "@hooks/useFocused";
-import { FilePanelView } from "@types";
+import { FilePanelView, FsEntry } from "@types";
 import { clamp } from "@utils/numberUtils";
-import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
 
 import { Breadcrumb } from "../../Breadcrumb/Breadcrumb";
 import { FileInfoFooter } from "./FileInfoFooter/FileInfoFooter";
-import { CursorStyle, PanelItem } from "./types";
+import { CursorStyle } from "./types";
 import { CondensedView } from "./views/CondensedView/CondensedView";
 import { FullView } from "./views/FullView/FullView";
 
 export type FilePanelProps = {
-  items: PanelItem[];
+  items: FsEntry[];
   topMostPos: number;
   cursorPos: number;
   view: FilePanelView;
@@ -47,6 +47,7 @@ const PanelContent = styled.div`
   grid-template-rows: auto 1fr auto auto;
   overflow: hidden;
   margin: ${(p) => p.theme.filePanel.content.margin};
+  ${(p) => p.theme.filePanel.content.extension}
 `;
 
 const PanelColumns = styled.div`
@@ -188,24 +189,25 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
 
     const theme = useTheme();
 
+    const bytesCount = useMemo(() => items.reduce((acc, item) => acc + (item.size ?? 0), 0), [items]);
+    const filesCount = useMemo(() => items.reduce((acc, item) => acc + (item.isFile ? 1 : 0), 0), [items]);
+
     return (
       <PanelRoot ref={panelRootRef} tabIndex={0} onFocus={() => onFocus?.()}>
         <GlyphSizeProvider>
           <Border {...theme.filePanel.border}>
             <PanelContent>
-              <Breadcrumb
-                color={focused ? theme.filePanel.header.activeColor : theme.filePanel.header.inactiveColor}
-                backgroundColor={focused ? theme.filePanel.header.activeBg : theme.filePanel.header.inactiveBg}
-              >
-                {title
-                  ?.split("/")
-                  // .filter((x) => x)
-                  .map((x, i) => (
-                    // eslint-disable-next-line react/no-array-index-key
-                    <Breadcrumb.Item key={i}>{x}</Breadcrumb.Item>
-                  ))}
-              </Breadcrumb>
-              {/* <PanelHeader active={focused}>{title}</PanelHeader> */}
+              <PanelHeader active={focused}>
+                <Breadcrumb isActive={focused}>
+                  {title
+                    ?.split("/")
+                    // .filter((x) => x)
+                    .map((x, i) => (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <Breadcrumb.Item key={i}>{x}</Breadcrumb.Item>
+                    ))}
+                </Breadcrumb>
+              </PanelHeader>
               <PanelColumns
                 onWheel={(e) => scroll(Math.sign(e.deltaY), true)}
                 onKeyDown={(e) => {
@@ -243,7 +245,9 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
                   <FileInfoFooter file={items[cursorPos]} />
                 </Border>
               </FileInfoPanel>
-              <PanelFooter>321</PanelFooter>
+              <PanelFooter>
+                {bytesCount.toLocaleString()} bytes in {filesCount.toLocaleString()} files
+              </PanelFooter>
             </PanelContent>
           </Border>
         </GlyphSizeProvider>

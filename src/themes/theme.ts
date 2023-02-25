@@ -63,6 +63,7 @@ const lightPalette = {
 };
 
 const baseTheme = (colors: Palette): DefaultTheme => ({
+  palette: colors,
   // fontFamily: "Verdana, Geneva, sans-serif",
   fontFamily: "ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace",
   primaryBg: colors.bgColor0,
@@ -88,12 +89,16 @@ const baseTheme = (colors: Palette): DefaultTheme => ({
     header: {
       activeBg: colors.bgColor3,
       inactiveBg: colors.bgColor1,
-      activeColor: colors.bgColor1,
-      inactiveColor: colors.fgColor2,
+      activeColor: colors.bgColor0,
+      inactiveColor: colors.fgColor3,
       extension: {
         border: `1px solid ${colors.fgColor3}`,
         marginBottom: 1,
       },
+    },
+    entries: {
+      dir: { activeColor: colors.fgColor7, inactiveColor: colors.fgColor7 },
+      file: { activeColor: colors.bgColor0, inactiveColor: colors.fgColor3 },
     },
     content: { margin: "1px" },
     footer: {

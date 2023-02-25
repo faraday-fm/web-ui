@@ -84,6 +84,7 @@ export type Terminal = {
 
 export type FarMoreHost = {
   config: FarMoreConfig;
-  fs: FileSystemProvider;
+  farMoreFs: FileSystemProvider;
+  rootFs: FileSystemProvider;
   terminal?: Terminal;
 };

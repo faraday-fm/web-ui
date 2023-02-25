@@ -1,12 +1,10 @@
 import { PropsWithChildren } from "react";
-import styled, { CSSProperties } from "styled-components";
+import styled from "styled-components";
 
 import { BreadcrumbItem } from "./BreadcrumbItem";
 
-const NavWithBackgroundProp = styled.nav<{ color: CSSProperties["color"]; backgroundColor: CSSProperties["backgroundColor"] }>`
-  --background: linear-gradient(to right, transparent, ${(p) => p.backgroundColor});
-  background-color: ${(p) => p.backgroundColor};
-  color: ${(p) => p.color};
+const NavWithBackgroundProp = styled.nav<{ $isActive: boolean }>`
+  --background: linear-gradient(to right, transparent, ${(p) => (p.$isActive ? p.theme.filePanel.header.activeBg : p.theme.filePanel.header.inactiveBg)});
   display: flex;
   flex-direction: row;
   overflow: hidden;
@@ -16,16 +14,8 @@ const NavWithBackgroundProp = styled.nav<{ color: CSSProperties["color"]; backgr
   }
 `;
 
-function BreadcrumbRoot({
-  children,
-  color,
-  backgroundColor,
-}: PropsWithChildren & { color: CSSProperties["color"]; backgroundColor: CSSProperties["backgroundColor"] }) {
-  return (
-    <NavWithBackgroundProp color={color} backgroundColor={backgroundColor}>
-      {children}
-    </NavWithBackgroundProp>
-  );
+function BreadcrumbRoot({ isActive, children }: PropsWithChildren & { isActive: boolean }) {
+  return <NavWithBackgroundProp $isActive={isActive}>{children}</NavWithBackgroundProp>;
 }
 
 export const Breadcrumb = Object.assign(BreadcrumbRoot, {
