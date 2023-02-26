@@ -192,6 +192,11 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
     const bytesCount = useMemo(() => items.reduce((acc, item) => acc + (item.size ?? 0), 0), [items]);
     const filesCount = useMemo(() => items.reduce((acc, item) => acc + (item.isFile ? 1 : 0), 0), [items]);
 
+    const pathParts = (title ?? "").split("/").filter((x) => x);
+    if (pathParts.length === 0) {
+      pathParts.push("/");
+    }
+
     return (
       <PanelRoot ref={panelRootRef} tabIndex={0} onFocus={() => onFocus?.()}>
         <GlyphSizeProvider>
@@ -199,13 +204,10 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
             <PanelContent>
               <PanelHeader active={focused}>
                 <Breadcrumb isActive={focused}>
-                  {title
-                    ?.split("/")
-                    .filter((x) => x)
-                    .map((x, i) => (
-                      // eslint-disable-next-line react/no-array-index-key
-                      <Breadcrumb.Item key={i}>{x}</Breadcrumb.Item>
-                    ))}
+                  {pathParts.map((x, i) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <Breadcrumb.Item key={i}>{x}</Breadcrumb.Item>
+                  ))}
                 </Breadcrumb>
               </PanelHeader>
               <PanelColumns
