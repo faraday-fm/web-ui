@@ -68,7 +68,7 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      const layoutContent = await fs.readFile(new URL("far-more:/layout.json"));
+      const layoutContent = await fs.readFile("far-more:/layout.json");
       const layout = JSON5.parse(decoder.decode(layoutContent)) as PanelsLayout;
       dispatch(setPanelsLayout(layout));
     })();
