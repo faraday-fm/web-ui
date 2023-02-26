@@ -75,7 +75,7 @@ const panelsSliceUT = createSlice({
     changeDir(state) {
       if (!state.layout) return;
       traverseLayout(state.layout, (panel) => {
-        if (panel.id === state.activePanelId) {
+        if (panel.type === "file-panel" && panel.id === state.activePanelId) {
           const panelState = state.states[panel.id];
           if (panelState) {
             const selectedItemPos = panelState.cursorPos.selected;

@@ -34,7 +34,6 @@ export type FilePanelView = FullView | CondensedView;
 
 export type QuickViewLayout = {
   type: "quick-view";
-  path: string;
 };
 
 export type PanelLayout = FilePanelLayout | QuickViewLayout;

@@ -60,7 +60,7 @@ type QuickViewPanelProps = { layout: QuickViewLayout & { id: string } };
 
 export function QuickView({ layout }: QuickViewPanelProps) {
   const dispatch = useAppDispatch();
-  const { id, path } = layout;
+  const { id } = layout;
   const monaco = useMonaco();
   const theme = useTheme();
   const [quickViewContent, setQuickViewContent] = useState<string>();

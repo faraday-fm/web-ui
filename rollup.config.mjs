@@ -2,7 +2,6 @@ import alias from "@rollup/plugin-alias";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
-import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 import path from "path";
 import { defineConfig } from "rollup";
@@ -46,7 +45,6 @@ export default defineConfig(() => {
           entries: [{ find: "@assets", replacement: path.resolve(projectRootDir, "src/assets") }],
         }),
         typescript({ tsconfig: "./tsconfig.json" }),
-        terser(),
       ],
     },
     {
