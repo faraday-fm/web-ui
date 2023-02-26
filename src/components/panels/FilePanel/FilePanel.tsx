@@ -201,7 +201,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
                 <Breadcrumb isActive={focused}>
                   {title
                     ?.split("/")
-                    // .filter((x) => x)
+                    .filter((x) => x)
                     .map((x, i) => (
                       // eslint-disable-next-line react/no-array-index-key
                       <Breadcrumb.Item key={i}>{x}</Breadcrumb.Item>

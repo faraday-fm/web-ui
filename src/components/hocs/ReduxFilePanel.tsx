@@ -1,5 +1,4 @@
 import { FilePanel, FilePanelActions } from "@components/panels/FilePanel/FilePanel";
-import { useFarMoreHost } from "@contexts/farMoreHostContext";
 import { setActivePanel, setPanelState } from "@features/panels/panelsSlice";
 import { useFs } from "@hooks/useFs";
 import { useAppDispatch, useAppSelector } from "@store";
@@ -87,7 +86,7 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
         cursorPos={cursorPos.selected}
         topMostPos={cursorPos.topmost}
         items={items}
-        title={path}
+        title={decodeURI(new URL(path).pathname)}
         view={view}
       />
     </Root>

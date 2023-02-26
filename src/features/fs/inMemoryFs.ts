@@ -19,7 +19,7 @@ class InMemoryFsProvider implements FileSystemProvider {
   }
 
   readDirectory(url: URL): FsEntry[] {
-    const parts = decodeURI(url.pathname.substring(1)).split("/");
+    const parts = decodeURI(url.pathname.substring(1, url.pathname.length - (url.pathname.endsWith("/") ? 1 : 0))).split("/");
     let currDir: Dir = this.root;
     parts
       .filter((c) => c)
@@ -63,19 +63,16 @@ class InMemoryFsProvider implements FileSystemProvider {
     const parts = decodeURI(url.pathname.substring(1)).split("/");
     let currDir: Dir = this.root;
     const fileName = parts[parts.length - 1];
-    parts
-      .slice(0, parts.length - 1)
-      .filter((c) => c)
-      .forEach((part) => {
-        const nextDir = currDir.children.find((child) => child.name === part);
-        if (!nextDir) {
-          throw FileSystemError.FileNotFound();
-        }
-        if (!nextDir.isDir) {
-          throw FileSystemError.FileNotADirectory();
-        }
-        currDir = nextDir;
-      });
+    parts.slice(0, parts.length - 1).forEach((part) => {
+      const nextDir = currDir.children.find((child) => child.name === part);
+      if (!nextDir) {
+        throw FileSystemError.FileNotFound();
+      }
+      if (!nextDir.isDir) {
+        throw FileSystemError.FileNotADirectory();
+      }
+      currDir = nextDir;
+    });
     const file = currDir.children.find((child) => child.name === fileName);
     if (!file) {
       throw FileSystemError.FileNotFound();
@@ -90,19 +87,16 @@ class InMemoryFsProvider implements FileSystemProvider {
     const parts = decodeURI(url.pathname.substring(1)).split("/");
     let currDir: Dir = this.root;
     const fileName = parts[parts.length - 1];
-    parts
-      .slice(0, parts.length - 1)
-      .filter((c) => c)
-      .forEach((part) => {
-        const nextDir = currDir.children.find((child) => child.name === part);
-        if (!nextDir) {
-          throw FileSystemError.FileNotFound();
-        }
-        if (!nextDir.isDir) {
-          throw FileSystemError.FileNotADirectory();
-        }
-        currDir = nextDir;
-      });
+    parts.slice(0, parts.length - 1).forEach((part) => {
+      const nextDir = currDir.children.find((child) => child.name === part);
+      if (!nextDir) {
+        throw FileSystemError.FileNotFound();
+      }
+      if (!nextDir.isDir) {
+        throw FileSystemError.FileNotADirectory();
+      }
+      currDir = nextDir;
+    });
     let file = currDir.children.find((child) => child.name === fileName);
     if (file?.isDir) {
       throw FileSystemError.FileIsADirectory();

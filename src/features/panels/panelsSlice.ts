@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { FilePanelView, FsEntry, PanelsLayout } from "@types";
 import { traverseLayout } from "@utils/layout";
+import { append, truncateLastDir } from "@utils/urlUtils";
 
 type CursorPosition = {
   selected: number;
@@ -81,12 +82,9 @@ const panelsSliceUT = createSlice({
             const selectedItem = panelState.items[selectedItemPos];
             if (selectedItem.isDir) {
               if (selectedItem.name === "..") {
-                const lastSlash = panel.path.lastIndexOf("/");
-                panel.path = panel.path.substring(0, lastSlash) || "/";
-              } else if (panel.path.endsWith("/")) {
-                panel.path = `${panel.path}${selectedItem.name}`;
+                panel.path = truncateLastDir(panel.path).href;
               } else {
-                panel.path = `${panel.path}/${selectedItem.name}`;
+                panel.path = append(panel.path, selectedItem.name, true).href;
               }
             }
           }
