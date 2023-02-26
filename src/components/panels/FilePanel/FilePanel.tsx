@@ -63,6 +63,7 @@ const PanelColumns = styled.div`
 const PanelHeader = styled.div<{ active: boolean }>`
   color: ${(p) => (p.active ? p.theme.filePanel.header.activeColor : p.theme.filePanel.header.inactiveColor)};
   background-color: ${(p) => (p.active ? p.theme.filePanel.header.activeBg : p.theme.filePanel.header.inactiveBg)};
+  overflow: hidden;
   ${(p) => p.theme.filePanel.header.extension}
 `;
 
