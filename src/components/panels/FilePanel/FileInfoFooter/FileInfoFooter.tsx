@@ -33,7 +33,7 @@ export function FileInfoFooter({ file }: FileInfoFooterProps) {
     <FileRoot>
       <FileName>{file?.name}</FileName>
       <FileSize>{file?.isDir ? "Папка" : bytesToSize(file?.size ?? 0, 999999)}</FileSize>
-      <FileTime>{file?.modified ? formatDateTime(new Date(file.modified * 1000)) : undefined}</FileTime>
+      <FileTime>{file?.modified ? formatDateTime(new Date(file.modified)) : undefined}</FileTime>
     </FileRoot>
   );
 }
