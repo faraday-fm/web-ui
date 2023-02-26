@@ -7,7 +7,7 @@ type File = FsEntry & { isFile: true; isDir: false; content: Uint8Array };
 
 type DirOrFile = Dir | File;
 
-export class InMemoryFsProvider implements FileSystemProvider {
+class InMemoryFsProvider implements FileSystemProvider {
   private root: Dir;
 
   constructor() {
@@ -126,4 +126,8 @@ export class InMemoryFsProvider implements FileSystemProvider {
   copy?(source: URL, destination: URL, options: { overwrite: boolean }): void {
     throw new Error("Method not implemented.");
   }
+}
+
+export function createInMemoryFs(): FileSystemProvider {
+  return new InMemoryFsProvider();
 }

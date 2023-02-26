@@ -11,7 +11,7 @@ import { FarMoreHost } from "@types";
 import { Provider as ReduxProvider } from "react-redux";
 import { ThemeProvider } from "styled-components";
 
-export { InMemoryFsProvider } from "@features/fs/inMemoryFs";
+export { createInMemoryFs } from "@features/fs/inMemoryFs";
 export type { Disposable, FarMoreConfig, FarMoreHost, FileChangeEvent, FileChangeType, FileSystemProvider, FsEntry, Terminal, TerminalSession } from "@types";
 
 export type FarMoreProps = {
