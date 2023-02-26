@@ -18,7 +18,6 @@ export type BuiltInCommand =
   | "focusNextPanel"
   | "focusPrevPanel"
   | "focusActivePanel"
-  | "switchView"
   | "open"
   | "openShell"
   | "focusTerminal"

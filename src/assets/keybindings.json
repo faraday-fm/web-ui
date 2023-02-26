@@ -17,6 +17,5 @@
   { "key": "ArrowUp", "command": "cursorEnd", "when": "filePanel.focus && filePanel.firstItem" },
   { "key": "ArrowDown", "command": "cursorStart", "when": "filePanel.focus && filePanel.lastItem" },
 
-  { "key": "Ctrl+Minus", "command": "switchView", "when": "filePanel.focus" },
   { "key": "Ctrl+KeyO", "command": "togglePanels" }
 ]

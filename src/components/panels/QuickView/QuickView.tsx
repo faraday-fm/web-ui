@@ -69,11 +69,11 @@ export function QuickView({ layout }: QuickViewPanelProps) {
   const activePath = useAppSelector((state) => {
     const ap = state.panels.states[state.panels.activePanelId ?? ""];
     if (!ap) {
-      return null;
+      return undefined;
     }
     const item = ap.items[ap.cursorPos.selected];
     if (!item) {
-      return null;
+      return undefined;
     }
     return append(ap.path, item.name, item.isDir ?? false).href;
   });
@@ -156,6 +156,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
             {monaco && (
               <Editor
                 theme="far-more"
+                path={activePath}
                 width={width}
                 height={height}
                 value={quickViewContent}
