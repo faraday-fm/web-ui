@@ -14,7 +14,7 @@ export class CombinedFsProvider implements FileSystemProvider {
     this.innerProviders = innerProviders;
   }
 
-  watch(url: URL, listener: (events: FileChangeEvent[]) => void, options: { recursive: boolean; excludes: string[] }): Disposable {
+  watch(url: string, listener: (events: FileChangeEvent[]) => void, options: { recursive: boolean; excludes: string[] }): Disposable {
     const provider = this.resolveProvider(url);
     if (!provider) {
       throw FileSystemError.FileNotFound();
@@ -22,7 +22,7 @@ export class CombinedFsProvider implements FileSystemProvider {
     return provider.watch(url, listener, options);
   }
 
-  readDirectory(url: URL) {
+  readDirectory(url: string) {
     const provider = this.resolveProvider(url);
     if (!provider) {
       throw FileSystemError.FileNotFound();
@@ -30,7 +30,7 @@ export class CombinedFsProvider implements FileSystemProvider {
     return provider.readDirectory(url);
   }
 
-  createDirectory(url: URL) {
+  createDirectory(url: string) {
     const provider = this.resolveProvider(url);
     if (!provider) {
       throw FileSystemError.FileNotFound();
@@ -38,7 +38,7 @@ export class CombinedFsProvider implements FileSystemProvider {
     return provider.createDirectory(url);
   }
 
-  readFile(url: URL) {
+  readFile(url: string) {
     const provider = this.resolveProvider(url);
     if (!provider) {
       throw FileSystemError.FileNotFound();
@@ -46,7 +46,7 @@ export class CombinedFsProvider implements FileSystemProvider {
     return provider.readFile(url);
   }
 
-  writeFile(url: URL, content: Uint8Array, options: { create: boolean; overwrite: boolean }) {
+  writeFile(url: string, content: Uint8Array, options: { create: boolean; overwrite: boolean }) {
     const provider = this.resolveProvider(url);
     if (!provider) {
       throw FileSystemError.FileNotFound();
@@ -54,17 +54,17 @@ export class CombinedFsProvider implements FileSystemProvider {
     return provider.writeFile(url, content, options);
   }
 
-  delete(url: URL, options: { recursive: boolean }) {
+  delete(url: string, options: { recursive: boolean }) {
     const provider = this.resolveProvider(url);
     return provider.delete(url, options);
   }
 
-  rename(oldUrl: URL, newUrl: URL, options: { overwrite: boolean }) {
+  rename(oldUrl: string, newUrl: string, options: { overwrite: boolean }) {
     const provider = this.resolveProvider(oldUrl);
     return provider.rename(oldUrl, newUrl, options);
   }
 
-  copy?(source: URL, destination: URL, options: { overwrite: boolean }) {
+  copy?(source: string, destination: string, options: { overwrite: boolean }) {
     const provider = this.resolveProvider(source);
     if (!provider.copy) {
       throw FileSystemError.FileNotFound(source);
@@ -72,10 +72,9 @@ export class CombinedFsProvider implements FileSystemProvider {
     return provider.copy(source, destination, options);
   }
 
-  private resolveProvider(url: URL) {
-    const provider = this.innerProviders[url.protocol];
+  private resolveProvider(url: string) {
+    const provider = this.innerProviders[new URL(url).protocol];
     if (!provider) {
-      console.error("URL", this.innerProviders, url);
       throw FileSystemError.FileNotFound(url);
     }
     return provider;

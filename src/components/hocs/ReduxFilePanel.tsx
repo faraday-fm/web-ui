@@ -55,10 +55,9 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
     (async () => {
       if (path) {
         try {
-          const url = new URL(path);
-          const entries = await fs.readDirectory(url);
+          const entries = await fs.readDirectory(path);
           const items = Array.from(entries).sort(fsSort);
-          if (url.pathname !== "/") {
+          if (new URL(path).pathname !== "/") {
             items.unshift({ name: "..", isDir: true });
           }
           dispatch(setPanelState({ id, state: { items, path, view, cursorPos: { selected: 0, topmost: 0 } } }));

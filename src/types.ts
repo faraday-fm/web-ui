@@ -59,18 +59,18 @@ export enum FileChangeType {
 
 export type FileChangeEvent = {
   type: FileChangeType;
-  url: URL;
+  url: string;
 };
 
 export type FileSystemProvider = {
-  watch(url: URL, listener: (events: FileChangeEvent[]) => void, options: { recursive: boolean; excludes: string[] }): Disposable;
-  readDirectory(url: URL, signal?: AbortSignal): FsEntry[] | Promise<FsEntry[]>;
-  createDirectory(url: URL, signal?: AbortSignal): void | Promise<void>;
-  readFile(url: URL, signal?: AbortSignal): Uint8Array | Promise<Uint8Array>;
-  writeFile(url: URL, content: Uint8Array, options: { create: boolean; overwrite: boolean }, signal?: AbortSignal): void | Promise<void>;
-  delete(url: URL, options: { recursive: boolean }, signal?: AbortSignal): void | Promise<void>;
-  rename(oldUrl: URL, newUrl: URL, options: { overwrite: boolean }, signal?: AbortSignal): void | Promise<void>;
-  copy?(source: URL, destination: URL, options: { overwrite: boolean }, signal?: AbortSignal): void | Promise<void>;
+  watch(url: string, listener: (events: FileChangeEvent[]) => void, options: { recursive: boolean; excludes: string[] }): Disposable;
+  readDirectory(url: string, signal?: AbortSignal): FsEntry[] | Promise<FsEntry[]>;
+  createDirectory(url: string, signal?: AbortSignal): void | Promise<void>;
+  readFile(url: string, signal?: AbortSignal): Uint8Array | Promise<Uint8Array>;
+  writeFile(url: string, content: Uint8Array, options: { create: boolean; overwrite: boolean }, signal?: AbortSignal): void | Promise<void>;
+  delete(url: string, options: { recursive: boolean }, signal?: AbortSignal): void | Promise<void>;
+  rename(oldUrl: string, newUrl: string, options: { overwrite: boolean }, signal?: AbortSignal): void | Promise<void>;
+  copy?(source: string, destination: string, options: { overwrite: boolean }, signal?: AbortSignal): void | Promise<void>;
 };
 
 export type TerminalSession = symbol;
