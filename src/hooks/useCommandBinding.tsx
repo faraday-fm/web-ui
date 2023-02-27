@@ -2,9 +2,9 @@ import React, { useCallback, useContext, useEffect } from "react";
 
 type Callback = (args?: unknown) => Promise<boolean> | boolean | void;
 
-type CommandBindingContext = Map<string, Set<Callback>>;
+type CommandBindingContext = Record<string, Set<Callback> | undefined>;
 
-const bindingsContext = React.createContext<CommandBindingContext>(new Map());
+const commandBindingsContext = React.createContext<CommandBindingContext>({});
 
 export type BuiltInCommand =
   | "cursorLeft"
@@ -18,6 +18,7 @@ export type BuiltInCommand =
   | "focusNextPanel"
   | "focusPrevPanel"
   | "focusActivePanel"
+  | "switchView"
   | "open"
   | "openShell"
   | "focusTerminal"
@@ -28,43 +29,43 @@ type PartialRecord<K extends keyof never, T> = {
 };
 
 export function useCommandBinding(command: BuiltInCommand, callback: Callback, isActive = true) {
-  const bindings = useContext(bindingsContext);
+  const bindings = useContext(commandBindingsContext);
   useEffect(() => {
     if (!isActive) return undefined;
-    let callbacks = bindings.get(command);
+    let callbacks = bindings[command];
     if (!callbacks) {
       callbacks = new Set();
-      bindings.set(command, callbacks);
+      bindings[command] = callbacks;
     }
     callbacks.add(callback);
     return () => {
       callbacks?.delete(callback);
       if (callbacks?.size === 0) {
-        bindings.delete(command);
+        delete bindings[command];
       }
     };
   }, [command, callback, isActive, bindings]);
 }
 
 export function useCommandBindings(commandBindings: PartialRecord<BuiltInCommand, Callback>, isActive = true) {
-  const bindings = useContext(bindingsContext);
+  const bindings = useContext(commandBindingsContext);
   useEffect(() => {
     if (!isActive) return undefined;
     Object.entries(commandBindings).forEach(([command, callback]) => {
-      let callbacks = bindings.get(command);
+      let callbacks = bindings[command];
       if (!callbacks) {
         callbacks = new Set();
-        bindings.set(command, callbacks);
+        bindings[command] = callbacks;
       }
       callbacks.add(callback);
     });
     return () => {
       Object.entries(commandBindings).forEach(([command, callback]) => {
-        const callbacks = bindings.get(command);
+        const callbacks = bindings[command];
         if (callbacks) {
           callbacks.delete(callback);
           if (callbacks.size === 0) {
-            bindings.delete(command);
+            delete bindings[command];
           }
         }
       });
@@ -73,22 +74,19 @@ export function useCommandBindings(commandBindings: PartialRecord<BuiltInCommand
 }
 
 export function useExecuteCommand() {
-  const bindings = useContext(bindingsContext);
+  const bindings = useContext(commandBindingsContext);
   const executor = useCallback(
     (command: string, args?: unknown) => {
-      const callbacks = bindings.get(command);
+      const callbacks = bindings[command];
       if (!callbacks || callbacks.size !== 1) {
         return false;
       }
-      // eslint-disable-next-line no-unreachable-loop
-      for (const cb of callbacks.values()) {
-        const result = cb(args);
-        if (typeof result === "undefined") {
-          return true;
-        }
-        return result;
+      const cb = callbacks.values().next();
+      const result = cb.value(args);
+      if (typeof result === "undefined") {
+        return true;
       }
-      return false;
+      return result;
     },
     [bindings]
   );

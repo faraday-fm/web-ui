@@ -1,4 +1,4 @@
-import keyBindings from "@assets/keybindings.json" assert { type: "json" };
+import keyBindings from "@assets/keybindings.json";
 import App from "@components/App/App";
 import { FarMoreHostProvider } from "@contexts/farMoreHostContext";
 import { GlyphSizeProvider } from "@contexts/glyphSizeContext";

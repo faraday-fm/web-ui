@@ -40,11 +40,11 @@ export default defineConfig(() => {
         peerDepsExternal(),
         nodeResolve(),
         commonjs(),
-        json(),
         alias({
           entries: [{ find: "@assets", replacement: path.resolve(projectRootDir, "src/assets") }],
         }),
         typescript({ tsconfig: "./tsconfig.json" }),
+        json(),
       ],
     },
     {

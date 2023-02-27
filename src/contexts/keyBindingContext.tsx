@@ -50,37 +50,31 @@ const KeyBindingContext = createContext<KeyBinding[]>([]);
 
 type KeyBindingProviderProps = { bindings: KeyBinding[] } & PropsWithChildren<unknown>;
 
+const parsedKeyCombinationsCache = new Map<string, KeyCombination>();
+
+const getKeyCombination = (keyStr: string): KeyCombination => {
+  let key = parsedKeyCombinationsCache.get(keyStr);
+  if (key) {
+    return key;
+  }
+  key = parseKeyCombination(keyStr);
+  parsedKeyCombinationsCache.set(keyStr, key);
+  return key;
+};
+
+const matchKey = (key: string, event: KeyboardEvent) => {
+  const combination = getKeyCombination(key);
+  if (combination.error) return false;
+  return (
+    event.code.toLowerCase() === combination.code &&
+    event.altKey === combination.alt &&
+    event.ctrlKey === combination.ctrl &&
+    event.metaKey === combination.meta &&
+    event.shiftKey === combination.shift
+  );
+};
+
 export function KeyBindingProvider({ bindings, children }: KeyBindingProviderProps) {
-  const parsedKeyCombinationsCache = useMemo(() => new Map<string, KeyCombination>(), []);
-
-  const getKeyCombination = useCallback(
-    (keyStr: string): KeyCombination => {
-      let key = parsedKeyCombinationsCache.get(keyStr);
-      if (key) {
-        return key;
-      }
-      key = parseKeyCombination(keyStr);
-      parsedKeyCombinationsCache.set(keyStr, key);
-      return key;
-    },
-    [parsedKeyCombinationsCache]
-  );
-
-  const matchKey = useCallback(
-    (key: string, event: KeyboardEvent) => {
-      const combination = getKeyCombination(key);
-      if (combination.error) return false;
-      return (
-        event.code.toLowerCase() === combination.code &&
-        event.altKey === combination.alt &&
-        event.ctrlKey === combination.ctrl &&
-        event.metaKey === combination.meta &&
-        event.shiftKey === combination.shift
-      );
-    },
-    [getKeyCombination]
-  );
-
   const isInContext = useIsInCommandContext();
   const executeCommand = useExecuteCommand();
 
@@ -102,8 +96,8 @@ export function KeyBindingProvider({ bindings, children }: KeyBindingProviderPro
       }
     };
     window.addEventListener("keydown", onKeyDown, { capture: true });
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [bindings, executeCommand, isInContext, matchKey]);
+    return () => window.removeEventListener("keydown", onKeyDown, { capture: true });
+  }, [bindings, executeCommand, isInContext]);
 
   return <KeyBindingContext.Provider value={bindings}>{children}</KeyBindingContext.Provider>;
 }

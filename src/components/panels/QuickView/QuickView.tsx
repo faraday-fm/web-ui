@@ -136,7 +136,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
     (async () => {
       if (activePath) {
         try {
-          const content = await fs.readFile(activePath);
+          const content = await fs.readFile(decodeURI(activePath));
           setQuickViewContent(new TextDecoder().decode(content));
         } catch {
           setQuickViewContent("Cannot load the file.");

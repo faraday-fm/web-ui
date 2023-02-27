@@ -1,12 +1,12 @@
 import { Node, parser } from "@utils/whenClauseParser";
 import React, { PropsWithChildren, useContext, useEffect, useId, useState } from "react";
 
-type CommandContext = Map<string, Map<string, unknown>>;
+type CommandContext = Record<string, Record<string, unknown>>;
 
-const context = React.createContext<CommandContext>(new Map());
+const context = React.createContext<CommandContext>({});
 
 export function CommandContextProvider({ children }: PropsWithChildren) {
-  const [ctx] = useState<CommandContext>(new Map());
+  const [ctx] = useState<CommandContext>({});
   return <context.Provider value={ctx}>{children}</context.Provider>;
 }
 
@@ -17,7 +17,10 @@ export function useCommandContext(arg: unknown, isActive?: boolean): void {
   const ctx = useContext(context);
   const id = useId();
   useEffect(() => {
-    if (!isActive) return undefined;
+    if (!isActive) {
+      delete ctx[id];
+      return undefined;
+    }
     let variables: Record<string, unknown>;
     if (typeof arg === "string") {
       variables = { [arg]: true };
@@ -26,40 +29,23 @@ export function useCommandContext(arg: unknown, isActive?: boolean): void {
     } else {
       variables = arg as Record<string, unknown>;
     }
-    Object.keys(variables).forEach((v) => {
-      let values = ctx.get(v);
-      if (!values) {
-        values = new Map();
-        ctx.set(v, values);
-      }
-      values.set(id, variables[v]);
-    });
+    ctx[id] = variables;
     return () => {
-      Object.keys(variables).forEach((v) => {
-        const values = ctx.get(v);
-        if (values) {
-          values.delete(id);
-          if (values.size === 0) {
-            ctx.delete(v);
-          }
-        }
-      });
+      delete ctx[id];
     };
   }, [id, isActive, arg, ctx]);
 }
 
 function getContextValue(ctx: CommandContext, variable: string) {
-  const values = ctx.get(variable);
-  if (!values) {
-    return undefined;
-  }
   let r;
-  // eslint-disable-next-line no-restricted-syntax
-  for (const v of values.values()) {
-    if (r === undefined) {
-      r = v;
-    } else if (r !== v) {
-      return undefined;
+  for (const v of Object.values(ctx)) {
+    const val = v[variable];
+    if (val !== undefined) {
+      if (r === undefined) {
+        r = val;
+      } else if (r !== val) {
+        return undefined;
+      }
     }
   }
   return r;
