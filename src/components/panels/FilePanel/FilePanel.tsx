@@ -7,6 +7,7 @@ import { FilePanelView, FsEntry } from "@types";
 import { clamp } from "@utils/numberUtils";
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
+import useResizeObserver from "use-resize-observer";
 
 import { Breadcrumb } from "../../Breadcrumb/Breadcrumb";
 import { FileInfoFooter } from "./FileInfoFooter/FileInfoFooter";
@@ -93,8 +94,11 @@ const FileInfoPanel = styled.div`
 
 export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
   ({ items, topMostPos, cursorPos, view, title, showCursorWhenBlurred, onFocus, onCursorPositionChange }, ref) => {
+    const panelRootRef = useRef<HTMLDivElement>(null);
     const [maxItemsPerColumn, setMaxItemsPerColumn] = useState<number>();
-    const columnsCount = view.type === "full" ? 1 : view.columnsCount;
+
+    const { width } = useResizeObserver({ ref: panelRootRef });
+    const columnsCount = width ? Math.ceil(width / 350) : 1;
 
     const displayedItems = maxItemsPerColumn ? Math.min(items.length, maxItemsPerColumn * columnsCount) : 1;
 
@@ -106,7 +110,6 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
 
     clampPos();
 
-    const panelRootRef = useRef<HTMLDivElement>(null);
     const focused = useFocused(panelRootRef);
     useImperativeHandle(ref, () => ({
       focus: () => panelRootRef.current?.focus(),

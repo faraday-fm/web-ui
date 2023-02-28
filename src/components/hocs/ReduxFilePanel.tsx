@@ -1,11 +1,10 @@
 import { FilePanel, FilePanelActions } from "@components/panels/FilePanel/FilePanel";
-import { setActivePanel, setPanelColumnsCount, setPanelCursorPos, setPanelItems, setPanelState } from "@features/panels/panelsSlice";
+import { setActivePanel, setPanelCursorPos, setPanelItems, setPanelState } from "@features/panels/panelsSlice";
 import { useFs } from "@hooks/useFs";
 import { useAppDispatch, useAppSelector } from "@store";
 import { FilePanelLayout, FsEntry } from "@types";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
-import useResizeObserver from "use-resize-observer";
 
 type ReduxFilePanelProps = { layout: FilePanelLayout & { id: string } };
 
@@ -34,16 +33,6 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
   const items = state?.items ?? [];
   const cursorPos = state?.cursorPos ?? { selected: 0, topmost: 0 };
   const view = state?.view ?? layout.view;
-
-  const { ref: rootRef, width } = useResizeObserver();
-
-  const columnsCount = width ? Math.ceil(width / 350) : undefined;
-
-  useEffect(() => {
-    if (view.type === "condensed" && columnsCount) {
-      dispatch(setPanelColumnsCount({ id, columnsCount }));
-    }
-  }, [columnsCount, dispatch, id, view.type]);
 
   useEffect(() => {
     if (isActive) {
@@ -80,7 +69,7 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
   );
 
   return (
-    <Root ref={rootRef}>
+    <Root>
       <FilePanel
         ref={panelRef}
         showCursorWhenBlurred={isActive}
