@@ -1,13 +1,14 @@
 import { Border } from "@components/Border/Border";
 import { setActivePanel } from "@features/panels/panelsSlice";
 import { useCommandContext } from "@hooks/useCommandContext";
+import { useDeferred } from "@hooks/useDeferred";
 import { useFileContent } from "@hooks/useFileContent";
 import { useFocused } from "@hooks/useFocused";
 import Editor, { useMonaco } from "@monaco-editor/react";
-import { useAppDispatch, useAppSelector } from "@store";
+import { selectPanelState, useAppDispatch, useAppSelector } from "@store";
 import { QuickViewLayout } from "@types";
 import { append } from "@utils/urlUtils";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import styled, { useTheme } from "styled-components";
 
 const Root = styled.div`
@@ -58,18 +59,13 @@ export function QuickView({ layout }: QuickViewPanelProps) {
   const monaco = useMonaco();
   const theme = useTheme();
   // const [quickViewContent, setQuickViewContent] = useState<string>();
-  const isActive = useAppSelector((state) => state.panels.activePanelId === id);
-  const activePath = useAppSelector((state) => {
-    const ap = state.panels.states[state.panels.activePanelId ?? ""];
-    if (!ap) {
-      return undefined;
-    }
-    const item = ap.items[ap.cursorPos.selected];
-    if (!item) {
-      return undefined;
-    }
-    return append(ap.path, item.name, item.isDir ?? false).href;
-  });
+  const activePanelId = useAppSelector((state) => state.panels.activePanelId);
+  const isActive = activePanelId === id;
+  const activePanelState = useAppSelector(selectPanelState(activePanelId ?? ""));
+  const activePath = useMemo(() => {
+    const item = activePanelState?.items[activePanelState.cursorPos.selected];
+    return item ? append(activePanelState.path, item.name, item.isDir ?? false).href : undefined;
+  }, [activePanelState]);
 
   const panelRootRef = useRef<HTMLDivElement>(null);
   const focused = useFocused(panelRootRef);
@@ -120,6 +116,8 @@ export function QuickView({ layout }: QuickViewPanelProps) {
   } else {
     quickViewContent = "Loading...";
   }
+
+  // const quickViewContentDeferred = useDeferred(quickViewContent, 100);
 
   return (
     <Root ref={panelRootRef} tabIndex={0}>

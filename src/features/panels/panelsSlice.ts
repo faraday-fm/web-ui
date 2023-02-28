@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { FilePanelView, FsEntry, PanelsLayout } from "@types";
 import { traverseLayout } from "@utils/layout";
-import { append, truncateLastDir } from "@utils/urlUtils";
+import { append } from "@utils/urlUtils";
 
 type CursorPosition = {
   selected: number;
@@ -18,7 +18,7 @@ export type PanelState = {
 type SliceState = {
   activePanelId?: string;
   layout?: PanelsLayout;
-  states: Record<string, PanelState | undefined>;
+  states: Record<string, PanelState[] | undefined>;
 };
 
 const panelsSliceUT = createSlice({
@@ -34,22 +34,19 @@ const panelsSliceUT = createSlice({
       state.activePanelId = payload;
     },
     setPanelState(state, { payload }: PayloadAction<{ id: string; state: PanelState }>) {
-      state.states[payload.id] = payload.state;
+      state.states[payload.id] = [payload.state];
     },
-    setPanelItems(
-      state,
-      { payload: { id, path, items, cursorPos } }: PayloadAction<{ id: string; path: string; items: FsEntry[]; cursorPos: CursorPosition }>
-    ) {
-      const s = state.states[id];
-      if (s) {
-        s.path = path;
+    setPanelItems(state, { payload: { id, items } }: PayloadAction<{ id: string; items: FsEntry[] }>) {
+      const panelsStack = state.states[id];
+      if (panelsStack && panelsStack.length > 0) {
+        const s = panelsStack[panelsStack.length - 1];
         s.items = items;
-        s.cursorPos = cursorPos;
       }
     },
     setPanelCursorPos(state, { payload: { id, cursorPos } }: PayloadAction<{ id: string; cursorPos: CursorPosition }>) {
-      const s = state.states[id];
-      if (s) {
+      const panelsStack = state.states[id];
+      if (panelsStack && panelsStack.length > 0) {
+        const s = panelsStack[panelsStack.length - 1];
         s.cursorPos = cursorPos;
       }
     },
@@ -93,15 +90,21 @@ const panelsSliceUT = createSlice({
       if (!state.layout) return;
       traverseLayout(state.layout, (panel) => {
         if (panel.type === "file-panel" && panel.id === state.activePanelId) {
-          const panelState = state.states[panel.id];
-          if (panelState) {
-            const selectedItemPos = panelState.cursorPos.selected;
-            const selectedItem = panelState.items[selectedItemPos];
+          const panelsStack = state.states[panel.id];
+          if (panelsStack) {
+            const s = panelsStack[panelsStack.length - 1];
+            const selectedItemPos = s.cursorPos.selected;
+            const selectedItem = s.items[selectedItemPos];
             if (selectedItem.isDir) {
               if (selectedItem.name === "..") {
-                panel.path = truncateLastDir(panel.path).href;
+                panelsStack.pop();
               } else {
-                panel.path = append(panel.path, selectedItem.name, true).href;
+                panelsStack.push({
+                  path: append(s.path, selectedItem.name, true).href,
+                  cursorPos: { selected: 0, topmost: 0 },
+                  items: [],
+                  view: panel.view,
+                });
               }
             }
           }

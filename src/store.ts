@@ -19,3 +19,8 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+
+export const selectPanelState = (id: string) => (state: RootState) => {
+  const ps = state.panels.states[id];
+  return ps ? ps[ps.length - 1] : undefined;
+};
