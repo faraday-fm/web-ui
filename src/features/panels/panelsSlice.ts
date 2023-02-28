@@ -36,6 +36,29 @@ const panelsSliceUT = createSlice({
     setPanelState(state, { payload }: PayloadAction<{ id: string; state: PanelState }>) {
       state.states[payload.id] = payload.state;
     },
+    setPanelItems(
+      state,
+      { payload: { id, path, items, cursorPos } }: PayloadAction<{ id: string; path: string; items: FsEntry[]; cursorPos: CursorPosition }>
+    ) {
+      const s = state.states[id];
+      if (s) {
+        s.path = path;
+        s.items = items;
+        s.cursorPos = cursorPos;
+      }
+    },
+    setPanelCursorPos(state, { payload: { id, cursorPos } }: PayloadAction<{ id: string; cursorPos: CursorPosition }>) {
+      const s = state.states[id];
+      if (s) {
+        s.cursorPos = cursorPos;
+      }
+    },
+    setPanelColumnsCount(state, { payload }: PayloadAction<{ id: string; columnsCount: number }>) {
+      const s = state.states[payload.id];
+      if (s && s.view.type === "condensed") {
+        s.view.columnsCount = payload.columnsCount;
+      }
+    },
     focusNextPanel(state, { payload: { backward = false } }: PayloadAction<{ backward: boolean }>) {
       if (state.layout) {
         let lastPanelId: string | undefined;
@@ -96,4 +119,14 @@ const panelsSliceUT = createSlice({
 
 export const panelsSlice = panelsSliceUT as Slice<SliceState>;
 
-export const { setPanelsLayout, setActivePanel, setPanelState, focusNextPanel, focusPrevPanel, changeDir } = panelsSliceUT.actions;
+export const {
+  setPanelsLayout,
+  setActivePanel,
+  setPanelState,
+  setPanelItems,
+  setPanelCursorPos,
+  setPanelColumnsCount,
+  focusNextPanel,
+  focusPrevPanel,
+  changeDir,
+} = panelsSliceUT.actions;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import styled from "styled-components";
 
 import { ColumnDef, CursorStyle } from "../../types";
@@ -38,6 +38,14 @@ export function CondensedView({
 
   const columns = new Array(columnsCount);
 
+  const onMaxItemsCountChange = useCallback(
+    (maxCount: number) => {
+      setMaxItemsPerColumn(maxCount);
+      onMaxItemsPerColumnChanged?.(maxCount);
+    },
+    [onMaxItemsPerColumnChanged]
+  );
+
   for (let i = 0; i < columnsCount; i += 1) {
     columns.push(
       <Column
@@ -47,12 +55,7 @@ export function CondensedView({
         topMostPos={topMostPos + i * maxItemsPerColumn}
         cursorPos={cursorPos}
         cursorStyle={cursorStyle}
-        onMaxItemsCountChange={(maxCount) => {
-          if (i === 0) {
-            setMaxItemsPerColumn(maxCount);
-            onMaxItemsPerColumnChanged?.(maxCount);
-          }
-        }}
+        onMaxItemsCountChange={i ? onMaxItemsCountChange : undefined}
         selectItem={onItemClicked}
         activateItem={onItemActivated}
       />

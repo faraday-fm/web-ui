@@ -1,5 +1,5 @@
 import { Border } from "@components/Border/Border";
-import { setActivePanel, setPanelState } from "@features/panels/panelsSlice";
+import { setActivePanel } from "@features/panels/panelsSlice";
 import { useCommandContext } from "@hooks/useCommandContext";
 import { useFocused } from "@hooks/useFocused";
 import { useFs } from "@hooks/useFs";
@@ -9,7 +9,6 @@ import { QuickViewLayout } from "@types";
 import { append } from "@utils/urlUtils";
 import { useEffect, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
-import useResizeObserver from "use-resize-observer";
 
 const Root = styled.div`
   position: relative;
@@ -19,9 +18,11 @@ const Root = styled.div`
   grid-template-rows: minmax(0, 1fr) auto;
   overflow: hidden;
   user-select: initial;
-  -webkit-user-select: initial;
   & div {
     cursor: initial;
+  }
+  &:focus {
+    outline: none;
   }
 `;
 
@@ -49,13 +50,6 @@ const Content = styled.div`
   overflow: hidden;
 `;
 
-const EditorDiv = styled.div`
-  display: grid;
-  padding-top: calc(0.5rem);
-  border: 1px solid var(--color-11);
-  overflow: hidden;
-`;
-
 type QuickViewPanelProps = { layout: QuickViewLayout & { id: string } };
 
 export function QuickView({ layout }: QuickViewPanelProps) {
@@ -64,7 +58,6 @@ export function QuickView({ layout }: QuickViewPanelProps) {
   const monaco = useMonaco();
   const theme = useTheme();
   const [quickViewContent, setQuickViewContent] = useState<string>();
-  const { ref, width = 1, height = 1 } = useResizeObserver<HTMLDivElement>();
   const isActive = useAppSelector((state) => state.panels.activePanelId === id);
   const activePath = useAppSelector((state) => {
     const ap = state.panels.states[state.panels.activePanelId ?? ""];
@@ -101,21 +94,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
         },
       });
     }
-  }, [monaco, theme.filePanel]);
-
-  useEffect(() => {
-    dispatch(
-      setPanelState({
-        id,
-        state: {
-          items: [],
-          path: "",
-          cursorPos: { selected: 0, topmost: 0 },
-          view: { type: "condensed", columnDef: { name: "a", field: "a" }, columnsCount: 1 },
-        },
-      })
-    );
-  }, [dispatch, id]);
+  }, [monaco, theme.filePanel.bg, theme.filePanel.color]);
 
   useCommandContext("quickView.focus", focused);
 
@@ -152,32 +131,28 @@ export function QuickView({ layout }: QuickViewPanelProps) {
       <Border {...theme.filePanel.border}>
         <HeaderText isActive={isActive}>Quick View</HeaderText>
         <Content>
-          <EditorDiv ref={ref}>
-            {monaco && (
-              <Editor
-                theme="far-more"
-                path={activePath}
-                width={width}
-                height={height}
-                value={quickViewContent}
-                options={{
-                  readOnly: true,
-                  minimap: { enabled: false },
-                  lineNumbers: "off",
-                  renderLineHighlight: "none",
-                  scrollbar: { horizontal: "hidden", vertical: "hidden" },
-                  folding: false,
-                  lineNumbersMinChars: 0,
-                  lineDecorationsWidth: 0,
-                  overviewRulerBorder: false,
-                  codeLens: false,
-                  scrollBeyondLastLine: false,
-                  stickyScroll: { enabled: true },
-                  overviewRulerLanes: 0,
-                }}
-              />
-            )}
-          </EditorDiv>
+          {monaco && (
+            <Editor
+              theme="far-more"
+              path={activePath}
+              value={quickViewContent}
+              options={{
+                readOnly: true,
+                minimap: { enabled: false },
+                lineNumbers: "off",
+                renderLineHighlight: "none",
+                scrollbar: { horizontal: "hidden", vertical: "hidden" },
+                folding: false,
+                lineNumbersMinChars: 0,
+                lineDecorationsWidth: 0,
+                overviewRulerBorder: false,
+                codeLens: false,
+                scrollBeyondLastLine: false,
+                stickyScroll: { enabled: true },
+                overviewRulerLanes: 0,
+              }}
+            />
+          )}
           {/* <div className={classes.footerPanel}>123</div> */}
         </Content>
       </Border>

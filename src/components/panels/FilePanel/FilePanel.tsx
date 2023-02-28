@@ -38,8 +38,8 @@ const PanelRoot = styled.div`
   display: grid;
   overflow: hidden;
   outline: none;
-  ${(p) => p.theme.filePanel.extension}
   user-select: none;
+  ${(p) => p.theme.filePanel.extension}
 `;
 
 const PanelContent = styled.div`

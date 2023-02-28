@@ -2,6 +2,7 @@ import alias from "@rollup/plugin-alias";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
+import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 import path from "path";
 import { defineConfig } from "rollup";
@@ -45,6 +46,7 @@ export default defineConfig(() => {
         }),
         typescript({ tsconfig: "./tsconfig.json" }),
         json(),
+        // terser(),
       ],
     },
     {

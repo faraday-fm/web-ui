@@ -1,5 +1,5 @@
 import { FilePanel, FilePanelActions } from "@components/panels/FilePanel/FilePanel";
-import { setActivePanel, setPanelState } from "@features/panels/panelsSlice";
+import { setActivePanel, setPanelColumnsCount, setPanelCursorPos, setPanelItems, setPanelState } from "@features/panels/panelsSlice";
 import { useFs } from "@hooks/useFs";
 import { useAppDispatch, useAppSelector } from "@store";
 import { FilePanelLayout, FsEntry } from "@types";
@@ -30,9 +30,9 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
   const fs = useFs();
   const isActive = useAppSelector((state) => state.panels.activePanelId === id);
   const state = useAppSelector((state) => state.panels.states[id]);
-  const items = useMemo(() => state?.items ?? [], [state?.items]);
-  const cursorPos = useMemo(() => state?.cursorPos ?? { selected: 0, topmost: 0 }, [state?.cursorPos]);
 
+  const items = state?.items ?? [];
+  const cursorPos = state?.cursorPos ?? { selected: 0, topmost: 0 };
   const view = state?.view ?? layout.view;
 
   const { ref: rootRef, width } = useResizeObserver();
@@ -40,16 +40,20 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
   const columnsCount = width ? Math.ceil(width / 350) : undefined;
 
   useEffect(() => {
-    if (view.type === "condensed" && columnsCount && columnsCount !== view.columnsCount) {
-      dispatch(setPanelState({ id, state: { items, path, view: { ...view, columnsCount }, cursorPos } }));
+    if (view.type === "condensed" && columnsCount) {
+      dispatch(setPanelColumnsCount({ id, columnsCount }));
     }
-  }, [columnsCount, cursorPos, dispatch, id, items, path, view]);
+  }, [columnsCount, dispatch, id, view.type]);
 
   useEffect(() => {
     if (isActive) {
       panelRef.current?.focus();
     }
   }, [isActive]);
+
+  useEffect(() => {
+    dispatch(setPanelState({ id, state: { view: layout.view, cursorPos: { selected: 0, topmost: 0 }, items: [], path } }));
+  }, [dispatch, id, layout.view, path]);
 
   useEffect(() => {
     (async () => {
@@ -60,19 +64,19 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
           if (new URL(path).pathname !== "/") {
             items.unshift({ name: "..", isDir: true });
           }
-          dispatch(setPanelState({ id, state: { items, path, view, cursorPos: { selected: 0, topmost: 0 } } }));
+          dispatch(setPanelItems({ id, path, items, cursorPos: { selected: 0, topmost: 0 } }));
         } catch (err) {
           console.error(err);
         }
       }
     })();
-  }, [dispatch, fs, id, path, view]);
+  }, [dispatch, fs, id, path]);
 
   const onCursorPositionChange = useCallback(
     (newTopMostPos: number, newCursorPos: number) => {
-      dispatch(setPanelState({ id, state: { items, path, view, cursorPos: { selected: newCursorPos, topmost: newTopMostPos } } }));
+      dispatch(setPanelCursorPos({ id, cursorPos: { selected: newCursorPos, topmost: newTopMostPos } }));
     },
-    [dispatch, id, items, path, view]
+    [dispatch, id]
   );
 
   return (
