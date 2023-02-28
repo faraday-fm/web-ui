@@ -22,54 +22,54 @@ export class CombinedFsProvider implements FileSystemProvider {
     return provider.watch(url, listener, options);
   }
 
-  readDirectory(url: string) {
+  readDirectory(url: string, signal?: AbortSignal) {
     const provider = this.resolveProvider(url);
     if (!provider) {
       throw FileSystemError.FileNotFound();
     }
-    return provider.readDirectory(url);
+    return provider.readDirectory(url, signal);
   }
 
-  createDirectory(url: string) {
+  createDirectory(url: string, signal?: AbortSignal) {
     const provider = this.resolveProvider(url);
     if (!provider) {
       throw FileSystemError.FileNotFound();
     }
-    return provider.createDirectory(url);
+    return provider.createDirectory(url, signal);
   }
 
-  readFile(url: string) {
+  readFile(url: string, signal?: AbortSignal) {
     const provider = this.resolveProvider(url);
     if (!provider) {
       throw FileSystemError.FileNotFound();
     }
-    return provider.readFile(url);
+    return provider.readFile(url, signal);
   }
 
-  writeFile(url: string, content: Uint8Array, options: { create: boolean; overwrite: boolean }) {
+  writeFile(url: string, content: Uint8Array, options: { create: boolean; overwrite: boolean }, signal?: AbortSignal) {
     const provider = this.resolveProvider(url);
     if (!provider) {
       throw FileSystemError.FileNotFound();
     }
-    return provider.writeFile(url, content, options);
+    return provider.writeFile(url, content, options, signal);
   }
 
-  delete(url: string, options: { recursive: boolean }) {
+  delete(url: string, options: { recursive: boolean }, signal?: AbortSignal) {
     const provider = this.resolveProvider(url);
-    return provider.delete(url, options);
+    return provider.delete(url, options, signal);
   }
 
-  rename(oldUrl: string, newUrl: string, options: { overwrite: boolean }) {
+  rename(oldUrl: string, newUrl: string, options: { overwrite: boolean }, signal?: AbortSignal) {
     const provider = this.resolveProvider(oldUrl);
-    return provider.rename(oldUrl, newUrl, options);
+    return provider.rename(oldUrl, newUrl, options, signal);
   }
 
-  copy?(source: string, destination: string, options: { overwrite: boolean }) {
+  copy?(source: string, destination: string, options: { overwrite: boolean }, signal?: AbortSignal) {
     const provider = this.resolveProvider(source);
     if (!provider.copy) {
       throw FileSystemError.FileNotFound(source);
     }
-    return provider.copy(source, destination, options);
+    return provider.copy(source, destination, options, signal);
   }
 
   private resolveProvider(url: string) {

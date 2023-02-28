@@ -1,13 +1,13 @@
 import { Border } from "@components/Border/Border";
 import { setActivePanel } from "@features/panels/panelsSlice";
 import { useCommandContext } from "@hooks/useCommandContext";
+import { useFileContent } from "@hooks/useFileContent";
 import { useFocused } from "@hooks/useFocused";
-import { useFs } from "@hooks/useFs";
 import Editor, { useMonaco } from "@monaco-editor/react";
 import { useAppDispatch, useAppSelector } from "@store";
 import { QuickViewLayout } from "@types";
 import { append } from "@utils/urlUtils";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import styled, { useTheme } from "styled-components";
 
 const Root = styled.div`
@@ -46,7 +46,7 @@ const Content = styled.div`
   margin: 1px;
   border: 1px solid ${(p) => p.theme.filePanel.border.color};
   grid-template-rows: minmax(0, 1fr) auto;
-  padding: 1px 1px;
+  padding: 0.5ch 0 0 0.25ch;
   overflow: hidden;
 `;
 
@@ -57,7 +57,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
   const { id } = layout;
   const monaco = useMonaco();
   const theme = useTheme();
-  const [quickViewContent, setQuickViewContent] = useState<string>();
+  // const [quickViewContent, setQuickViewContent] = useState<string>();
   const isActive = useAppSelector((state) => state.panels.activePanelId === id);
   const activePath = useAppSelector((state) => {
     const ap = state.panels.states[state.panels.activePanelId ?? ""];
@@ -110,21 +110,16 @@ export function QuickView({ layout }: QuickViewPanelProps) {
     }
   }, [dispatch, isActive]);
 
-  const fs = useFs();
-  useEffect(() => {
-    (async () => {
-      if (activePath) {
-        try {
-          const content = await fs.readFile(decodeURI(activePath));
-          setQuickViewContent(new TextDecoder().decode(content));
-        } catch {
-          setQuickViewContent("Cannot load the file.");
-        }
-      } else {
-        setQuickViewContent("");
-      }
-    })();
-  }, [activePath, fs]);
+  const { content, error } = useFileContent(decodeURI(activePath ?? ""));
+
+  let quickViewContent: string;
+  if (error) {
+    quickViewContent = String(error);
+  } else if (content !== undefined) {
+    quickViewContent = new TextDecoder().decode(content);
+  } else {
+    quickViewContent = "Loading...";
+  }
 
   return (
     <Root ref={panelRootRef} tabIndex={0}>
