@@ -56,6 +56,8 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
           dispatch(setPanelItems({ id, path, items, cursorPos: { selected: 0, topmost: 0 } }));
         } catch (err) {
           console.error(err);
+          const items = [{ name: "..", isDir: true }];
+          dispatch(setPanelItems({ id, path, items, cursorPos: { selected: 0, topmost: 0 } }));
         }
       }
     })();

@@ -31,7 +31,7 @@ const HeaderText = styled.div<{ isActive: boolean }>`
   top: 0;
   left: 50%;
   transform: translate(-50%, 0);
-  padding: 0 0.5rem;
+  padding: 0 0.5ch;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -46,7 +46,7 @@ const Content = styled.div`
   margin: 1px;
   border: 1px solid ${(p) => p.theme.filePanel.border.color};
   grid-template-rows: minmax(0, 1fr) auto;
-  padding: 0.5ch 0 0 0.25ch;
+  padding: 1ch 0 0 0.25ch;
   overflow: hidden;
 `;
 
@@ -110,7 +110,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
     }
   }, [dispatch, isActive]);
 
-  const { content, error } = useFileContent(decodeURI(activePath ?? ""));
+  const { content, error } = useFileContent(activePath ?? "");
 
   let quickViewContent: string;
   if (error) {
