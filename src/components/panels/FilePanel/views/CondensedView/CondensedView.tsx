@@ -55,7 +55,7 @@ export function CondensedView({
         topMostPos={topMostPos + i * maxItemsPerColumn}
         cursorPos={cursorPos}
         cursorStyle={cursorStyle}
-        onMaxItemsCountChange={i ? onMaxItemsCountChange : undefined}
+        onMaxItemsCountChange={i === 0 ? onMaxItemsCountChange : undefined}
         selectItem={onItemClicked}
         activateItem={onItemActivated}
       />

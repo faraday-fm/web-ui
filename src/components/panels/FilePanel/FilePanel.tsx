@@ -178,7 +178,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
 
     const executeBuiltInCommand = useExecuteBuiltInCommand();
 
-    const onResize = useCallback((maxItemsPerColumn: number) => setMaxItemsPerColumn(maxItemsPerColumn), []);
+    const onMaxItemsPerColumnChanged = useCallback((maxItemsPerColumn: number) => setMaxItemsPerColumn(maxItemsPerColumn), []);
     const onItemClicked = useCallback((pos: number) => onCursorPositionChange(topMostPos, pos), [onCursorPositionChange, topMostPos]);
     const onItemActivated = useCallback(() => executeBuiltInCommand("open"), [executeBuiltInCommand]);
 
@@ -229,7 +229,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
                     cursorPos={cursorPos}
                     onItemClicked={onItemClicked}
                     onItemActivated={onItemActivated}
-                    onMaxVisibleItemsChanged={onResize}
+                    onMaxVisibleItemsChanged={onMaxItemsPerColumnChanged}
                     columnDefs={view.columnDefs}
                   />
                 ) : (
@@ -241,7 +241,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
                     columnsCount={columnsCount}
                     onItemClicked={onItemClicked}
                     onItemActivated={onItemActivated}
-                    onMaxItemsPerColumnChanged={onResize}
+                    onMaxItemsPerColumnChanged={onMaxItemsPerColumnChanged}
                     columnDef={view.columnDef}
                   />
                 )}
