@@ -1,4 +1,6 @@
-import { createContext, PropsWithChildren, useContext } from "react";
+import { useElementSize } from "@hooks/useElementSize";
+import { createContext, PropsWithChildren, useContext, useLayoutEffect, useRef, useState } from "react";
+import styled from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
 const GlyphSizeContext = createContext({ width: 8, height: 16 });
@@ -7,25 +9,24 @@ export function useGlyphSize() {
   return useContext(GlyphSizeContext);
 }
 
+const WGlyph = styled.div`
+  position: absolute;
+  opacity: 0;
+  user-select: none;
+  pointer-events: none;
+  left: -1000px;
+  top: -1000px;
+`;
+
 export function GlyphSizeProvider({ children }: PropsWithChildren<unknown>) {
-  const { ref, width = 8, height = 16 } = useResizeObserver<HTMLDivElement>({ round: (n) => n });
+  const ref = useRef<HTMLDivElement>(null);
+  const size = useElementSize(ref, { width: 8, height: 16 });
+
   return (
-    // eslint-disable-next-line react/jsx-no-constructed-context-values
-    <GlyphSizeContext.Provider value={{ width, height }}>
-      <div
-        aria-hidden
-        ref={ref}
-        style={{
-          position: "absolute",
-          opacity: 0,
-          userSelect: "none",
-          pointerEvents: "none",
-          left: -1000,
-          top: -1000,
-        }}
-      >
+    <GlyphSizeContext.Provider value={size}>
+      <WGlyph aria-hidden ref={ref}>
         W
-      </div>
+      </WGlyph>
       {children}
     </GlyphSizeContext.Provider>
   );

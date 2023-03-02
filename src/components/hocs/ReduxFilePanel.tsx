@@ -43,12 +43,12 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
 
   useEffect(() => {
     const { path, id, view } = layout;
-    dispatch(setPanelState({ id, state: { view, cursorPos: { selected: 0, topmost: 0 }, items: [], path } }));
+    dispatch(setPanelState({ id, state: { view, cursorPos: { selected: 0, topmost: 0 }, items: [], url: path } }));
   }, [dispatch, layout]);
 
   useEffect(() => {
     (async () => {
-      const path = state?.path;
+      const path = state?.url;
       if (path) {
         try {
           const entries = await fs.readDirectory(path);
@@ -64,7 +64,7 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
         }
       }
     })();
-  }, [dispatch, fs, id, state?.path]);
+  }, [dispatch, fs, id, state?.url]);
 
   const onCursorPositionChange = useCallback(
     (newTopMostPos: number, newCursorPos: number) => {
@@ -84,7 +84,7 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
         cursorPos={cursorPos.selected}
         topMostPos={cursorPos.topmost}
         items={items}
-        path={state ? state.path : "file:/"}
+        path={state ? state.url : "file:/"}
         view={view}
       />
     </Root>

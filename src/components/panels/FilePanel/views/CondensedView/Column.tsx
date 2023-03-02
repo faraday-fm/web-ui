@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { Border } from "@components/Border/Border";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
+import { useElementSize } from "@hooks/useElementSize";
 import { clamp } from "@utils/numberUtils";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
@@ -63,9 +64,11 @@ const BottomScroller = styled.div`
 `;
 
 export function Column({ items, topMostPos, cursorPos, cursorStyle, columnDef, onMaxItemsCountChange, selectItem, activateItem }: ColumnProps) {
-  const { ref, height } = useResizeObserver<HTMLDivElement>({ round: (n) => n });
+  const ref = useRef<HTMLDivElement>(null);
   const { height: glyphHeight } = useGlyphSize();
   const [autoscroll, setAutoscroll] = useState(0);
+  const { height } = useElementSize(ref);
+
   const maxItemsCount = height ? Math.max(1, Math.trunc(height / glyphHeight)) : undefined;
 
   useEffect(() => {

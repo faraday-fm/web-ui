@@ -3,10 +3,11 @@ import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
 import { FsEntry } from "@features/fs/types";
 import { useCommandBindings, useExecuteBuiltInCommand } from "@hooks/useCommandBinding";
 import { useCommandContext } from "@hooks/useCommandContext";
+import { useElementSize } from "@hooks/useElementSize";
 import { useFocused } from "@hooks/useFocused";
 import { FilePanelView } from "@types";
 import { clamp } from "@utils/numberUtils";
-import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
@@ -97,12 +98,12 @@ const FileInfoPanel = styled.div`
 export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
   ({ items, topMostPos, cursorPos, view, path, showCursorWhenBlurred, onFocus, onCursorPositionChange, onDirUp }, ref) => {
     const panelRootRef = useRef<HTMLDivElement>(null);
+    const { width } = useElementSize(panelRootRef);
     const [maxItemsPerColumn, setMaxItemsPerColumn] = useState<number>();
 
-    const { width } = useResizeObserver({ ref: panelRootRef });
-    const columnsCount = width ? Math.ceil(width / 350) : 1;
+    const columnsCount = width ? Math.ceil(width / 350) : undefined;
 
-    const displayedItems = maxItemsPerColumn ? Math.min(items.length, maxItemsPerColumn * columnsCount) : 1;
+    const displayedItems = columnsCount && maxItemsPerColumn ? Math.min(items.length, maxItemsPerColumn * columnsCount) : 1;
 
     function clampPos() {
       cursorPos = clamp(0, cursorPos, items.length - 1);
@@ -203,6 +204,10 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
     const pathParts = decodedPath.split("/").filter((x) => x);
     if (pathParts.length === 0) {
       pathParts.push("/");
+    }
+
+    if (!columnsCount) {
+      return <PanelRoot ref={panelRootRef} tabIndex={0} onFocus={() => onFocus?.()} />;
     }
 
     return (

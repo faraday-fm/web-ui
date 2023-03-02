@@ -10,6 +10,7 @@ export function isRoot(url: URL | string) {
 }
 
 export function append(url: URL | string, name: string, isDir: boolean) {
+  name = encodeURI(name);
   return new URL(isDir ? `${name}/` : name, appendSlash(url));
 }
 

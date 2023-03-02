@@ -1,4 +1,4 @@
-import { PropsWithChildren, useRef, useState } from "react";
+import { PropsWithChildren, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
@@ -52,14 +52,15 @@ const Li = styled.div<{ showOverflow: boolean; splitter: string }>`
 export function BreadcrumbItem({ children }: PropsWithChildren) {
   const ref = useRef<HTMLDivElement>(null);
   const [showOverflowAdorner, setShowOverflowAdorner] = useState(false);
-  useResizeObserver({
-    ref,
-    onResize: () => {
-      if (ref.current) {
-        setShowOverflowAdorner(ref.current.scrollWidth - ref.current.clientWidth > 0);
-      }
-    },
-  });
+
+  const updateOverflowAdornerVisibility = () => {
+    if (ref.current) {
+      setShowOverflowAdorner(ref.current.scrollWidth - ref.current.clientWidth > 0);
+    }
+  };
+
+  useLayoutEffect(updateOverflowAdornerVisibility, []);
+  useResizeObserver({ ref, onResize: updateOverflowAdornerVisibility });
 
   return (
     <Li ref={ref} splitter="/" showOverflow={showOverflowAdorner}>
