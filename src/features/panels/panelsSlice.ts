@@ -1,5 +1,6 @@
+import { FsEntry } from "@features/fs/types";
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { FilePanelView, FsEntry, PanelsLayout } from "@types";
+import { FilePanelView, PanelsLayout } from "@types";
 import { traverseLayout } from "@utils/layout";
 import { append, truncateLastDir } from "@utils/urlUtils";
 
@@ -115,10 +116,23 @@ const panelsSliceUT = createSlice({
         }
       });
     },
+    popDir(state, { payload: id }: PayloadAction<string>) {
+      if (!state.layout) return;
+      const panelsStack = state.states[id];
+      if (panelsStack) {
+        if (panelsStack.length > 1) {
+          panelsStack.pop();
+        } else {
+          const s = panelsStack[panelsStack.length - 1];
+          s.path = truncateLastDir(s.path).href;
+          s.cursorPos.selected = 0;
+        }
+      }
+    },
   },
 });
 
 export const panelsSlice = panelsSliceUT as Slice<SliceState>;
 
-export const { setPanelsLayout, setActivePanel, setPanelState, setPanelItems, setPanelCursorPos, focusNextPanel, focusPrevPanel, changeDir } =
+export const { setPanelsLayout, setActivePanel, setPanelState, setPanelItems, setPanelCursorPos, focusNextPanel, focusPrevPanel, changeDir, popDir } =
   panelsSliceUT.actions;

@@ -1,20 +1,19 @@
-import { Disposable, FileChangeEvent, FileSystemProvider, FsEntry } from "@types";
-
 import { FileSystemError } from "./FileSystemError";
+import { FileChangeEvent, FileSystemProvider, FsEntry } from "./types";
 
 type Dir = FsEntry & { isDir: true; isFile: false; children: DirOrFile[] };
 type File = FsEntry & { isFile: true; isDir: false; content: Uint8Array };
 
 type DirOrFile = Dir | File;
 
-class InMemoryFsProvider implements FileSystemProvider {
+export class InMemoryFsProvider implements FileSystemProvider {
   private root: Dir;
 
   constructor() {
     this.root = { name: "<root>", isDir: true, isFile: false, children: [] };
   }
 
-  watch(url: string, listener: (events: FileChangeEvent[]) => void, options: { recursive: boolean; excludes: string[] }): Disposable {
+  watch(url: string, listener: (events: FileChangeEvent[]) => void, options: { recursive: boolean; excludes: string[] }) {
     throw new Error("Method not implemented.");
   }
 
@@ -37,7 +36,7 @@ class InMemoryFsProvider implements FileSystemProvider {
     return currDir.children;
   }
 
-  createDirectory(url: string): void {
+  createDirectory(url: string) {
     const parts = decodeURI(new URL(url).pathname.substring(1)).split("/");
     let currDir: Dir = this.root;
     const newDirName = parts[parts.length - 1];
@@ -60,7 +59,7 @@ class InMemoryFsProvider implements FileSystemProvider {
     currDir.children.push({ isDir: true, isFile: false, name: newDirName, children: [] });
   }
 
-  readFile(url: string): Uint8Array {
+  readFile(url: string) {
     const parts = decodeURI(new URL(url).pathname.substring(1)).split("/");
     let currDir: Dir = this.root;
     const fileName = parts[parts.length - 1];
@@ -84,7 +83,7 @@ class InMemoryFsProvider implements FileSystemProvider {
     return file.content;
   }
 
-  writeFile(url: string, content: Uint8Array, options: { create: boolean; overwrite: boolean }): void {
+  writeFile(url: string, content: Uint8Array, options: { create: boolean; overwrite: boolean }) {
     const parts = decodeURI(new URL(url).pathname.substring(1)).split("/");
     let currDir: Dir = this.root;
     const fileName = parts[parts.length - 1];
@@ -116,19 +115,15 @@ class InMemoryFsProvider implements FileSystemProvider {
     }
   }
 
-  delete(url: string, options: { recursive: boolean }): void {
+  delete(url: string, options: { recursive: boolean }) {
     throw new Error("Method not implemented.");
   }
 
-  rename(oldUrl: string, newUrl: string, options: { overwrite: boolean }): void {
+  rename(oldUrl: string, newUrl: string, options: { overwrite: boolean }) {
     throw new Error("Method not implemented.");
   }
 
-  copy?(source: string, destination: string, options: { overwrite: boolean }): void {
+  copy?(source: string, destination: string, options: { overwrite: boolean }) {
     throw new Error("Method not implemented.");
   }
-}
-
-export function createInMemoryFs(): FileSystemProvider {
-  return new InMemoryFsProvider();
 }

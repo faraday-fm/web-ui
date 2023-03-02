@@ -1,4 +1,4 @@
-import { FsEntry } from "@types";
+import { FsEntry } from "@features/fs/types";
 import { formatDateTime } from "@utils/dateUtils";
 import { bytesToSize } from "@utils/numberUtils";
 import styled from "styled-components";

@@ -1,4 +1,4 @@
-import { FsEntry } from "@types";
+import { FsEntry } from "@features/fs/types";
 
 export type ColumnDef = {
   name: string;

@@ -1,7 +1,7 @@
 [
-  { "key": "Tab", "command": "focusNextPanel", "when": "filePanel.focus || quickView.focus"},
-  { "key": "Shift+Tab", "command": "focusPrevPanel", "when": "filePanel.focus || quickView.focus"},
-  { "key": "Escape", "command": "focusActivePanel", "when": "terminal.focus"},
+  { "key": "Tab", "command": "focusNextPanel", "when": "filePanel.focus || quickView.focus" },
+  { "key": "Shift+Tab", "command": "focusPrevPanel", "when": "filePanel.focus || quickView.focus" },
+  { "key": "Escape", "command": "focusActivePanel", "when": "terminal.focus" },
   { "key": "ArrowUp", "command": "cursorUp", "when": "filePanel.focus" },
   { "key": "ArrowDown", "command": "cursorDown", "when": "filePanel.focus" },
   { "key": "ArrowLeft", "command": "cursorLeft", "when": "filePanel.focus" },
@@ -13,6 +13,7 @@
   { "key": "Enter", "command": "open", "when": "filePanel.focus" },
   { "key": "Space", "command": "focusTerminal", "when": "filePanel.focus" },
   { "key": "Shift+Enter", "command": "openShell", "when": "filePanel.focus && isDesktop" },
+  { "key": "Ctrl+PageUp", "command": "dirUp", "when": "filePanel.focus" },
 
   { "key": "ArrowUp", "command": "cursorEnd", "when": "filePanel.focus && filePanel.firstItem" },
   { "key": "ArrowDown", "command": "cursorStart", "when": "filePanel.focus && filePanel.lastItem" },

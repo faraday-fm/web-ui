@@ -1,42 +1,34 @@
+import { ContextVariables, setVariables } from "@features/commands/commandsSlice";
+import { useAppDispatch, useAppSelector } from "@store";
 import { Node, parser } from "@utils/whenClauseParser";
-import React, { PropsWithChildren, useContext, useEffect, useId, useState } from "react";
+import { useCallback, useEffect, useId } from "react";
 
-type CommandContext = Record<string, Record<string, unknown>>;
-
-const context = React.createContext<CommandContext>({});
-
-export function CommandContextProvider({ children }: PropsWithChildren) {
-  const [ctx] = useState<CommandContext>({});
-  return <context.Provider value={ctx}>{children}</context.Provider>;
-}
-
-export function useCommandContext(variables: string[], isActive?: boolean): void;
-export function useCommandContext(variable: string, isActive?: boolean): void;
-export function useCommandContext(variables: Record<string, unknown>, isActive?: boolean): void;
-export function useCommandContext(arg: unknown, isActive?: boolean): void {
-  const ctx = useContext(context);
+export function useCommandContext(variables: string | string[] | Record<string, unknown>, isActive?: boolean): void {
   const id = useId();
+  const dispatch = useAppDispatch();
+  const varsStr = JSON.stringify(variables);
   useEffect(() => {
-    if (!isActive) {
-      delete ctx[id];
-      return undefined;
-    }
-    let variables: Record<string, unknown>;
-    if (typeof arg === "string") {
-      variables = { [arg]: true };
-    } else if (Array.isArray(arg)) {
-      variables = Object.fromEntries(arg.map((v) => [v, true]));
+    if (isActive !== false) {
+      let vars: Record<string, unknown>;
+      const variablesCopy = JSON.parse(varsStr);
+      if (typeof variablesCopy === "string") {
+        vars = { [variablesCopy]: true };
+      } else if (Array.isArray(variablesCopy)) {
+        vars = Object.fromEntries(variablesCopy.map((v) => [v, true]));
+      } else {
+        vars = variablesCopy;
+      }
+      dispatch(setVariables({ id, variables: vars }));
     } else {
-      variables = arg as Record<string, unknown>;
+      dispatch(setVariables({ id, variables: undefined }));
     }
-    ctx[id] = variables;
     return () => {
-      delete ctx[id];
+      dispatch(setVariables({ id, variables: undefined }));
     };
-  }, [id, isActive, arg, ctx]);
+  }, [dispatch, id, isActive, varsStr]);
 }
 
-function getContextValue(ctx: CommandContext, variable: string) {
+function getContextValue(ctx: ContextVariables, variable: string) {
   let r;
   for (const v of Object.values(ctx)) {
     const val = v[variable];
@@ -51,7 +43,7 @@ function getContextValue(ctx: CommandContext, variable: string) {
   return r;
 }
 
-function visitNode(ctx: CommandContext, node: Node, stack: unknown[]) {
+function visitNode(ctx: ContextVariables, node: Node, stack: unknown[]) {
   switch (node._) {
     case "c":
       stack.push(node.val);
@@ -81,19 +73,22 @@ function visitNode(ctx: CommandContext, node: Node, stack: unknown[]) {
   }
 }
 
-function evaluate(ctx: CommandContext, node: Node) {
+function evaluate(ctx: ContextVariables, node: Node) {
   const stack: [] = [];
   visitNode(ctx, node, stack);
   return !!stack.pop();
 }
 
 export function useIsInCommandContext() {
-  const ctx = useContext(context);
-  return (expression: string) => {
-    const ast = parser.parse(expression);
-    if (ast.status) {
-      return evaluate(ctx, ast.value);
-    }
-    return false;
-  };
+  const ctx = useAppSelector((state) => state.commands.variables);
+  return useCallback(
+    (expression: string) => {
+      const ast = parser.parse(expression);
+      if (ast.status) {
+        return evaluate(ctx, ast.value);
+      }
+      return false;
+    },
+    [ctx]
+  );
 }

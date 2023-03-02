@@ -1,0 +1,29 @@
+import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
+
+export type ContextVariables = Record<string, Record<string, unknown>>;
+
+type SliceState = {
+  variables: ContextVariables;
+};
+
+const commandsSliceUT = createSlice({
+  name: "commands",
+  initialState: {
+    variables: {},
+  } as SliceState,
+  reducers: {
+    setVariables(state, { payload: { id, variables } }: PayloadAction<{ id: string; variables?: Record<string, unknown> }>) {
+      if (variables) {
+        if (JSON.stringify(state.variables[id]) !== JSON.stringify(variables)) {
+          state.variables[id] = variables;
+        }
+      } else if (state.variables[id] !== undefined) {
+        delete state.variables[id];
+      }
+    },
+  },
+});
+
+export const commandsSlice = commandsSliceUT as Slice<SliceState>;
+
+export const { setVariables } = commandsSliceUT.actions;

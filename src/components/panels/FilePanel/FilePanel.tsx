@@ -1,9 +1,10 @@
 import { Border } from "@components/Border/Border";
 import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
+import { FsEntry } from "@features/fs/types";
 import { useCommandBindings, useExecuteBuiltInCommand } from "@hooks/useCommandBinding";
 import { useCommandContext } from "@hooks/useCommandContext";
 import { useFocused } from "@hooks/useFocused";
-import { FilePanelView, FsEntry } from "@types";
+import { FilePanelView } from "@types";
 import { clamp } from "@utils/numberUtils";
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
@@ -20,10 +21,11 @@ export type FilePanelProps = {
   topMostPos: number;
   cursorPos: number;
   view: FilePanelView;
-  title?: string;
+  path: string;
   showCursorWhenBlurred?: boolean;
   onFocus?: () => void;
   onCursorPositionChange: (newTopMostPos: number, newCursorPos: number) => void;
+  onDirUp?: () => void;
 };
 
 export type FilePanelActions = {
@@ -93,7 +95,7 @@ const FileInfoPanel = styled.div`
 `;
 
 export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
-  ({ items, topMostPos, cursorPos, view, title, showCursorWhenBlurred, onFocus, onCursorPositionChange }, ref) => {
+  ({ items, topMostPos, cursorPos, view, path, showCursorWhenBlurred, onFocus, onCursorPositionChange, onDirUp }, ref) => {
     const panelRootRef = useRef<HTMLDivElement>(null);
     const [maxItemsPerColumn, setMaxItemsPerColumn] = useState<number>();
 
@@ -172,6 +174,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
         cursorEnd: () => moveCursorToPos(items.length - 1),
         cursorPageUp: () => moveCursorPage("up"),
         cursorPageDown: () => moveCursorPage("down"),
+        dirUp: () => onDirUp?.(),
       },
       focused
     );
@@ -180,7 +183,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
 
     const onMaxItemsPerColumnChanged = useCallback((maxItemsPerColumn: number) => setMaxItemsPerColumn(maxItemsPerColumn), []);
     const onItemClicked = useCallback((pos: number) => onCursorPositionChange(topMostPos, pos), [onCursorPositionChange, topMostPos]);
-    const onItemActivated = useCallback(() => executeBuiltInCommand("open"), [executeBuiltInCommand]);
+    const onItemActivated = useCallback(() => executeBuiltInCommand("open", { path }), [executeBuiltInCommand, path]);
 
     let cursorStyle: CursorStyle;
     if (focused) {
@@ -196,7 +199,8 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
     const bytesCount = useMemo(() => items.reduce((acc, item) => acc + (item.size ?? 0), 0), [items]);
     const filesCount = useMemo(() => items.reduce((acc, item) => acc + (item.isFile ? 1 : 0), 0), [items]);
 
-    const pathParts = (title ?? "").split("/").filter((x) => x);
+    const decodedPath = decodeURI(new URL(path).pathname);
+    const pathParts = decodedPath.split("/").filter((x) => x);
     if (pathParts.length === 0) {
       pathParts.push("/");
     }

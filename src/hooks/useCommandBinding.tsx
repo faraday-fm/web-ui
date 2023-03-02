@@ -15,6 +15,7 @@ export type BuiltInCommand =
   | "cursorEnd"
   | "cursorPageUp"
   | "cursorPageDown"
+  | "dirUp"
   | "focusNextPanel"
   | "focusPrevPanel"
   | "focusActivePanel"

@@ -1,7 +1,6 @@
 import { Border } from "@components/Border/Border";
 import { setActivePanel } from "@features/panels/panelsSlice";
 import { useCommandContext } from "@hooks/useCommandContext";
-import { useDeferred } from "@hooks/useDeferred";
 import { useFileContent } from "@hooks/useFileContent";
 import { useFocused } from "@hooks/useFocused";
 import Editor, { useMonaco } from "@monaco-editor/react";
@@ -92,6 +91,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
     }
   }, [monaco, theme.filePanel.bg, theme.filePanel.color]);
 
+  useCommandContext("quickView.visible");
   useCommandContext("quickView.focus", focused);
 
   useEffect(() => {

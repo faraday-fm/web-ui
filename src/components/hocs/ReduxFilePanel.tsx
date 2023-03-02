@@ -1,8 +1,9 @@
 import { FilePanel, FilePanelActions } from "@components/panels/FilePanel/FilePanel";
-import { setActivePanel, setPanelCursorPos, setPanelItems, setPanelState } from "@features/panels/panelsSlice";
+import { FsEntry } from "@features/fs/types";
+import { popDir, setActivePanel, setPanelCursorPos, setPanelItems, setPanelState } from "@features/panels/panelsSlice";
 import { useFs } from "@hooks/useFs";
 import { selectPanelState, useAppDispatch, useAppSelector } from "@store";
-import { FilePanelLayout, FsEntry } from "@types";
+import { FilePanelLayout } from "@types";
 import { useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
 
@@ -72,10 +73,6 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
     [dispatch, id]
   );
 
-  if (!state) {
-    return null;
-  }
-
   return (
     <Root>
       <FilePanel
@@ -83,10 +80,11 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
         showCursorWhenBlurred={isActive}
         onFocus={() => dispatch(setActivePanel(id))}
         onCursorPositionChange={onCursorPositionChange}
+        onDirUp={() => dispatch(popDir(id))}
         cursorPos={cursorPos.selected}
         topMostPos={cursorPos.topmost}
         items={items}
-        title={decodeURI(new URL(state.path).pathname)}
+        path={state ? state.path : "file:/"}
         view={view}
       />
     </Root>

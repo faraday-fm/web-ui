@@ -1,5 +1,6 @@
 import { ReduxFilePanel } from "@components/hocs/ReduxFilePanel";
 import { QuickView } from "@components/panels/QuickView/QuickView";
+import { useIsInCommandContext } from "@hooks/useCommandContext";
 import { PanelsLayout } from "@types";
 import styled from "styled-components";
 
@@ -8,7 +9,7 @@ type LayoutContainerProps = {
   direction: "h" | "v";
 };
 
-const LayoutRow = styled.div<{ dir: "h" | "v" }>`
+const Row = styled.div<{ dir: "h" | "v" }>`
   width: 100%;
   display: flex;
   flex-direction: ${(p) => (p.dir === "h" ? "row" : "column")};
@@ -22,16 +23,20 @@ const FlexPanel = styled.div`
 `;
 
 export function LayoutContainer({ layout, direction }: LayoutContainerProps) {
+  const isInCommandContext = useIsInCommandContext();
+  if (layout.when && !isInCommandContext(layout.when)) {
+    return <div>123</div>;
+  }
   switch (layout.type) {
     case "row":
       return (
-        <LayoutRow dir={direction}>
+        <Row dir={direction}>
           {layout.children.map((l) => (
             <FlexPanel key={l.id} style={{ flexGrow: l.flex ?? 1 }}>
               <LayoutContainer layout={l} direction={direction === "h" ? "v" : "h"} />
             </FlexPanel>
           ))}
-        </LayoutRow>
+        </Row>
       );
     case "file-panel":
       return <ReduxFilePanel layout={layout} />;
