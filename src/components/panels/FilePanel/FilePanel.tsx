@@ -7,9 +7,10 @@ import { useElementSize } from "@hooks/useElementSize";
 import { useFocused } from "@hooks/useFocused";
 import { FilePanelView } from "@types";
 import { clamp } from "@utils/numberUtils";
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { getPathName } from "@utils/urlUtils";
+import { List } from "list";
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
-import useResizeObserver from "use-resize-observer";
 
 import { Breadcrumb } from "../../Breadcrumb/Breadcrumb";
 import { FileInfoFooter } from "./FileInfoFooter/FileInfoFooter";
@@ -18,7 +19,7 @@ import { CondensedView } from "./views/CondensedView/CondensedView";
 import { FullView } from "./views/FullView/FullView";
 
 export type FilePanelProps = {
-  items: FsEntry[];
+  items: List<FsEntry>;
   topMostPos: number;
   cursorPos: number;
   view: FilePanelView;
@@ -200,7 +201,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
     const bytesCount = useMemo(() => items.reduce((acc, item) => acc + (item.size ?? 0), 0), [items]);
     const filesCount = useMemo(() => items.reduce((acc, item) => acc + (item.isFile ? 1 : 0), 0), [items]);
 
-    const decodedPath = decodeURI(new URL(path).pathname);
+    const decodedPath = getPathName(path);
     const pathParts = decodedPath.split("/").filter((x) => x);
     if (pathParts.length === 0) {
       pathParts.push("/");
@@ -257,7 +258,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
               </PanelColumns>
               <FileInfoPanel>
                 <Border {...theme.filePanel.fileInfo.border}>
-                  <FileInfoFooter file={items[cursorPos]} />
+                  <FileInfoFooter file={items.nth(cursorPos)} />
                 </Border>
               </FileInfoPanel>
               <PanelFooter>

@@ -3,6 +3,7 @@ import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
 import { FilePanelView, PanelsLayout } from "@types";
 import { traverseLayout } from "@utils/layout";
 import { append, truncateLastDir } from "@utils/urlUtils";
+import { empty, List } from "list";
 
 type CursorPosition = {
   selected: number;
@@ -11,7 +12,7 @@ type CursorPosition = {
 
 export type PanelState = {
   url: string;
-  items: FsEntry[];
+  items: List<FsEntry>;
   cursorPos: CursorPosition;
   view: FilePanelView;
 };
@@ -37,7 +38,7 @@ const panelsSliceUT = createSlice({
     setPanelState(state, { payload }: PayloadAction<{ id: string; state: PanelState }>) {
       state.states[payload.id] = [payload.state];
     },
-    setPanelItems(state, { payload: { id, items } }: PayloadAction<{ id: string; items: FsEntry[] }>) {
+    setPanelItems(state, { payload: { id, items } }: PayloadAction<{ id: string; items: List<FsEntry> }>) {
       const panelsStack = state.states[id];
       if (panelsStack && panelsStack.length > 0) {
         const s = panelsStack[panelsStack.length - 1];
@@ -95,8 +96,8 @@ const panelsSliceUT = createSlice({
           if (panelsStack) {
             const s = panelsStack[panelsStack.length - 1];
             const selectedItemPos = s.cursorPos.selected;
-            const selectedItem = s.items[selectedItemPos];
-            if (selectedItem.isDir) {
+            const selectedItem = s.items.nth(selectedItemPos);
+            if (selectedItem?.isDir) {
               if (selectedItem.name === "..") {
                 if (panelsStack.length > 1) {
                   panelsStack.pop();
@@ -107,7 +108,7 @@ const panelsSliceUT = createSlice({
                 panelsStack.push({
                   url: append(s.url, selectedItem.name, true).href,
                   cursorPos: { selected: 0, topmost: 0 },
-                  items: [],
+                  items: empty(),
                   view: panel.view,
                 });
               }

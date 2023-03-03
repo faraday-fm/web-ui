@@ -1,5 +1,7 @@
+import { append, getPathName } from "@utils/urlUtils";
+
 import { FileSystemError } from "./FileSystemError";
-import { FileChangeEvent, FileSystemProvider, FsEntry } from "./types";
+import { FileChangeEvent, FileChangeType, FileSystemProvider, FsEntry } from "./types";
 
 type Dir = FsEntry & { isDir: true; isFile: false; children: DirOrFile[] };
 type File = FsEntry & { isFile: true; isDir: false; content: Uint8Array };
@@ -14,11 +16,13 @@ export class InMemoryFsProvider implements FileSystemProvider {
   }
 
   watch(url: string, listener: (events: FileChangeEvent[]) => void, options: { recursive: boolean; excludes: string[] }) {
-    throw new Error("Method not implemented.");
+    const entries = this.readDirectory(url);
+    listener(entries.map((e) => ({ type: FileChangeType.Created, entry: e, url: append(url, e.name, false).href })));
+    listener([{ type: "ready" }]);
   }
 
   readDirectory(url: string): FsEntry[] {
-    const { pathname } = new URL(url);
+    const pathname = getPathName(url);
     const parts = decodeURI(pathname.substring(1, pathname.length - (pathname.endsWith("/") ? 1 : 0))).split("/");
     let currDir: Dir = this.root;
     parts
@@ -37,7 +41,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
   }
 
   createDirectory(url: string) {
-    const parts = decodeURI(new URL(url).pathname.substring(1)).split("/");
+    const parts = getPathName(url).substring(1).split("/");
     let currDir: Dir = this.root;
     const newDirName = parts[parts.length - 1];
     parts
@@ -60,7 +64,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
   }
 
   readFile(url: string) {
-    const parts = decodeURI(new URL(url).pathname.substring(1)).split("/");
+    const parts = getPathName(url).substring(1).split("/");
     let currDir: Dir = this.root;
     const fileName = parts[parts.length - 1];
     parts.slice(0, parts.length - 1).forEach((part) => {
@@ -84,7 +88,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
   }
 
   writeFile(url: string, content: Uint8Array, options: { create: boolean; overwrite: boolean }) {
-    const parts = decodeURI(new URL(url).pathname.substring(1)).split("/");
+    const parts = getPathName(url).substring(1).split("/");
     let currDir: Dir = this.root;
     const fileName = parts[parts.length - 1];
     parts.slice(0, parts.length - 1).forEach((part) => {

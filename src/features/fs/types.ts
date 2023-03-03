@@ -16,10 +16,13 @@ export enum FileChangeType {
   Deleted = 3,
 }
 
-export type FileChangeEvent = {
-  type: FileChangeType;
-  url: string;
-};
+export type FileChangeEvent =
+  | {
+      type: FileChangeType;
+      url: string;
+      entry: FsEntry;
+    }
+  | { type: "ready" };
 
 export type FileSystemProvider = {
   watch(

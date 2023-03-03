@@ -1,10 +1,11 @@
+import { List } from "list";
 import styled from "styled-components";
 
 import { ColumnDef, CursorStyle } from "../../types";
 import { Column } from "../CondensedView/Column";
 
 type FullViewProps = {
-  items: { name: string }[];
+  items: List<{ name: string }>;
   topMostPos: number;
   cursorPos: number;
   cursorStyle: CursorStyle;

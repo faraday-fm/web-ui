@@ -1,3 +1,5 @@
+import "list/methods";
+
 import keyBindings from "@assets/keybindings.json";
 import App from "@components/App/App";
 import { FarMoreHostProvider } from "@contexts/farMoreHostContext";
@@ -6,7 +8,7 @@ import { KeyBindingProvider } from "@contexts/keyBindingContext";
 import { useMediaQuery } from "@hooks/useMediaQuery";
 import { store } from "@store";
 import { theme as farTheme } from "@themes/far-theme";
-import { darkTheme, lightTheme } from "@themes/theme";
+import { darkTheme } from "@themes/theme";
 import { FarMoreHost } from "@types";
 import { Provider as ReduxProvider } from "react-redux";
 import { ThemeProvider } from "styled-components";

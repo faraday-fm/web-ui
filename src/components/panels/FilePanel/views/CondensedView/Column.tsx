@@ -3,15 +3,15 @@ import { Border } from "@components/Border/Border";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { useElementSize } from "@hooks/useElementSize";
 import { clamp } from "@utils/numberUtils";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { List } from "list";
+import { useEffect, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
-import useResizeObserver from "use-resize-observer";
 
 import { ColumnDef, CursorStyle } from "../../types";
 import { Row } from "./Row";
 
 type ColumnProps = {
-  items: { name: string }[];
+  items: List<{ name: string }>;
   topMostPos: number;
   cursorStyle: CursorStyle;
   cursorPos: number;
@@ -87,6 +87,7 @@ export function Column({ items, topMostPos, cursorPos, cursorStyle, columnDef, o
 
   const theme = useTheme();
 
+  let idx = 0;
   return (
     <Border {...theme.filePanel.column.border}>
       <ColumnRoot className="ColumnRoot" style={{ overflow: "hidden" }}>
@@ -104,28 +105,33 @@ export function Column({ items, topMostPos, cursorPos, cursorStyle, columnDef, o
           }}
         >
           {maxItemsCount &&
-            displayedItems.map((item, idx) => (
-              <Row
-                key={item.name}
-                cursorStyle={idx + topMostPos !== cursorPos ? "hidden" : cursorStyle}
-                data={item}
-                field={columnDef.field}
-                onMouseOver={(e) => {
-                  if (e.buttons === 1) {
+            displayedItems.map((item) => {
+              const localIdx = idx;
+              const result = (
+                <Row
+                  key={item.name}
+                  cursorStyle={localIdx + topMostPos !== cursorPos ? "hidden" : cursorStyle}
+                  data={item}
+                  field={columnDef.field}
+                  onMouseOver={(e) => {
+                    if (e.buttons === 1) {
+                      e.stopPropagation();
+                      selectItem?.(localIdx + topMostPos);
+                    }
+                  }}
+                  onMouseDown={(e) => {
                     e.stopPropagation();
-                    selectItem?.(idx + topMostPos);
-                  }
-                }}
-                onMouseDown={(e) => {
-                  e.stopPropagation();
-                  selectItem?.(idx + topMostPos);
-                }}
-                onDoubleClick={(e) => {
-                  e.stopPropagation();
-                  activateItem?.(idx + topMostPos, e.getModifierState("Shift"));
-                }}
-              />
-            ))}
+                    selectItem?.(localIdx + topMostPos);
+                  }}
+                  onDoubleClick={(e) => {
+                    e.stopPropagation();
+                    activateItem?.(localIdx + topMostPos, e.getModifierState("Shift"));
+                  }}
+                />
+              );
+              idx += 1;
+              return result;
+            })}
         </div>
         <TopScroller
           onMouseDown={(e) => {

@@ -3,12 +3,11 @@ import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import terser from "@rollup/plugin-terser";
-import typescript from "@rollup/plugin-typescript";
 import path from "path";
 import { defineConfig } from "rollup";
 import del from "rollup-plugin-delete";
-import dts from "rollup-plugin-dts";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
+import ts from "rollup-plugin-ts";
 import { fileURLToPath } from "url";
 
 import packageJson from "./package.json" assert { type: "json" };
@@ -38,21 +37,17 @@ export default defineConfig(() => {
       ],
       context: "window",
       plugins: [
+        !watch && del({ targets: "dist/*" }),
+        json({ compact: true }),
         peerDepsExternal(),
         nodeResolve(),
-        commonjs(),
         alias({
           entries: [{ find: "@assets", replacement: path.resolve(projectRootDir, "src/assets") }],
         }),
-        typescript({ tsconfig: "./tsconfig.json" }),
-        json(),
-        // terser(),
+        commonjs({ sourceMap: true }),
+        ts(),
+        terser({ sourceMap: true }),
       ],
-    },
-    {
-      input: "dist/types/main.d.ts",
-      output: [{ file: packageJson.types, format: "esm" }],
-      plugins: [dts({ tsconfig: "./tsconfig.json" }), !watch && del({ hook: "buildEnd", targets: "./dist/types" })],
     },
   ];
 });

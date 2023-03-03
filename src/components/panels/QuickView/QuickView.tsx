@@ -6,7 +6,7 @@ import { useFocused } from "@hooks/useFocused";
 import Editor, { useMonaco } from "@monaco-editor/react";
 import { selectPanelState, useAppDispatch, useAppSelector } from "@store";
 import { QuickViewLayout } from "@types";
-import { append } from "@utils/urlUtils";
+import { append as appendEntry } from "@utils/urlUtils";
 import { useEffect, useMemo, useRef } from "react";
 import styled, { useTheme } from "styled-components";
 
@@ -62,8 +62,9 @@ export function QuickView({ layout }: QuickViewPanelProps) {
   const isActive = activePanelId === id;
   const activePanelState = useAppSelector(selectPanelState(activePanelId ?? ""));
   const activePath = useMemo(() => {
-    const item = activePanelState?.items[activePanelState.cursorPos.selected];
-    return item ? append(activePanelState.url, item.name, item.isDir ?? false).href : undefined;
+    if (!activePanelState) return undefined;
+    const item = activePanelState.items.nth(activePanelState.cursorPos.selected);
+    return item ? appendEntry(activePanelState.url, item.name, item.isDir ?? false).href : undefined;
   }, [activePanelState]);
 
   const panelRootRef = useRef<HTMLDivElement>(null);

@@ -13,8 +13,9 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "sourceMap": true,
     "declaration": true,
-    "declarationDir": "types",
+    "declarationDir": "dist",
     "jsx": "react-jsx",
     "baseUrl": "src",
     "types": ["./src/styled"],
@@ -29,7 +30,8 @@
       "@features/*": ["features/*"],
       "@utils/*": ["utils/*"],
       "@themes/*": ["themes/*"],
-      "@common/*": ["common/*"],
-    }  },
-  "include": ["src"],
+      "@common/*": ["common/*"]
+    }
+  },
+  "include": ["src"]
 }

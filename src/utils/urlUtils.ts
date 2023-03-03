@@ -20,3 +20,13 @@ export function truncateLastDir(url: URL | string) {
   }
   return new URL("..", appendSlash(url));
 }
+
+export function getPathName(url: URL | string) {
+  url = typeof url === "string" ? new URL(url) : url;
+  return decodeURI(url.pathname);
+}
+
+export function getEntryName(url: URL | string) {
+  const path = typeof url === "string" ? url : url.pathname;
+  return path.substring(path.lastIndexOf("/") + 1);
+}
