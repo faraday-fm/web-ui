@@ -10,19 +10,9 @@ export type FsEntry = {
   modified?: number;
 };
 
-export enum FileChangeType {
-  Changed = 1,
-  Created = 2,
-  Deleted = 3,
-}
+export type FileChangeType = "changed" | "created" | "deleted";
 
-export type FileChangeEvent =
-  | {
-      type: FileChangeType;
-      url: string;
-      entry: FsEntry;
-    }
-  | { type: "ready" };
+export type FileChangeEvent = { type: FileChangeType; url: string; entry: FsEntry } | { type: "ready" };
 
 export type FileSystemProvider = {
   watch(

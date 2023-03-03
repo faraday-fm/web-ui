@@ -1,7 +1,7 @@
 import { append, getPathName } from "@utils/urlUtils";
 
 import { FileSystemError } from "./FileSystemError";
-import { FileChangeEvent, FileChangeType, FileSystemProvider, FsEntry } from "./types";
+import { FileChangeEvent, FileSystemProvider, FsEntry } from "./types";
 
 type Dir = FsEntry & { isDir: true; isFile: false; children: DirOrFile[] };
 type File = FsEntry & { isFile: true; isDir: false; content: Uint8Array };
@@ -17,7 +17,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
 
   watch(url: string, listener: (events: FileChangeEvent[]) => void, options: { recursive: boolean; excludes: string[] }) {
     const entries = this.readDirectory(url);
-    listener(entries.map((e) => ({ type: FileChangeType.Created, entry: e, url: append(url, e.name, false).href })));
+    listener(entries.map((e) => ({ type: "created", entry: e, url: append(url, e.name, false).href })));
     listener([{ type: "ready" }]);
   }
 
