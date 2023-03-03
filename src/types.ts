@@ -48,3 +48,7 @@ export type FarMoreHost = {
   rootFs: FileSystemProvider;
   terminal?: Terminal;
 };
+
+export type FarMoreProps = {
+  host: FarMoreHost;
+};
