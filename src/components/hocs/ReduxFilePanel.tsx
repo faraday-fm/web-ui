@@ -1,5 +1,5 @@
 import { FilePanel, FilePanelActions } from "@components/panels/FilePanel/FilePanel";
-import { FileChangeType, FsEntry } from "@features/fs/types";
+import { FsEntry } from "@features/fs/types";
 import { popDir, setActivePanel, setPanelCursorPos, setPanelItems, setPanelState } from "@features/panels/panelsSlice";
 import { useFs } from "@hooks/useFs";
 import { selectPanelState, useAppDispatch, useAppSelector } from "@store";
@@ -75,10 +75,10 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
                 const name = getEntryName(change.url);
                 if (!name) return;
                 switch (change.type) {
-                  case FileChangeType.Created:
+                  case "created":
                     watchItems = watchItems.append(change.entry);
                     break;
-                  case FileChangeType.Deleted:
+                  case "deleted":
                     const idx = watchItems.findIndex((e) => e.name === name);
                     if (idx >= 0) {
                       watchItems = watchItems.remove(idx, 1);
