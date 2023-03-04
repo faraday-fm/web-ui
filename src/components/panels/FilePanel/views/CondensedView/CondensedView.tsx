@@ -1,3 +1,6 @@
+import { FsEntry } from "@features/fs/types";
+import { CursorPosition } from "@features/panels/panelsSlice";
+import { List } from "list";
 import { useCallback, useState } from "react";
 import styled from "styled-components";
 
@@ -5,9 +8,8 @@ import { ColumnDef, CursorStyle } from "../../types";
 import { Column } from "./Column";
 
 type CondensedViewProps = {
-  items: any;
-  topMostPos: number;
-  cursorPos: number;
+  items: List<FsEntry>;
+  cursor: Required<CursorPosition>;
   cursorStyle: CursorStyle;
   columnsCount: number;
   columnDef: ColumnDef;
@@ -26,8 +28,7 @@ const Columns = styled.div`
 export function CondensedView({
   cursorStyle,
   items,
-  topMostPos,
-  cursorPos,
+  cursor,
   columnsCount,
   columnDef,
   onMaxItemsPerColumnChanged,
@@ -52,8 +53,8 @@ export function CondensedView({
         key={i}
         items={items}
         columnDef={columnDef}
-        topMostPos={topMostPos + i * maxItemsPerColumn}
-        cursorPos={cursorPos}
+        topmostIndex={cursor.topmostIndex + i * maxItemsPerColumn}
+        selectedIndex={cursor.selectedIndex}
         cursorStyle={cursorStyle}
         onMaxItemsCountChange={i === 0 ? onMaxItemsCountChange : undefined}
         selectItem={onItemClicked}

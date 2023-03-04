@@ -1,3 +1,5 @@
+import { FsEntry } from "@features/fs/types";
+import { CursorPosition } from "@features/panels/panelsSlice";
 import { List } from "list";
 import styled from "styled-components";
 
@@ -5,9 +7,8 @@ import { ColumnDef, CursorStyle } from "../../types";
 import { Column } from "../CondensedView/Column";
 
 type FullViewProps = {
-  items: List<{ name: string }>;
-  topMostPos: number;
-  cursorPos: number;
+  items: List<FsEntry>;
+  cursor: Required<CursorPosition>;
   cursorStyle: CursorStyle;
   columnDefs: ColumnDef[];
   onMaxVisibleItemsChanged?: (count: number) => void;
@@ -23,7 +24,7 @@ grid-auto-flow: column; */
   /* grid-template-columns: 1fr auto; */
 `;
 
-export function FullView({ items, topMostPos, cursorPos, cursorStyle, columnDefs, onMaxVisibleItemsChanged, onItemClicked, onItemActivated }: FullViewProps) {
+export function FullView({ items, cursor, cursorStyle, columnDefs, onMaxVisibleItemsChanged, onItemClicked, onItemActivated }: FullViewProps) {
   const columns = new Array(columnDefs.length);
 
   const gridTemplateColumns = columnDefs.map((def) => def.width ?? "auto").join(" ");
@@ -34,8 +35,8 @@ export function FullView({ items, topMostPos, cursorPos, cursorStyle, columnDefs
         key={i}
         items={items}
         columnDef={columnDefs[i]}
-        topMostPos={topMostPos}
-        cursorPos={cursorPos}
+        selectedIndex={cursor.selectedIndex}
+        topmostIndex={cursor.topmostIndex}
         cursorStyle={cursorStyle}
         onMaxItemsCountChange={onMaxVisibleItemsChanged}
         selectItem={onItemClicked}

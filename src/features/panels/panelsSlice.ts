@@ -5,16 +5,18 @@ import { traverseLayout } from "@utils/layout";
 import { append, truncateLastDir } from "@utils/urlUtils";
 import { empty, List } from "list";
 
-type CursorPosition = {
-  selected: number;
-  topmost: number;
+export type CursorPosition = {
+  selectedName?: string;
+  selectedIndex?: number;
+  topmostName?: string;
+  topmostIndex?: number;
 };
 
 export type PanelState = {
   url: string;
   items: List<FsEntry>;
-  cursorPos: CursorPosition;
   view: FilePanelView;
+  cursor: CursorPosition;
 };
 
 type SliceState = {
@@ -49,7 +51,7 @@ const panelsSliceUT = createSlice({
       const panelsStack = state.states[id];
       if (panelsStack && panelsStack.length > 0) {
         const s = panelsStack[panelsStack.length - 1];
-        s.cursorPos = cursorPos;
+        s.cursor = cursorPos;
       }
     },
     focusNextPanel(state, { payload: { backward = false } }: PayloadAction<{ backward: boolean }>) {
@@ -95,7 +97,7 @@ const panelsSliceUT = createSlice({
           const panelsStack = state.states[panel.id];
           if (panelsStack) {
             const s = panelsStack[panelsStack.length - 1];
-            const selectedItemPos = s.cursorPos.selected;
+            const selectedItemPos = s.cursor.selectedIndex ?? 0;
             const selectedItem = s.items.nth(selectedItemPos);
             if (selectedItem?.isDir) {
               if (selectedItem.name === "..") {
@@ -107,7 +109,7 @@ const panelsSliceUT = createSlice({
               } else {
                 panelsStack.push({
                   url: append(s.url, selectedItem.name, true).href,
-                  cursorPos: { selected: 0, topmost: 0 },
+                  cursor: {},
                   items: empty(),
                   view: panel.view,
                 });
@@ -126,7 +128,7 @@ const panelsSliceUT = createSlice({
         } else {
           const s = panelsStack[panelsStack.length - 1];
           s.url = truncateLastDir(s.url).href;
-          s.cursorPos.selected = 0;
+          s.cursor.selectedIndex = 0;
         }
       }
     },

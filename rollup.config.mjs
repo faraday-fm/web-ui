@@ -26,19 +26,19 @@ export default defineConfig(() => {
       output: [
         {
           file: packageJson.main,
-          sourcemap: true,
+          sourcemap: watch ? "inline" : true,
           format: "cjs",
         },
         {
           file: packageJson.module,
-          sourcemap: true,
+          sourcemap: watch ? "inline" : true,
           format: "esm",
         },
       ],
       context: "window",
       plugins: [
-        !watch && del({ targets: "dist/*" }),
-        json({ compact: true }),
+        !watch && [terser({ sourceMap: true }), del({ targets: "dist/*" })],
+        json(),
         peerDepsExternal(),
         nodeResolve(),
         alias({
@@ -46,7 +46,6 @@ export default defineConfig(() => {
         }),
         commonjs({ sourceMap: true }),
         ts(),
-        terser({ sourceMap: true }),
       ],
     },
   ];

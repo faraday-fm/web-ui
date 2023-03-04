@@ -12,9 +12,9 @@ import { Row } from "./Row";
 
 type ColumnProps = {
   items: List<{ name: string }>;
-  topMostPos: number;
   cursorStyle: CursorStyle;
-  cursorPos: number;
+  topmostIndex: number;
+  selectedIndex: number;
   columnDef: ColumnDef;
   onMaxItemsCountChange?: (maxCount: number) => void;
   selectItem?: (position: number) => void;
@@ -63,7 +63,7 @@ const BottomScroller = styled.div`
   cursor: s-resize;
 `;
 
-export function Column({ items, topMostPos, cursorPos, cursorStyle, columnDef, onMaxItemsCountChange, selectItem, activateItem }: ColumnProps) {
+export function Column({ items, topmostIndex, selectedIndex, cursorStyle, columnDef, onMaxItemsCountChange, selectItem, activateItem }: ColumnProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { height: glyphHeight } = useGlyphSize();
   const [autoscroll, setAutoscroll] = useState(0);
@@ -79,11 +79,11 @@ export function Column({ items, topMostPos, cursorPos, cursorStyle, columnDef, o
 
   useEffect(() => {
     if (autoscroll === 0) return undefined;
-    const timer = setInterval(() => selectItem?.(clamp(0, (cursorPos ?? 0) + autoscroll, items.length - 1)), 3);
+    const timer = setInterval(() => selectItem?.(clamp(0, selectedIndex + autoscroll, items.length - 1)), 3);
     return () => clearInterval(timer);
-  }, [autoscroll, items.length, selectItem, cursorPos]);
+  }, [autoscroll, items.length, selectItem, selectedIndex]);
 
-  const displayedItems = items.slice(topMostPos, Math.min(items.length, topMostPos + (maxItemsCount ?? 0)));
+  const displayedItems = items.slice(topmostIndex, Math.min(items.length, topmostIndex + (maxItemsCount ?? 0)));
 
   const theme = useTheme();
 
@@ -97,11 +97,11 @@ export function Column({ items, topMostPos, cursorPos, cursorStyle, columnDef, o
           style={{ overflow: "hidden" }}
           onMouseDown={(e) => {
             e.stopPropagation();
-            selectItem?.(topMostPos + displayedItems.length - 1);
+            selectItem?.(topmostIndex + displayedItems.length - 1);
           }}
           onDoubleClick={(e) => {
             e.stopPropagation();
-            activateItem?.(topMostPos + displayedItems.length - 1, e.getModifierState("Shift"));
+            activateItem?.(topmostIndex + displayedItems.length - 1, e.getModifierState("Shift"));
           }}
         >
           {maxItemsCount &&
@@ -110,22 +110,22 @@ export function Column({ items, topMostPos, cursorPos, cursorStyle, columnDef, o
               const result = (
                 <Row
                   key={item.name}
-                  cursorStyle={localIdx + topMostPos !== cursorPos ? "hidden" : cursorStyle}
+                  cursorStyle={localIdx + topmostIndex !== selectedIndex ? "hidden" : cursorStyle}
                   data={item}
                   field={columnDef.field}
                   onMouseOver={(e) => {
                     if (e.buttons === 1) {
                       e.stopPropagation();
-                      selectItem?.(localIdx + topMostPos);
+                      selectItem?.(localIdx + topmostIndex);
                     }
                   }}
                   onMouseDown={(e) => {
                     e.stopPropagation();
-                    selectItem?.(localIdx + topMostPos);
+                    selectItem?.(localIdx + topmostIndex);
                   }}
                   onDoubleClick={(e) => {
                     e.stopPropagation();
-                    activateItem?.(localIdx + topMostPos, e.getModifierState("Shift"));
+                    activateItem?.(localIdx + topmostIndex, e.getModifierState("Shift"));
                   }}
                 />
               );

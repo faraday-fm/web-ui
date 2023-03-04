@@ -1,6 +1,7 @@
 import { Border } from "@components/Border/Border";
 import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
 import { FsEntry } from "@features/fs/types";
+import { CursorPosition } from "@features/panels/panelsSlice";
 import { useCommandBindings, useExecuteBuiltInCommand } from "@hooks/useCommandBinding";
 import { useCommandContext } from "@hooks/useCommandContext";
 import { useElementSize } from "@hooks/useElementSize";
@@ -20,13 +21,12 @@ import { FullView } from "./views/FullView/FullView";
 
 export type FilePanelProps = {
   items: List<FsEntry>;
-  topMostPos: number;
-  cursorPos: number;
+  cursor: CursorPosition;
   view: FilePanelView;
   path: string;
   showCursorWhenBlurred?: boolean;
   onFocus?: () => void;
-  onCursorPositionChange: (newTopMostPos: number, newCursorPos: number) => void;
+  onCursorPositionChange: (newPosition: CursorPosition) => void;
   onDirUp?: () => void;
 };
 
@@ -96,8 +96,39 @@ const FileInfoPanel = styled.div`
   overflow: hidden;
 `;
 
+function adjustCursor(cursor: CursorPosition, items: List<FsEntry>, displayedItems: number): Required<CursorPosition> {
+  let selectedIndex = cursor.selectedIndex ?? 0;
+  let topmostIndex = cursor.topmostIndex ?? 0;
+  let selectedName = cursor.selectedName ?? items.nth(selectedIndex)?.name;
+  let topmostName = cursor.topmostName ?? items.nth(topmostIndex)?.name;
+
+  selectedIndex = clamp(0, selectedIndex, items.length - 1);
+  topmostIndex = clamp(0, topmostIndex, items.length - displayedItems);
+  topmostIndex = clamp(selectedIndex - displayedItems + 1, topmostIndex, selectedIndex);
+
+  if (selectedName !== items.nth(selectedIndex)?.name) {
+    const idx = items.findIndex((i) => i.name === selectedName);
+    if (idx >= 0) {
+      selectedIndex = idx;
+    } else {
+      selectedName = items.nth(selectedIndex)?.name;
+    }
+  }
+  if (topmostName !== items.nth(topmostIndex)?.name) {
+    const idx = items.findIndex((i) => i.name === topmostName);
+    if (idx >= 0) {
+      topmostIndex = idx;
+    } else {
+      topmostName = items.nth(topmostIndex)?.name;
+    }
+  }
+  topmostIndex = clamp(0, topmostIndex, items.length - displayedItems);
+  topmostIndex = clamp(selectedIndex - displayedItems + 1, topmostIndex, selectedIndex);
+  return { selectedIndex, topmostIndex, selectedName: selectedName ?? "", topmostName: topmostName ?? "" };
+}
+
 export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
-  ({ items, topMostPos, cursorPos, view, path, showCursorWhenBlurred, onFocus, onCursorPositionChange, onDirUp }, ref) => {
+  ({ items, cursor, view, path, showCursorWhenBlurred, onFocus, onCursorPositionChange, onDirUp }, ref) => {
     const panelRootRef = useRef<HTMLDivElement>(null);
     const { width } = useElementSize(panelRootRef);
     const [maxItemsPerColumn, setMaxItemsPerColumn] = useState<number>();
@@ -106,13 +137,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
 
     const displayedItems = columnsCount && maxItemsPerColumn ? Math.min(items.length, maxItemsPerColumn * columnsCount) : 1;
 
-    function clampPos() {
-      cursorPos = clamp(0, cursorPos, items.length - 1);
-      topMostPos = clamp(0, topMostPos, items.length - displayedItems);
-      topMostPos = clamp(cursorPos - displayedItems + 1, topMostPos, cursorPos);
-    }
-
-    clampPos();
+    let adjustedCursor = adjustCursor(cursor, items, displayedItems);
 
     const focused = useFocused(panelRootRef);
     useImperativeHandle(ref, () => ({
@@ -120,50 +145,59 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
     }));
 
     useCommandContext("filePanel.focus", focused);
-    useCommandContext({ "filePanel.firstItem": cursorPos === 0 }, focused);
-    useCommandContext({ "filePanel.lastItem": cursorPos === items.length - 1 }, focused);
+    useCommandContext({ "filePanel.firstItem": cursor.selectedIndex === 0 }, focused);
+    useCommandContext({ "filePanel.lastItem": cursor.selectedIndex === items.length - 1 }, focused);
 
     function moveCursorLeftRight(direction: "left" | "right") {
       if (direction === "right") {
-        cursorPos += maxItemsPerColumn ?? 0;
-        if (cursorPos >= topMostPos + displayedItems) {
-          topMostPos += maxItemsPerColumn ?? 0;
+        adjustedCursor.selectedIndex += maxItemsPerColumn ?? 0;
+        if (adjustedCursor.selectedIndex >= adjustedCursor.topmostIndex + displayedItems) {
+          adjustedCursor.topmostIndex += maxItemsPerColumn ?? 0;
         }
       } else if (direction === "left") {
-        cursorPos -= maxItemsPerColumn ?? 0;
-        if (cursorPos < topMostPos) {
-          topMostPos -= maxItemsPerColumn ?? 0;
+        adjustedCursor.selectedIndex -= maxItemsPerColumn ?? 0;
+        if (adjustedCursor.selectedIndex < adjustedCursor.topmostIndex) {
+          adjustedCursor.topmostIndex -= maxItemsPerColumn ?? 0;
         }
       }
-      clampPos();
-      onCursorPositionChange(topMostPos, cursorPos);
+      adjustedCursor.selectedName = items.nth(adjustedCursor.selectedIndex)?.name ?? "";
+      adjustedCursor.topmostName = items.nth(adjustedCursor.topmostIndex)?.name ?? "";
+      adjustedCursor = adjustCursor(adjustedCursor, items, displayedItems);
+      onCursorPositionChange(adjustedCursor);
     }
 
     function scroll(delta: number, followCursor: boolean) {
-      cursorPos += delta;
+      adjustedCursor.selectedIndex += delta;
       if (followCursor) {
-        topMostPos += delta;
+        adjustedCursor.topmostIndex += delta;
       }
-      clampPos();
-      onCursorPositionChange(topMostPos, cursorPos);
+      adjustedCursor.selectedName = items.nth(adjustedCursor.selectedIndex)?.name ?? "";
+      adjustedCursor.topmostName = items.nth(adjustedCursor.topmostIndex)?.name ?? "";
+      adjustedCursor = adjustCursor(adjustedCursor, items, displayedItems);
+      onCursorPositionChange(adjustedCursor);
     }
 
-    function moveCursorToPos(pos: number) {
-      cursorPos = pos;
-      clampPos();
-      onCursorPositionChange(topMostPos, cursorPos);
-    }
+    const moveCursorToPos = useCallback(
+      (pos: number) => {
+        let cur = adjustedCursor;
+        cur.selectedIndex = pos;
+        cur.selectedName = items.nth(pos)?.name ?? "";
+        cur = adjustCursor(cur, items, displayedItems);
+        onCursorPositionChange(cur);
+      },
+      [adjustedCursor, displayedItems, items, onCursorPositionChange]
+    );
 
     function moveCursorPage(direction: "up" | "down") {
       if (direction === "up") {
-        cursorPos -= displayedItems - 1;
-        topMostPos -= displayedItems - 1;
+        adjustedCursor.selectedIndex -= displayedItems - 1;
+        adjustedCursor.selectedIndex -= displayedItems - 1;
       } else if (direction === "down") {
-        cursorPos += displayedItems - 1;
-        topMostPos += displayedItems - 1;
+        adjustedCursor.selectedIndex += displayedItems - 1;
+        adjustedCursor.topmostIndex += displayedItems - 1;
       }
-      clampPos();
-      onCursorPositionChange(topMostPos, cursorPos);
+      adjustedCursor = adjustCursor(adjustedCursor, items, displayedItems);
+      onCursorPositionChange(adjustedCursor);
     }
 
     useCommandBindings(
@@ -184,7 +218,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
     const executeBuiltInCommand = useExecuteBuiltInCommand();
 
     const onMaxItemsPerColumnChanged = useCallback((maxItemsPerColumn: number) => setMaxItemsPerColumn(maxItemsPerColumn), []);
-    const onItemClicked = useCallback((pos: number) => onCursorPositionChange(topMostPos, pos), [onCursorPositionChange, topMostPos]);
+    const onItemClicked = useCallback((pos: number) => moveCursorToPos(pos), [moveCursorToPos]);
     const onItemActivated = useCallback(() => executeBuiltInCommand("open", { path }), [executeBuiltInCommand, path]);
 
     let cursorStyle: CursorStyle;
@@ -235,8 +269,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
                   <FullView
                     cursorStyle={cursorStyle}
                     items={items}
-                    topMostPos={topMostPos}
-                    cursorPos={cursorPos}
+                    cursor={adjustedCursor}
                     onItemClicked={onItemClicked}
                     onItemActivated={onItemActivated}
                     onMaxVisibleItemsChanged={onMaxItemsPerColumnChanged}
@@ -246,8 +279,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
                   <CondensedView
                     cursorStyle={cursorStyle}
                     items={items}
-                    topMostPos={topMostPos}
-                    cursorPos={cursorPos}
+                    cursor={adjustedCursor}
                     columnsCount={columnsCount}
                     onItemClicked={onItemClicked}
                     onItemActivated={onItemActivated}
@@ -258,7 +290,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
               </PanelColumns>
               <FileInfoPanel>
                 <Border {...theme.filePanel.fileInfo.border}>
-                  <FileInfoFooter file={items.nth(cursorPos)} />
+                  <FileInfoFooter file={items.nth(adjustedCursor.selectedIndex)} />
                 </Border>
               </FileInfoPanel>
               <PanelFooter>

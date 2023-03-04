@@ -63,7 +63,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
   const activePanelState = useAppSelector(selectPanelState(activePanelId ?? ""));
   const activePath = useMemo(() => {
     if (!activePanelState) return undefined;
-    const item = activePanelState.items.nth(activePanelState.cursorPos.selected);
+    const item = activePanelState.items.nth(activePanelState.cursor.selectedIndex ?? 0);
     return item ? appendEntry(activePanelState.url, item.name, item.isDir ?? false).href : undefined;
   }, [activePanelState]);
 

@@ -4,7 +4,7 @@ import { useFs } from "./useFs";
 
 export function useFileContent(url: string) {
   const fs = useFs();
-  const [result, setResult] = useState<{ done: boolean; error?: any; content?: Uint8Array }>({ done: false });
+  const [result, setResult] = useState<{ done: boolean; error?: unknown; content?: Uint8Array }>({ done: false });
   const counter = useRef(0);
 
   useEffect(() => {
