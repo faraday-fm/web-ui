@@ -1,3 +1,4 @@
+import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { FsEntry } from "@features/fs/types";
 import { formatDateTime } from "@utils/dateUtils";
 import { bytesToSize } from "@utils/numberUtils";
@@ -29,9 +30,10 @@ const FileTime = styled.div`
 `;
 
 export function FileInfoFooter({ file }: FileInfoFooterProps) {
+  const { height } = useGlyphSize();
   return (
     <FileRoot>
-      <FileName>{file?.name}</FileName>
+      <FileName style={{ lineHeight: `${height}px` }}>{file?.name}</FileName>
       <FileSize>{file?.isDir ? "Папка" : bytesToSize(file?.size ?? 0, 999999)}</FileSize>
       <FileTime>{file?.modified ? formatDateTime(new Date(file.modified)) : undefined}</FileTime>
     </FileRoot>

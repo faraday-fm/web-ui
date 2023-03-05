@@ -1,3 +1,4 @@
+import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { MouseEventHandler } from "react";
 import styled, { DefaultTheme } from "styled-components";
 
@@ -34,9 +35,10 @@ const LineItem = styled.span<{ $data: { name: string; isDir: boolean | undefined
 `;
 
 export function Row({ cursorStyle, data, field, onMouseDown, onMouseOver }: RowProps) {
+  const { height } = useGlyphSize();
   return (
     <Root cursorStyle={cursorStyle} onMouseDown={onMouseDown} onMouseOver={onMouseOver}>
-      <LineItem $data={data} $cursorStyle={cursorStyle}>
+      <LineItem $data={data} $cursorStyle={cursorStyle} style={{ lineHeight: `${height}px` }}>
         {String(data[field]) ?? "\u00A0"}
       </LineItem>
     </Root>
