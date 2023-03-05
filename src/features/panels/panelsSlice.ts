@@ -13,7 +13,7 @@ export type CursorPosition = {
 };
 
 export type PanelState = {
-  url: string;
+  path: string;
   items: List<FsEntry>;
   view: FilePanelView;
   cursor: CursorPosition;
@@ -104,11 +104,12 @@ const panelsSliceUT = createSlice({
                 if (panelsStack.length > 1) {
                   panelsStack.pop();
                 } else {
-                  s.url = truncateLastDir(s.url).href;
+                  s.path = truncateLastDir(s.path);
                 }
               } else {
+                console.error("!!!", s.path);
                 panelsStack.push({
-                  url: append(s.url, selectedItem.name, true).href,
+                  path: append(s.path, selectedItem.name),
                   cursor: {},
                   items: empty(),
                   view: panel.view,
@@ -127,7 +128,7 @@ const panelsSliceUT = createSlice({
           panelsStack.pop();
         } else {
           const s = panelsStack[panelsStack.length - 1];
-          s.url = truncateLastDir(s.url).href;
+          s.path = truncateLastDir(s.path);
           s.cursor.selectedIndex = 0;
         }
       }

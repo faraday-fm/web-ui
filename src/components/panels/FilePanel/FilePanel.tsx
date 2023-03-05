@@ -8,7 +8,6 @@ import { useElementSize } from "@hooks/useElementSize";
 import { useFocused } from "@hooks/useFocused";
 import { FilePanelView } from "@types";
 import { clamp } from "@utils/numberUtils";
-import { getPathName } from "@utils/urlUtils";
 import { List } from "list";
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
@@ -235,8 +234,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
     const bytesCount = useMemo(() => items.reduce((acc, item) => acc + (item.size ?? 0), 0), [items]);
     const filesCount = useMemo(() => items.reduce((acc, item) => acc + (item.isFile ? 1 : 0), 0), [items]);
 
-    const decodedPath = getPathName(path);
-    const pathParts = decodedPath.split("/").filter((x) => x);
+    const pathParts = path.split("/").filter((x) => x);
     if (pathParts.length === 0) {
       pathParts.push("/");
     }

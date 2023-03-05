@@ -44,11 +44,11 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
 
   useEffect(() => {
     const { path, id, view } = layout;
-    dispatch(setPanelState({ id, state: { view, cursor: {}, items: empty(), url: path } }));
+    dispatch(setPanelState({ id, state: { view, cursor: {}, items: empty(), path } }));
   }, [dispatch, layout]);
 
   useDirListing(
-    state?.url,
+    state?.path,
     useCallback(
       (dirUrl, files) => {
         files = files.sortWith(fsCompare);
@@ -78,7 +78,7 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
         onDirUp={() => dispatch(popDir(id))}
         cursor={cursor}
         items={items}
-        path={state ? state.url : "file:/"}
+        path={state ? state.path : "file:/"}
         view={view}
       />
     </Root>

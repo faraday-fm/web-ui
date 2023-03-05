@@ -65,9 +65,6 @@ export function useDirListing(url: string | undefined, onListUpdated: (url: stri
         );
       } catch (err) {
         console.error(err);
-        if (!isRoot(url)) {
-          items = items.append({ name: "..", isDir: true });
-        }
         items = items.append({ name: "ERROR!", isFile: true });
         onListUpdated(url, items);
       }

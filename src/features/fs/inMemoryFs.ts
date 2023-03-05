@@ -9,6 +9,19 @@ type MountedFs = FsEntry & { isDir: true; isFile: false; isMoundedFs: true; fs: 
 
 type Entry = Dir | File | MountedFs;
 
+function getPathParts(path: string) {
+  if (path.startsWith("/")) {
+    path = path.substring(1);
+  }
+  if (path.endsWith("/")) {
+    path = path.substring(0, path.length - 1);
+  }
+  if (path === "") {
+    return [];
+  }
+  return path.split("/");
+}
+
 export class InMemoryFsProvider implements FileSystemProvider {
   private root: Dir;
 
@@ -17,7 +30,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
   }
 
   mount(path: string, fs: FileSystemProvider) {
-    const parts = path.split("/");
+    const parts = getPathParts(path);
     if (parts.length === 0) {
       throw FileSystemError.FileNotADirectory();
     }
@@ -49,12 +62,12 @@ export class InMemoryFsProvider implements FileSystemProvider {
 
   async watch(path: string, watcher: FileSystemWatcher, options: { recursive: boolean; excludes: string[]; signal?: AbortSignal }) {
     const entries = await this.readDirectory(path, options);
-    watcher(entries.map((e) => ({ type: "created", entry: e, path: append(path, e.name, false).href })));
+    watcher(entries.map((e) => ({ type: "created", entry: e, path: append(path, e.name) })));
     watcher([{ type: "ready" }]);
   }
 
   readDirectory(path: string, options?: { signal?: AbortSignal }): FsEntry[] | Promise<FsEntry[]> {
-    const parts = path.split("/");
+    const parts = getPathParts(path);
     let currDir: Dir | MountedFs = this.root;
     for (let i = 0; i < parts.length; i += 1) {
       if (currDir.isMoundedFs) {
@@ -74,7 +87,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
   }
 
   createDirectory(path: string, options?: { signal?: AbortSignal }): void | Promise<void> {
-    const parts = path.split("/");
+    const parts = getPathParts(path);
     let currDir: Dir | MountedFs = this.root;
     const newDirName = parts[parts.length - 1];
     for (let i = 0; i < parts.length - 1; i += 1) {
@@ -101,7 +114,10 @@ export class InMemoryFsProvider implements FileSystemProvider {
   }
 
   readFile(path: string, options?: { signal?: AbortSignal }) {
-    const parts = path.split("/");
+    const parts = getPathParts(path);
+    if (parts.length === 0) {
+      throw FileSystemError.FileIsADirectory();
+    }
     let currDir: Dir | MountedFs = this.root;
     const fileName = parts[parts.length - 1];
     for (let i = 0; i < parts.length - 1; i += 1) {
@@ -131,7 +147,10 @@ export class InMemoryFsProvider implements FileSystemProvider {
   }
 
   writeFile(path: string, content: Uint8Array, options?: { create?: boolean; overwrite?: boolean; signal?: AbortSignal }) {
-    const parts = path.split("/");
+    const parts = getPathParts(path);
+    if (parts.length === 0) {
+      throw FileSystemError.FileIsADirectory();
+    }
     let currDir: Dir | MountedFs = this.root;
     const fileName = parts[parts.length - 1];
     for (let i = 0; i < parts.length - 1; i += 1) {
