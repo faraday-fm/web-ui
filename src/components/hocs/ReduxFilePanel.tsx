@@ -1,6 +1,6 @@
 import { FilePanel, FilePanelActions } from "@components/panels/FilePanel/FilePanel";
 import { FsEntry } from "@features/fs/types";
-import { CursorPosition, popDir, setActivePanel, setPanelCursorPos, setPanelItems, setPanelState } from "@features/panels/panelsSlice";
+import { CursorPosition, initPanelState, popDir, setActivePanel, setPanelCursorPos, setPanelItems } from "@features/panels/panelsSlice";
 import { useDirListing } from "@hooks/useDirListing";
 import { selectPanelState, useAppDispatch, useAppSelector } from "@store";
 import { FilePanelLayout } from "@types";
@@ -44,10 +44,10 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
 
   useEffect(() => {
     const { path, id, view } = layout;
-    dispatch(setPanelState({ id, state: { view, cursor: {}, items: empty(), path } }));
+    dispatch(initPanelState({ id, state: { view, cursor: {}, items: empty(), path } }));
   }, [dispatch, layout]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const path = state?.path;
     if (path && !isRoot(path)) {
       dispatch(setPanelItems({ id, items: list({ name: "..", isDir: true }) }));

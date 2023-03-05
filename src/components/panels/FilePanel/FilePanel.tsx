@@ -190,11 +190,13 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
     function moveCursorPage(direction: "up" | "down") {
       if (direction === "up") {
         adjustedCursor.selectedIndex -= displayedItems - 1;
-        adjustedCursor.selectedIndex -= displayedItems - 1;
+        adjustedCursor.topmostIndex -= displayedItems - 1;
       } else if (direction === "down") {
         adjustedCursor.selectedIndex += displayedItems - 1;
         adjustedCursor.topmostIndex += displayedItems - 1;
       }
+      adjustedCursor.selectedName = items.nth(adjustedCursor.selectedIndex)?.name ?? "";
+      adjustedCursor.topmostName = items.nth(adjustedCursor.topmostIndex)?.name ?? "";
       adjustedCursor = adjustCursor(adjustedCursor, items, displayedItems);
       onCursorPositionChange(adjustedCursor);
     }

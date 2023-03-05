@@ -37,7 +37,7 @@ const panelsSliceUT = createSlice({
     setActivePanel(state, { payload }: PayloadAction<string>) {
       state.activePanelId = payload;
     },
-    setPanelState(state, { payload }: PayloadAction<{ id: string; state: PanelState }>) {
+    initPanelState(state, { payload }: PayloadAction<{ id: string; state: PanelState }>) {
       state.states[payload.id] = [payload.state];
     },
     setPanelItems(state, { payload: { id, items } }: PayloadAction<{ id: string; items: List<FsEntry> }>) {
@@ -137,5 +137,5 @@ const panelsSliceUT = createSlice({
 
 export const panelsSlice = panelsSliceUT as Slice<SliceState>;
 
-export const { setPanelsLayout, setActivePanel, setPanelState, setPanelItems, setPanelCursorPos, focusNextPanel, focusPrevPanel, changeDir, popDir } =
+export const { setPanelsLayout, setActivePanel, initPanelState, setPanelItems, setPanelCursorPos, focusNextPanel, focusPrevPanel, changeDir, popDir } =
   panelsSliceUT.actions;
