@@ -107,7 +107,6 @@ const panelsSliceUT = createSlice({
                   s.path = truncateLastDir(s.path);
                 }
               } else {
-                console.error("!!!", s.path);
                 panelsStack.push({
                   path: append(s.path, selectedItem.name),
                   cursor: {},
