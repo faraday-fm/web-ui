@@ -1,0 +1,41 @@
+// Default layout
+{
+  id: "row1",
+  type: "row",
+  children: [
+    {
+      id: "col1",
+      type: "row",
+      children: [
+        {
+          id: "panel1",
+          type: "file-panel",
+          path: "file:/",
+          view: {
+            type: "condensed",
+            columnDef: { field: "name", name: "Name" },
+          },
+        },
+      ],
+    },
+    {
+      id: "col2",
+      type: "row",
+      // flex: 1.5,
+      children: [
+        {
+          id: "panel2",
+          type: "file-panel",
+          path: "file:/",
+          view: {
+            type: "full",
+            columnDefs: [
+              { field: "name", name: "Name", width: "1fr" },
+              { field: "size", name: "Size" },
+            ],
+          },
+        },
+      ],
+    },
+  ],
+}

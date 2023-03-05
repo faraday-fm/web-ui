@@ -1,3 +1,4 @@
+import defaultLayout from "@assets/layout.json5";
 import { ActionsBar } from "@components/ActionsBar/ActionsBar";
 import DialogPlaceholder from "@components/DialogPlaceholder/DialogPlaceholder";
 import { LayoutContainer } from "@components/LayoutContainer/LayoutContainer";
@@ -6,7 +7,7 @@ import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { changeDir, focusNextPanel, setPanelsLayout } from "@features/panels/panelsSlice";
 import { useCommandBindings } from "@hooks/useCommandBinding";
 import { useCommandContext } from "@hooks/useCommandContext";
-import { useFs } from "@hooks/useFs";
+import { useFileContent } from "@hooks/useFileContent";
 import { useAppDispatch, useAppSelector } from "@store";
 import { PanelsLayout } from "@types";
 import FocusTrap from "focus-trap-react";
@@ -64,17 +65,20 @@ function App() {
   const [executing, setExecuting] = useState(false);
   const panelsLayout = useAppSelector((state) => state.panels.layout);
   const host = useFarMoreHost();
-  const fs = useFs();
 
+  const { content: layoutContent } = useFileContent("far-more:/layout.json5");
   useEffect(() => {
-    (async () => {
-      const layoutContent = await fs.readFile("far-more:/layout.json");
-      const layout = JSON5.parse(decoder.decode(layoutContent)) as PanelsLayout;
-      dispatch(setPanelsLayout(layout));
-    })();
+    if (layoutContent) {
+      try {
+        const layout = JSON5.parse(decoder.decode(layoutContent)) as PanelsLayout;
+        dispatch(setPanelsLayout(layout));
+      } catch {
+        dispatch(setPanelsLayout(JSON5.parse(defaultLayout)));
+      }
+    }
     // invoke("show_main_window");
     // if (isRunningUnderTauri()) setTimeout(() => invoke("show_main_window"), 50);
-  }, [dispatch, fs]);
+  }, [dispatch, layoutContent]);
 
   useCommandContext("isDesktop", host.config.isDesktop());
 

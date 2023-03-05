@@ -1,6 +1,6 @@
 import { FsEntry } from "@features/fs/types";
 import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
-import { FilePanelView, PanelsLayout } from "@types";
+import { PanelsLayout } from "@types";
 import { traverseLayout } from "@utils/layout";
 import { append, truncateLastDir } from "@utils/urlUtils";
 import { empty, List } from "list";
@@ -15,7 +15,6 @@ export type CursorPosition = {
 export type PanelState = {
   path: string;
   items: List<FsEntry>;
-  view: FilePanelView;
   cursor: CursorPosition;
 };
 
@@ -38,7 +37,9 @@ const panelsSliceUT = createSlice({
       state.activePanelId = payload;
     },
     initPanelState(state, { payload }: PayloadAction<{ id: string; state: PanelState }>) {
-      state.states[payload.id] = [payload.state];
+      if (!state.states[payload.id]) {
+        state.states[payload.id] = [payload.state];
+      }
     },
     setPanelItems(state, { payload: { id, items } }: PayloadAction<{ id: string; items: List<FsEntry> }>) {
       const panelsStack = state.states[id];
@@ -115,7 +116,6 @@ const panelsSliceUT = createSlice({
                   path: append(s.path, selectedItem.name),
                   cursor: {},
                   items: empty(),
-                  view: panel.view,
                 });
               }
             }

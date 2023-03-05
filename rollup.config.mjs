@@ -7,6 +7,7 @@ import path from "path";
 import { defineConfig } from "rollup";
 import del from "rollup-plugin-delete";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
+import { string } from "rollup-plugin-string";
 import ts from "rollup-plugin-ts";
 import { fileURLToPath } from "url";
 
@@ -46,6 +47,7 @@ export default defineConfig(() => {
         }),
         commonjs({ sourceMap: true }),
         ts(),
+        string({ include: "**/*.json5" }),
       ],
     },
   ];

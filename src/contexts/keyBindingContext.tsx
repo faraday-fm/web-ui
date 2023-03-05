@@ -1,7 +1,11 @@
+import keyBindingsContent from "@assets/keybindings.json5";
 import { useExecuteCommand } from "@hooks/useCommandBinding";
 import { useIsInCommandContext } from "@hooks/useCommandContext";
+import JSON5 from "json5";
 import { alt, regexp, seq, string } from "parsimmon";
 import { createContext, PropsWithChildren, useEffect } from "react";
+
+const keyBindings = JSON5.parse(keyBindingsContent);
 
 type KeyCombination =
   | { error: true }
@@ -48,8 +52,6 @@ export type KeyBinding = {
 
 const KeyBindingContext = createContext<KeyBinding[]>([]);
 
-type KeyBindingProviderProps = { bindings: KeyBinding[] } & PropsWithChildren<unknown>;
-
 const parsedKeyCombinationsCache = new Map<string, KeyCombination>();
 
 const getKeyCombination = (keyStr: string): KeyCombination => {
@@ -74,20 +76,22 @@ const matchKey = (key: string, event: KeyboardEvent) => {
   );
 };
 
-export function KeyBindingProvider({ bindings, children }: KeyBindingProviderProps) {
+export function KeyBindingProvider({ children }: PropsWithChildren) {
   const isInContext = useIsInCommandContext();
   const executeCommand = useExecuteCommand();
+
+  const bindings = keyBindings;
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       const keyCodeStr = [e.ctrlKey ? "Ctrl" : "", e.altKey ? "Alt" : "", e.shiftKey ? "Shift" : "", e.metaKey ? "Meta" : "", e.code]
         .filter((m) => m)
         .join("+");
-      console.debug(`Key pressed: ${e.key} (${keyCodeStr})`);
+      console.debug("Key pressed:", e.key, "(", keyCodeStr, ")");
       for (let i = bindings.length - 1; i >= 0; i -= 1) {
         const binding = bindings[i];
         if (matchKey(binding.key, e) && (!binding.when || isInContext(binding.when))) {
-          console.debug(`executeCommand("${binding.command}", ${JSON.stringify(binding.args)})`);
+          console.debug("executeCommand(", binding.command, ", ", binding.args, ")");
           executeCommand(binding.command, binding.args);
           e.stopPropagation();
           e.preventDefault();

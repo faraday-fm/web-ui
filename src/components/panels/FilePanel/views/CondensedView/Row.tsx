@@ -37,7 +37,7 @@ export function Row({ cursorStyle, data, field, onMouseDown, onMouseOver }: RowP
   return (
     <Root cursorStyle={cursorStyle} onMouseDown={onMouseDown} onMouseOver={onMouseOver}>
       <LineItem $data={data} $cursorStyle={cursorStyle}>
-        {data[field] ?? "\u00A0"}
+        {String(data[field]) ?? "\u00A0"}
       </LineItem>
     </Root>
   );

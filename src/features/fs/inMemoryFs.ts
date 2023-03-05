@@ -1,4 +1,4 @@
-import { append } from "@utils/urlUtils";
+import { append, isRoot } from "@utils/urlUtils";
 
 import { FileSystemError } from "./FileSystemError";
 import { FileSystemProvider, FileSystemWatcher, FsEntry } from "./types";
@@ -24,6 +24,8 @@ function getPathParts(path: string) {
 
 export class InMemoryFsProvider implements FileSystemProvider {
   private root: Dir;
+
+  private watchers = new Map<string, Set<FileSystemWatcher>>();
 
   constructor() {
     this.root = { name: "<root>", isDir: true, isMoundedFs: false, isFile: false, children: [] };
@@ -57,13 +59,39 @@ export class InMemoryFsProvider implements FileSystemProvider {
     if (currDir.isMoundedFs) {
       throw FileSystemError.MountNotSupported();
     }
-    currDir.children.push({ isDir: true, isMoundedFs: true, isFile: false, fs, name: newDirName });
+    const newDir: MountedFs = { isDir: true, isMoundedFs: true, isFile: false, fs, name: newDirName };
+    currDir.children.push(newDir);
+    const watchers = this.watchers.get(parts.slice(0, parts.length - 1).join("/"));
+    if (watchers) {
+      watchers.forEach((w) => w([{ type: "created", entry: newDir, path }]));
+    }
   }
 
   async watch(path: string, watcher: FileSystemWatcher, options: { recursive: boolean; excludes: string[]; signal?: AbortSignal }) {
-    const entries = await this.readDirectory(path, options);
-    watcher(entries.map((e) => ({ type: "created", entry: e, path: append(path, e.name) })));
-    watcher([{ type: "ready" }]);
+    const entry = this.getEntry(path);
+    if (entry?.isDir) {
+      const entries = await this.readDirectory(path, options);
+      watcher(entries.map((e) => ({ type: "created", entry: e, path: append(path, e.name) })));
+      watcher([{ type: "ready" }]);
+    } else {
+      if (entry) {
+        watcher([{ type: "created", entry, path }]);
+      }
+      watcher([{ type: "ready" }]);
+    }
+
+    let watchers = this.watchers.get(path);
+    if (!watchers) {
+      watchers = new Set();
+      this.watchers.set(path, watchers);
+    }
+    watchers.add(watcher);
+    options?.signal?.addEventListener("abort", () => {
+      watchers?.delete(watcher);
+      if (watchers?.size === 0) {
+        this.watchers.delete(path);
+      }
+    });
   }
 
   readDirectory(path: string, options?: { signal?: AbortSignal }): FsEntry[] | Promise<FsEntry[]> {
@@ -109,7 +137,12 @@ export class InMemoryFsProvider implements FileSystemProvider {
     if (currDir.children.find((child) => child.name === newDirName)) {
       throw FileSystemError.FileExists();
     }
-    currDir.children.push({ isDir: true, isFile: false, isMoundedFs: false, name: newDirName, children: [] });
+    const newDir: Dir = { isDir: true, isFile: false, isMoundedFs: false, name: newDirName, children: [] };
+    currDir.children.push(newDir);
+    const watchers = this.watchers.get(parts.slice(0, parts.length - 1).join("/"));
+    if (watchers) {
+      watchers.forEach((w) => w([{ type: "created", entry: newDir, path }]));
+    }
     return Promise.resolve();
   }
 
@@ -198,5 +231,28 @@ export class InMemoryFsProvider implements FileSystemProvider {
 
   copy?(source: string, destination: string, options?: { overwrite?: boolean; signal?: AbortSignal }) {
     throw new Error("Method not implemented.");
+  }
+
+  getEntry(path: string): Entry | undefined {
+    if (isRoot(path)) {
+      return this.root;
+    }
+    const parts = getPathParts(path);
+    let currDir: Dir = this.root;
+    for (let i = 0; i < parts.length - 1; i += 1) {
+      const nextDir: Entry | undefined = currDir.children.find((child) => child.name === parts[i]);
+      if (!nextDir) {
+        throw FileSystemError.FileNotFound();
+      }
+      if (!nextDir.isDir) {
+        throw FileSystemError.FileNotADirectory();
+      }
+      if (nextDir.isMoundedFs) {
+        throw FileSystemError.FileNotADirectory();
+      }
+      currDir = nextDir;
+    }
+
+    return currDir.children.find((child) => child.name === parts[parts.length - 1]);
   }
 }

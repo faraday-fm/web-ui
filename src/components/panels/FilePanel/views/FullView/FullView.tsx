@@ -19,9 +19,6 @@ type FullViewProps = {
 const Columns = styled.div`
   display: grid;
   overflow: hidden;
-  /* grid-auto-columns: 1fr;
-grid-auto-flow: column; */
-  /* grid-template-columns: 1fr auto; */
 `;
 
 export function FullView({ items, cursor, cursorStyle, columnDefs, onMaxVisibleItemsChanged, onItemClicked, onItemActivated }: FullViewProps) {

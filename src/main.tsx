@@ -1,6 +1,5 @@
 import "list/methods";
 
-import keyBindings from "@assets/keybindings.json";
 import App from "@components/App/App";
 import { FarMoreHostProvider } from "@contexts/farMoreHostContext";
 import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
@@ -21,15 +20,15 @@ export function FarMore({ host }: FarMoreProps) {
   const dark = useMediaQuery("(prefers-color-scheme: dark)");
   return (
     <ReduxProvider store={store}>
-      <ThemeProvider theme={dark ? darkTheme : farTheme}>
-        <KeyBindingProvider bindings={keyBindings}>
-          <GlyphSizeProvider>
-            <FarMoreHostProvider host={host}>
+      <FarMoreHostProvider host={host}>
+        <ThemeProvider theme={dark ? darkTheme : farTheme}>
+          <KeyBindingProvider>
+            <GlyphSizeProvider>
               <App />
-            </FarMoreHostProvider>
-          </GlyphSizeProvider>
-        </KeyBindingProvider>
-      </ThemeProvider>
+            </GlyphSizeProvider>
+          </KeyBindingProvider>
+        </ThemeProvider>
+      </FarMoreHostProvider>
     </ReduxProvider>
   );
 }

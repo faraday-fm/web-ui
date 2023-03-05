@@ -5,8 +5,8 @@ import { useDirListing } from "@hooks/useDirListing";
 import { selectPanelState, useAppDispatch, useAppSelector } from "@store";
 import { FilePanelLayout } from "@types";
 import { isRoot } from "@utils/urlUtils";
-import { empty, list, Ordering } from "list";
-import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
+import { empty, Ordering } from "list";
+import { useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 type ReduxFilePanelProps = { layout: FilePanelLayout & { id: string } };
@@ -34,7 +34,6 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
 
   const items = state?.items ?? empty();
   const cursor = state?.cursor ?? {};
-  const view = state?.view ?? layout.view;
 
   useEffect(() => {
     if (isActive) {
@@ -43,8 +42,8 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
   }, [isActive]);
 
   useEffect(() => {
-    const { path, id, view } = layout;
-    dispatch(initPanelState({ id, state: { view, cursor: {}, items: empty(), path } }));
+    const { path, id } = layout;
+    dispatch(initPanelState({ id, state: { cursor: {}, items: empty(), path } }));
   }, [dispatch, layout]);
 
   // FIXME: If "ready" event is not fired by the filesystem watcher, we should add ".." directory
@@ -89,7 +88,7 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
         cursor={cursor}
         items={items}
         path={state ? state.path : "file:/"}
-        view={view}
+        view={layout.view}
       />
     </Root>
   );

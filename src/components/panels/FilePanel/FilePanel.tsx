@@ -132,7 +132,12 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
     const { width } = useElementSize(panelRootRef);
     const [maxItemsPerColumn, setMaxItemsPerColumn] = useState<number>();
 
-    const columnsCount = width ? Math.ceil(width / 350) : undefined;
+    let columnsCount: number | undefined;
+    if (view.type === "full") {
+      columnsCount = 1;
+    } else if (width) {
+      columnsCount = Math.ceil(width / 350);
+    }
 
     const displayedItems = columnsCount && maxItemsPerColumn ? Math.min(items.length, maxItemsPerColumn * columnsCount) : 1;
 
@@ -241,12 +246,35 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
       pathParts.push("/");
     }
 
+    const [touchY, setTouchY] = useState(0);
+
     if (!columnsCount) {
       return <PanelRoot ref={panelRootRef} tabIndex={0} onFocus={() => onFocus?.()} />;
     }
 
+    const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+      setTouchY(e.changedTouches.item(0).clientY);
+      e.stopPropagation();
+    };
+
+    const onTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+      scroll(-Math.sign(e.changedTouches.item(0).clientY - touchY), true);
+      setTouchY(e.changedTouches.item(0).clientY);
+      e.stopPropagation();
+    };
+
+    // const onTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    // };
+
     return (
-      <PanelRoot ref={panelRootRef} tabIndex={0} onFocus={() => onFocus?.()}>
+      <PanelRoot
+        ref={panelRootRef}
+        tabIndex={0}
+        onFocus={() => onFocus?.()}
+        onTouchStartCapture={onTouchStart}
+        onTouchMoveCapture={onTouchMove}
+        // onTouchEndCapture={onTouchEnd}
+      >
         <GlyphSizeProvider>
           <Border {...theme.filePanel.border}>
             <PanelContent>

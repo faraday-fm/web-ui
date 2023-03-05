@@ -14,10 +14,10 @@ export function useFileContent(url: string) {
       const pendingOp = counter.current;
       try {
         setResult({ done: false });
-        const content = await fs.readFile(url, { signal: abortController.signal });
+        // const content = await fs.readFile(url, { signal: abortController.signal });
         fs.watch(
           url,
-          async () => {
+          async (e) => {
             try {
               const content = await fs.readFile(url, { signal: abortController.signal });
               setResult({ done: true, content });
@@ -27,9 +27,9 @@ export function useFileContent(url: string) {
           },
           { signal: abortController.signal }
         );
-        if (counter.current === pendingOp) {
-          setResult({ done: true, content });
-        }
+        // if (counter.current === pendingOp) {
+        //   setResult({ done: true, content });
+        // }
       } catch (error) {
         if (counter.current === pendingOp) {
           setResult({ done: false, error });
