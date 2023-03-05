@@ -9,7 +9,6 @@ type RowProps = {
   field: string;
   onMouseOver?: MouseEventHandler<HTMLDivElement>;
   onMouseDown?: MouseEventHandler<HTMLDivElement>;
-  onDoubleClick?: MouseEventHandler<HTMLDivElement>;
 };
 
 function getColor(theme: DefaultTheme, name: string, dir: boolean | undefined, selected: boolean) {
@@ -34,9 +33,9 @@ const LineItem = styled.span<{ $data: { name: string; isDir: boolean | undefined
   color: ${(p) => getColor(p.theme, p.$data.name, p.$data.isDir, p.$cursorStyle === "firm")};
 `;
 
-export function Row({ cursorStyle, data, field, onMouseDown, onMouseOver, onDoubleClick }: RowProps) {
+export function Row({ cursorStyle, data, field, onMouseDown, onMouseOver }: RowProps) {
   return (
-    <Root cursorStyle={cursorStyle} onMouseDown={onMouseDown} onMouseOver={onMouseOver} onDoubleClick={onDoubleClick}>
+    <Root cursorStyle={cursorStyle} onMouseDown={onMouseDown} onMouseOver={onMouseOver}>
       <LineItem $data={data} $cursorStyle={cursorStyle}>
         {data[field] ?? "\u00A0"}
       </LineItem>

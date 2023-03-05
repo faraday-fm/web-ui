@@ -68,6 +68,7 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
   const { height: glyphHeight } = useGlyphSize();
   const [autoscroll, setAutoscroll] = useState(0);
   const { height } = useElementSize(ref);
+  const lastClickTime = useRef(0);
 
   const maxItemsCount = height ? Math.max(1, Math.trunc(height / glyphHeight)) : undefined;
 
@@ -97,11 +98,13 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
           style={{ overflow: "hidden" }}
           onMouseDown={(e) => {
             e.stopPropagation();
-            selectItem?.(topmostIndex + displayedItems.length - 1);
-          }}
-          onDoubleClick={(e) => {
-            e.stopPropagation();
-            activateItem?.(topmostIndex + displayedItems.length - 1, e.getModifierState("Shift"));
+            if (Date.now() - lastClickTime.current < 200) {
+              activateItem?.(topmostIndex + displayedItems.length - 1, e.getModifierState("Shift"));
+              lastClickTime.current = 0;
+            } else {
+              selectItem?.(topmostIndex + displayedItems.length - 1);
+              lastClickTime.current = Date.now();
+            }
           }}
         >
           {maxItemsCount &&
@@ -121,11 +124,13 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
                   }}
                   onMouseDown={(e) => {
                     e.stopPropagation();
-                    selectItem?.(localIdx + topmostIndex);
-                  }}
-                  onDoubleClick={(e) => {
-                    e.stopPropagation();
-                    activateItem?.(localIdx + topmostIndex, e.getModifierState("Shift"));
+                    if (Date.now() - lastClickTime.current < 200) {
+                      activateItem?.(localIdx + topmostIndex, e.getModifierState("Shift"));
+                      lastClickTime.current = 0;
+                    } else {
+                      selectItem?.(localIdx + topmostIndex);
+                      lastClickTime.current = Date.now();
+                    }
                   }}
                 />
               );
