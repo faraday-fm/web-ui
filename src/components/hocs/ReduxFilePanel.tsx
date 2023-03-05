@@ -5,8 +5,8 @@ import { useDirListing } from "@hooks/useDirListing";
 import { selectPanelState, useAppDispatch, useAppSelector } from "@store";
 import { FilePanelLayout } from "@types";
 import { isRoot } from "@utils/urlUtils";
-import { empty, Ordering } from "list";
-import { useCallback, useEffect, useRef } from "react";
+import { empty, list, Ordering } from "list";
+import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
 
 type ReduxFilePanelProps = { layout: FilePanelLayout & { id: string } };
@@ -47,12 +47,19 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
     dispatch(setPanelState({ id, state: { view, cursor: {}, items: empty(), path } }));
   }, [dispatch, layout]);
 
+  useLayoutEffect(() => {
+    const path = state?.path;
+    if (path && !isRoot(path)) {
+      dispatch(setPanelItems({ id, items: list({ name: "..", isDir: true }) }));
+    }
+  }, [dispatch, id, state?.path]);
+
   useDirListing(
     state?.path,
     useCallback(
-      (dirUrl, files) => {
+      (dirPath, files) => {
         files = files.sortWith(fsCompare);
-        if (!isRoot(dirUrl)) {
+        if (!isRoot(dirPath)) {
           files = files.prepend({ name: "..", isDir: true });
         }
         dispatch(setPanelItems({ id, items: files }));

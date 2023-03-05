@@ -1,15 +1,14 @@
 import { FsEntry } from "@features/fs/types";
-import { isRoot } from "@utils/urlUtils";
-import { empty, List, list } from "list";
+import { empty, List } from "list";
 import { useEffect } from "react";
 
 import { useFs } from "./useFs";
 
-export function useDirListing(url: string | undefined, onListUpdated: (url: string, files: List<FsEntry>) => void) {
+export function useDirListing(path: string | undefined, onListUpdated: (path: string, files: List<FsEntry>) => void) {
   const fs = useFs();
 
   useEffect(() => {
-    if (!url) return undefined;
+    if (!path) return undefined;
 
     const abortController = new AbortController();
     (async () => {
@@ -17,9 +16,9 @@ export function useDirListing(url: string | undefined, onListUpdated: (url: stri
       let isReady = false;
       try {
         let timeoutId: number;
-        const updateItems = () => onListUpdated(url, items);
+        const updateItems = () => onListUpdated(path, items);
         await fs.watch(
-          url,
+          path,
           (changes) => {
             changes.forEach((change) => {
               if (change.type === "ready") {
@@ -66,9 +65,9 @@ export function useDirListing(url: string | undefined, onListUpdated: (url: stri
       } catch (err) {
         console.error(err);
         items = items.append({ name: "ERROR!", isFile: true });
-        onListUpdated(url, items);
+        onListUpdated(path, items);
       }
     })();
     return () => abortController.abort();
-  }, [fs, onListUpdated, url]);
+  }, [fs, onListUpdated, path]);
 }
