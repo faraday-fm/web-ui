@@ -14,7 +14,7 @@ export function useFileContent(url: string) {
       const pendingOp = counter.current;
       try {
         setResult({ done: false });
-        const content = await fs.readFile(url, abortController.signal);
+        const content = await fs.readFile(url, { signal: abortController.signal });
         if (counter.current === pendingOp) {
           setResult({ done: true, content });
         }

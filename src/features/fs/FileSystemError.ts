@@ -53,4 +53,12 @@ export class FileSystemError extends Error {
   static NoPermissions(messageOrUrl?: string | URL): FileSystemError {
     return new FileSystemError(messageOrUrl);
   }
+
+  /**
+   * Create an error to signal that the target file system does not support mount operation.
+   * @param messageOrUri Message or uri.
+   */
+  static MountNotSupported(messageOrUrl?: string | URL): FileSystemError {
+    return new FileSystemError(messageOrUrl);
+  }
 }

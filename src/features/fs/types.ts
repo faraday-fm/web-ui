@@ -12,20 +12,18 @@ export type FsEntry = {
 
 export type FileChangeType = "changed" | "created" | "deleted";
 
-export type FileChangeEvent = { type: FileChangeType; url: string; entry: FsEntry } | { type: "ready" };
+export type FileChangeEvent = { type: FileChangeType; path: string; entry: FsEntry } | { type: "ready" };
+
+export type FileSystemWatcher = (events: FileChangeEvent[]) => void;
 
 export type FileSystemProvider = {
-  watch(
-    url: string,
-    listener: (events: FileChangeEvent[]) => void,
-    options: { recursive: boolean; excludes: string[] },
-    signal?: AbortSignal
-  ): void | Promise<void>;
-  readDirectory(url: string, signal?: AbortSignal): FsEntry[] | Promise<FsEntry[]>;
-  createDirectory(url: string, signal?: AbortSignal): void | Promise<void>;
-  readFile(url: string, signal?: AbortSignal): Uint8Array | Promise<Uint8Array>;
-  writeFile(url: string, content: Uint8Array, options: { create: boolean; overwrite: boolean; signal?: AbortSignal }): void | Promise<void>;
-  delete(url: string, options: { recursive: boolean; signal?: AbortSignal }): void | Promise<void>;
-  rename(oldUrl: string, newUrl: string, options: { overwrite: boolean; signal?: AbortSignal }): void | Promise<void>;
-  copy?(source: string, destination: string, options: { overwrite: boolean; signal?: AbortSignal }): void | Promise<void>;
+  watch(path: string, watcher: FileSystemWatcher, options?: { recursive?: boolean; excludes?: string[]; signal?: AbortSignal }): void | Promise<void>;
+  readDirectory(path: string, options?: { signal?: AbortSignal }): FsEntry[] | Promise<FsEntry[]>;
+  createDirectory(path: string, options?: { signal?: AbortSignal }): void | Promise<void>;
+  readFile(path: string, options?: { signal?: AbortSignal }): Uint8Array | Promise<Uint8Array>;
+  writeFile(path: string, content: Uint8Array, options?: { create?: boolean; overwrite?: boolean; signal?: AbortSignal }): void | Promise<void>;
+  delete(path: string, options?: { recursive?: boolean; signal?: AbortSignal }): void | Promise<void>;
+  rename(oldPath: string, newPath: string, options?: { overwrite?: boolean; signal?: AbortSignal }): void | Promise<void>;
+  copy?(source: string, destination: string, options?: { overwrite?: boolean; signal?: AbortSignal }): void | Promise<void>;
+  mount?(path: string, fs: FileSystemProvider): void | Promise<void>;
 };

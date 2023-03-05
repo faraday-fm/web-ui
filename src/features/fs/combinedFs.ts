@@ -1,10 +1,9 @@
 import { FileSystemError } from "./FileSystemError";
-import { FileChangeEvent, FileSystemProvider, FsEntry } from "./types";
+import { FileChangeEvent, FileSystemProvider } from "./types";
 
-type Dir = FsEntry & { isDir: true; isFile: false; children: DirOrFile[] };
-type File = FsEntry & { isFile: true; isDir: false; content: Uint8Array };
-
-type DirOrFile = Dir | File;
+function trimProtocol(url: string) {
+  return url.replace(/^(\w|-)+:\/+/, "");
+}
 
 export class CombinedFsProvider implements FileSystemProvider {
   innerProviders: Record<string, FileSystemProvider | undefined>;
@@ -13,57 +12,57 @@ export class CombinedFsProvider implements FileSystemProvider {
     this.innerProviders = innerProviders;
   }
 
-  watch(url: string, listener: (events: FileChangeEvent[]) => void, options: { recursive: boolean; excludes: string[]; signal?: AbortSignal }) {
+  watch(url: string, listener: (events: FileChangeEvent[]) => void, options?: { recursive?: boolean; excludes?: string[]; signal?: AbortSignal }) {
     const provider = this.resolveProvider(url);
     if (!provider) {
       throw FileSystemError.FileNotFound();
     }
-    return provider.watch(url, listener, options);
+    return provider.watch(trimProtocol(url), listener, options);
   }
 
-  readDirectory(url: string, signal?: AbortSignal) {
+  readDirectory(url: string, options?: { signal?: AbortSignal }) {
     const provider = this.resolveProvider(url);
     if (!provider) {
       throw FileSystemError.FileNotFound();
     }
-    return provider.readDirectory(url, signal);
+    return provider.readDirectory(trimProtocol(url), options);
   }
 
-  createDirectory(url: string, signal?: AbortSignal) {
+  createDirectory(url: string, options?: { signal?: AbortSignal }) {
     const provider = this.resolveProvider(url);
     if (!provider) {
       throw FileSystemError.FileNotFound();
     }
-    return provider.createDirectory(url, signal);
+    return provider.createDirectory(trimProtocol(url), options);
   }
 
-  readFile(url: string, signal?: AbortSignal) {
+  readFile(url: string, options?: { signal?: AbortSignal }) {
     const provider = this.resolveProvider(url);
     if (!provider) {
       throw FileSystemError.FileNotFound();
     }
-    return provider.readFile(url, signal);
+    return provider.readFile(trimProtocol(url), options);
   }
 
-  writeFile(url: string, content: Uint8Array, options: { create: boolean; overwrite: boolean; signal?: AbortSignal }) {
+  writeFile(url: string, content: Uint8Array, options?: { create?: boolean; overwrite?: boolean; signal?: AbortSignal }) {
     const provider = this.resolveProvider(url);
     if (!provider) {
       throw FileSystemError.FileNotFound();
     }
-    return provider.writeFile(url, content, options);
+    return provider.writeFile(trimProtocol(url), content, options);
   }
 
-  delete(url: string, options: { recursive: boolean; signal?: AbortSignal }) {
+  delete(url: string, options?: { recursive?: boolean; signal?: AbortSignal }) {
     const provider = this.resolveProvider(url);
-    return provider.delete(url, options);
+    return provider.delete(trimProtocol(url), options);
   }
 
-  rename(oldUrl: string, newUrl: string, options: { overwrite: boolean; signal?: AbortSignal }) {
+  rename(oldUrl: string, newUrl: string, options?: { overwrite?: boolean; signal?: AbortSignal }) {
     const provider = this.resolveProvider(oldUrl);
     return provider.rename(oldUrl, newUrl, options);
   }
 
-  copy?(source: string, destination: string, options: { overwrite: boolean; signal?: AbortSignal }) {
+  copy?(source: string, destination: string, options?: { overwrite?: boolean; signal?: AbortSignal }) {
     const provider = this.resolveProvider(source);
     if (!provider.copy) {
       throw FileSystemError.FileNotFound(source);
