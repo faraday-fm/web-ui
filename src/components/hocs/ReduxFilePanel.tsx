@@ -47,12 +47,15 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
     dispatch(initPanelState({ id, state: { view, cursor: {}, items: empty(), path } }));
   }, [dispatch, layout]);
 
-  useEffect(() => {
-    const path = state?.path;
-    if (path && !isRoot(path)) {
-      dispatch(setPanelItems({ id, items: list({ name: "..", isDir: true }) }));
-    }
-  }, [dispatch, id, state?.path]);
+  // FIXME: If "ready" event is not fired by the filesystem watcher, we should add ".." directory
+  // Below code is invalid because it breaks the cursor position when navigating to parent directory.
+
+  // useEffect(() => {
+  //   const path = state?.path;
+  //   if (path && !isRoot(path)) {
+  //     dispatch(setPanelItems({ id, items: list({ name: "..", isDir: true }) }));
+  //   }
+  // }, [dispatch, id, state?.path]);
 
   useDirListing(
     state?.path,

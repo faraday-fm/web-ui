@@ -45,6 +45,10 @@ const panelsSliceUT = createSlice({
       if (panelsStack && panelsStack.length > 0) {
         const s = panelsStack[panelsStack.length - 1];
         s.items = items;
+        if (s.cursor.selectedIndex && s.cursor.selectedIndex >= s.items.length) {
+          s.cursor.selectedIndex = s.items.length - 1;
+          s.cursor.selectedName = s.items.nth(s.cursor.selectedIndex)?.name;
+        }
       }
     },
     setPanelCursorPos(state, { payload: { id, cursorPos } }: PayloadAction<{ id: string; cursorPos: CursorPosition }>) {

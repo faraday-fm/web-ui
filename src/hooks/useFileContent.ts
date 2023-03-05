@@ -15,6 +15,18 @@ export function useFileContent(url: string) {
       try {
         setResult({ done: false });
         const content = await fs.readFile(url, { signal: abortController.signal });
+        fs.watch(
+          url,
+          async () => {
+            try {
+              const content = await fs.readFile(url, { signal: abortController.signal });
+              setResult({ done: true, content });
+            } catch {
+              // console.error("File deleted");
+            }
+          },
+          { signal: abortController.signal }
+        );
         if (counter.current === pendingOp) {
           setResult({ done: true, content });
         }
