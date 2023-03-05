@@ -39,7 +39,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
     for (let i = 0; i < parts.length - 1; i += 1) {
       if (currDir.isMoundedFs) {
         if (currDir.fs.mount) {
-          currDir.fs.mount(parts.slice(i + 1).join("/"), fs);
+          currDir.fs.mount(parts.slice(i).join("/"), fs);
           return;
         }
         throw FileSystemError.MountNotSupported();
@@ -71,7 +71,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
     let currDir: Dir | MountedFs = this.root;
     for (let i = 0; i < parts.length; i += 1) {
       if (currDir.isMoundedFs) {
-        return currDir.fs.readDirectory(parts.slice(i + 1).join("/"));
+        return currDir.fs.readDirectory(parts.slice(i).join("/"));
       }
       const nextDir: Entry | undefined = currDir.children.find((child) => child.name === parts[i]);
       if (!nextDir) {
@@ -92,7 +92,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
     const newDirName = parts[parts.length - 1];
     for (let i = 0; i < parts.length - 1; i += 1) {
       if (currDir.isMoundedFs) {
-        return currDir.fs.createDirectory(parts.slice(i + 1).join("/"), options);
+        return currDir.fs.createDirectory(parts.slice(i).join("/"), options);
       }
       const nextDir: Entry | undefined = currDir.children.find((child) => child.name === parts[i]);
       if (!nextDir) {
@@ -122,7 +122,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
     const fileName = parts[parts.length - 1];
     for (let i = 0; i < parts.length - 1; i += 1) {
       if (currDir.isMoundedFs) {
-        return currDir.fs.readFile(parts.slice(i + 1).join("/"), options);
+        return currDir.fs.readFile(parts.slice(i).join("/"), options);
       }
       const nextDir: Entry | undefined = currDir.children.find((child) => child.name === parts[i]);
       if (!nextDir) {
@@ -155,7 +155,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
     const fileName = parts[parts.length - 1];
     for (let i = 0; i < parts.length - 1; i += 1) {
       if (currDir.isMoundedFs) {
-        return currDir.fs.writeFile(parts.slice(i + 1).join("/"), content, options);
+        return currDir.fs.writeFile(parts.slice(i).join("/"), content, options);
       }
       const nextDir: Entry | undefined = currDir.children.find((child) => child.name === parts[i]);
       if (!nextDir) {
