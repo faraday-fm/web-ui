@@ -12,7 +12,7 @@ const _ = optWhitespace;
 
 const lang = createLanguage({
   Var: () =>
-    regexp(/[a-z][a-z0-9.]*/i).map((val) => {
+    regexp(/[a-z][a-z0-9.:]*/i).map((val) => {
       switch (val) {
         case "true":
           return { _: "c", val: true };
@@ -23,7 +23,8 @@ const lang = createLanguage({
       }
     }),
   Number: () => regexp(/[0-9]+(\.[0-9]+)?/).map((val) => ({ _: "c", val: Number(val) })),
-  Const: (r) => alt(r.Number).or(r.Var),
+  String: () => regexp(/(".*?")|('.*?')/).map((val) => ({ _: "c", val: String(val).substring(1, val.length - 1) })),
+  Const: (r) => alt(r.Number).or(r.Var).or(r.String),
   Not: (r) => seq(string("!").trim(_).many(), alt(r.List, r.Const)).map(([excl, node]) => (excl.length % 2 === 1 ? { _: "!", node } : node)),
   Eq: (r) =>
     seqMap(r.Not, seq(alt(string("=="), string("!=")).trim(_), r.Not).many(), (first, rest) => {

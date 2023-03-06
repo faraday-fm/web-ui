@@ -1,5 +1,6 @@
 import { ReduxFilePanel } from "@components/hocs/ReduxFilePanel";
 import { QuickView } from "@components/panels/QuickView/QuickView";
+import { RenderWhen } from "@components/RenderWhen/RenderWhen";
 import { useIsInCommandContext } from "@hooks/useCommandContext";
 import { PanelsLayout } from "@types";
 import styled from "styled-components";
@@ -23,25 +24,33 @@ const FlexPanel = styled.div`
 `;
 
 export function LayoutContainer({ layout, direction }: LayoutContainerProps) {
-  const isInCommandContext = useIsInCommandContext();
-  if (layout.when && !isInCommandContext(layout.when)) {
-    return <div>123</div>;
-  }
   switch (layout.type) {
     case "row":
       return (
-        <Row dir={direction}>
-          {layout.children.map((l) => (
-            <FlexPanel key={l.id} style={{ flexGrow: l.flex ?? 1 }}>
-              <LayoutContainer layout={l} direction={direction === "h" ? "v" : "h"} />
-            </FlexPanel>
-          ))}
-        </Row>
+        <RenderWhen expression={layout.when ?? "true"}>
+          <Row dir={direction}>
+            {layout.children.map((l) => (
+              <RenderWhen key={l.id} expression={l.when ?? "true"}>
+                <FlexPanel style={{ flexGrow: l.flex ?? 1 }}>
+                  <LayoutContainer layout={l} direction={direction === "h" ? "v" : "h"} />
+                </FlexPanel>
+              </RenderWhen>
+            ))}
+          </Row>
+        </RenderWhen>
       );
     case "file-panel":
-      return <ReduxFilePanel layout={layout} />;
+      return (
+        <RenderWhen expression={layout.when ?? "true"}>
+          <ReduxFilePanel layout={layout} />
+        </RenderWhen>
+      );
     case "quick-view":
-      return <QuickView layout={layout} />;
+      return (
+        <RenderWhen expression={layout.when ?? "true"}>
+          <QuickView layout={layout} />
+        </RenderWhen>
+      );
     default:
       return null;
   }

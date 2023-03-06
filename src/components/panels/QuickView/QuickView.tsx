@@ -59,7 +59,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
   // const [quickViewContent, setQuickViewContent] = useState<string>();
   const activePanelId = useAppSelector((state) => state.panels.activePanelId);
   const isActive = activePanelId === id;
-  const activePath = useAppSelector((state) => state.globalContext.selectedFilePath);
+  const activePath = useAppSelector((state) => state.globalContext["filePanel.selectedPath"]);
 
   const panelRootRef = useRef<HTMLDivElement>(null);
   const focused = useFocused(panelRootRef);

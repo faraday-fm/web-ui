@@ -17,7 +17,7 @@ const WGlyph = styled.div`
   top: -1000px;
 `;
 
-export function GlyphSizeProvider({ children }: PropsWithChildren<unknown>) {
+export function GlyphSizeProvider({ children }: PropsWithChildren) {
   const ref = useRef<HTMLDivElement>(null);
   const size = useElementSize(ref, { width: 8, height: 16 });
 

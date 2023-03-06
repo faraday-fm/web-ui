@@ -1,7 +1,7 @@
 import { ContextVariables, setVariables } from "@features/commands/commandsSlice";
 import { useAppDispatch, useAppSelector } from "@store";
 import { Node, parser } from "@utils/whenClauseParser";
-import { useCallback, useEffect, useId } from "react";
+import { useCallback, useEffect, useId, useMemo } from "react";
 
 export function useCommandContext(variables: string | string[] | Record<string, unknown>, isActive?: boolean): void {
   const id = useId();
@@ -91,4 +91,23 @@ export function useIsInCommandContext() {
     },
     [ctx]
   );
+}
+
+export function useIsInCommandContextQuery(expression: string) {
+  const ast = useMemo(() => {
+    const result = parser.parse(expression);
+    if (!result.status) {
+      console.error("Cannot parse expression", expression);
+    }
+    return result;
+  }, [expression]);
+  const result = useAppSelector((state) => {
+    const ctx = state.commands.variables;
+    if (ast.status) {
+      return evaluate(ctx, ast.value);
+    }
+    return false;
+  });
+
+  return result;
 }

@@ -1,7 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type SliceState = {
-  selectedFilePath?: string;
+  ["filePanel.selectedName"]?: string;
+  ["filePanel.selectedPath"]?: string;
+  ["filePanel.isFileSelected"]?: boolean;
+  ["filePanel.isDirectorySelected"]?: boolean;
 };
 
 /** @internal */
@@ -11,10 +14,13 @@ export const globalContextSlice = createSlice({
     states: {},
   } as SliceState,
   reducers: {
-    setSelectedFilePath(state, { payload }: PayloadAction<string>) {
-      state.selectedFilePath = payload;
+    // setSelectedPath(state, { payload }: PayloadAction<string>) {
+    //   state.selectedPath = payload;
+    // },
+    updateState(state, { payload }: PayloadAction<SliceState>) {
+      return { ...state, ...payload };
     },
   },
 });
 
-export const { setSelectedFilePath } = globalContextSlice.actions;
+export const { updateState } = globalContextSlice.actions;
