@@ -2,6 +2,7 @@ import "list/methods";
 
 import App from "@components/App/App";
 import { FarMoreHostProvider } from "@contexts/farMoreHostContext";
+import { GlobalContextProvider } from "@contexts/globalContext";
 import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
 import { KeyBindingProvider } from "@contexts/keyBindingContext";
 import { useMediaQuery } from "@hooks/useMediaQuery";
@@ -20,15 +21,17 @@ export function FarMore({ host }: FarMoreProps) {
   const dark = useMediaQuery("(prefers-color-scheme: dark)");
   return (
     <ReduxProvider store={store}>
-      <FarMoreHostProvider host={host}>
-        <ThemeProvider theme={dark ? darkTheme : farTheme}>
-          <KeyBindingProvider>
-            <GlyphSizeProvider>
-              <App />
-            </GlyphSizeProvider>
-          </KeyBindingProvider>
-        </ThemeProvider>
-      </FarMoreHostProvider>
+      <GlobalContextProvider>
+        <FarMoreHostProvider host={host}>
+          <ThemeProvider theme={dark ? darkTheme : farTheme}>
+            <KeyBindingProvider>
+              <GlyphSizeProvider>
+                <App />
+              </GlyphSizeProvider>
+            </KeyBindingProvider>
+          </ThemeProvider>
+        </FarMoreHostProvider>
+      </GlobalContextProvider>
     </ReduxProvider>
   );
 }

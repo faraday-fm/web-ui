@@ -6,7 +6,8 @@ type SliceState = {
   variables: ContextVariables;
 };
 
-const commandsSliceUT = createSlice({
+/** @internal */
+export const commandsSlice = createSlice({
   name: "commands",
   initialState: {
     variables: {},
@@ -24,6 +25,4 @@ const commandsSliceUT = createSlice({
   },
 });
 
-export const commandsSlice = commandsSliceUT as Slice<SliceState>;
-
-export const { setVariables } = commandsSliceUT.actions;
+export const { setVariables } = commandsSlice.actions;

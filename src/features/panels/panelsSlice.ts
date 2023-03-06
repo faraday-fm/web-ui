@@ -1,5 +1,5 @@
 import { FsEntry } from "@features/fs/types";
-import { createSlice, PayloadAction, Slice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PanelsLayout } from "@types";
 import { traverseLayout } from "@utils/layout";
 import { append, truncateLastDir } from "@utils/urlUtils";
@@ -24,7 +24,8 @@ type SliceState = {
   states: Record<string, PanelState[] | undefined>;
 };
 
-const panelsSliceUT = createSlice({
+/** @internal */
+export const panelsSlice = createSlice({
   name: "panels",
   initialState: {
     states: {},
@@ -139,7 +140,5 @@ const panelsSliceUT = createSlice({
   },
 });
 
-export const panelsSlice = panelsSliceUT as Slice<SliceState>;
-
 export const { setPanelsLayout, setActivePanel, initPanelState, setPanelItems, setPanelCursorPos, focusNextPanel, focusPrevPanel, changeDir, popDir } =
-  panelsSliceUT.actions;
+  panelsSlice.actions;

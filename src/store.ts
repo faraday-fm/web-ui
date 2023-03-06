@@ -1,4 +1,5 @@
 import { commandsSlice } from "@features/commands/commandsSlice";
+import { globalContextSlice } from "@features/globalContext/globalContextSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
@@ -7,6 +8,7 @@ import { settingsSlice } from "./features/settings/settingsSlice";
 
 export const store = configureStore({
   reducer: {
+    globalContext: globalContextSlice.reducer,
     settings: settingsSlice.reducer,
     panels: panelsSlice.reducer,
     commands: commandsSlice.reducer,

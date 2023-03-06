@@ -4,10 +4,9 @@ import { useCommandContext } from "@hooks/useCommandContext";
 import { useFileContent } from "@hooks/useFileContent";
 import { useFocused } from "@hooks/useFocused";
 import Editor, { useMonaco } from "@monaco-editor/react";
-import { selectPanelState, useAppDispatch, useAppSelector } from "@store";
+import { useAppDispatch, useAppSelector } from "@store";
 import { QuickViewLayout } from "@types";
-import { append } from "@utils/urlUtils";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import styled, { useTheme } from "styled-components";
 
 const Root = styled.div`
@@ -60,12 +59,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
   // const [quickViewContent, setQuickViewContent] = useState<string>();
   const activePanelId = useAppSelector((state) => state.panels.activePanelId);
   const isActive = activePanelId === id;
-  const activePanelState = useAppSelector(selectPanelState(activePanelId ?? ""));
-  const activePath = useMemo(() => {
-    if (!activePanelState) return undefined;
-    const item = activePanelState.items.nth(activePanelState.cursor.selectedIndex ?? 0);
-    return item ? append(activePanelState.path, item.name) : undefined;
-  }, [activePanelState]);
+  const activePath = useAppSelector((state) => state.globalContext.selectedFilePath);
 
   const panelRootRef = useRef<HTMLDivElement>(null);
   const focused = useFocused(panelRootRef);

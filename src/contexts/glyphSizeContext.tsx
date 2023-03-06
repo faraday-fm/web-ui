@@ -1,7 +1,6 @@
 import { useElementSize } from "@hooks/useElementSize";
-import { createContext, PropsWithChildren, useContext, useLayoutEffect, useRef, useState } from "react";
+import { createContext, PropsWithChildren, useContext, useRef } from "react";
 import styled from "styled-components";
-import useResizeObserver from "use-resize-observer";
 
 const GlyphSizeContext = createContext({ width: 8, height: 16 });
 

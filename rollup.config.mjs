@@ -27,12 +27,12 @@ export default defineConfig(() => {
       output: [
         {
           file: packageJson.main,
-          sourcemap: watch ? "inline" : true,
+          sourcemap: true,
           format: "cjs",
         },
         {
           file: packageJson.module,
-          sourcemap: watch ? "inline" : true,
+          sourcemap: true,
           format: "esm",
         },
       ],

@@ -9,6 +9,7 @@ export function useFileContent(url: string) {
 
   useEffect(() => {
     const abortController = new AbortController();
+    let isReady = false;
     (async () => {
       counter.current += 1;
       const pendingOp = counter.current;
@@ -17,10 +18,15 @@ export function useFileContent(url: string) {
         // const content = await fs.readFile(url, { signal: abortController.signal });
         fs.watch(
           url,
-          async (e) => {
+          async (events) => {
             try {
-              const content = await fs.readFile(url, { signal: abortController.signal });
-              setResult({ done: true, content });
+              events.forEach((e) => {
+                if (e.type === "ready") isReady = true;
+              });
+              if (isReady) {
+                const content = await fs.readFile(url, { signal: abortController.signal });
+                setResult({ done: true, content });
+              }
             } catch {
               // console.error("File deleted");
             }

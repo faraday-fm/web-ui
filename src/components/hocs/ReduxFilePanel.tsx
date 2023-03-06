@@ -1,10 +1,11 @@
 import { FilePanel, FilePanelActions } from "@components/panels/FilePanel/FilePanel";
 import { FsEntry } from "@features/fs/types";
+import { setSelectedFilePath } from "@features/globalContext/globalContextSlice";
 import { CursorPosition, initPanelState, popDir, setActivePanel, setPanelCursorPos, setPanelItems } from "@features/panels/panelsSlice";
 import { useDirListing } from "@hooks/useDirListing";
 import { selectPanelState, useAppDispatch, useAppSelector } from "@store";
 import { FilePanelLayout } from "@types";
-import { isRoot } from "@utils/urlUtils";
+import { append, isRoot } from "@utils/urlUtils";
 import { empty, Ordering } from "list";
 import { useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
@@ -34,12 +35,14 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
 
   const items = state?.items ?? empty();
   const cursor = state?.cursor ?? {};
+  const selectedItem = state?.items ? state.items.nth(cursor.selectedIndex ?? 0) : undefined;
 
   useEffect(() => {
-    if (isActive) {
+    if (isActive && state?.path && selectedItem) {
+      dispatch(setSelectedFilePath(append(state.path, selectedItem.name)));
       panelRef.current?.focus();
     }
-  }, [isActive]);
+  }, [dispatch, isActive, selectedItem, state?.path]);
 
   useEffect(() => {
     const { path, id } = layout;

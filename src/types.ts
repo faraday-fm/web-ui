@@ -27,6 +27,7 @@ export type QuickViewLayout = {
 
 export type PanelLayout = FilePanelLayout | QuickViewLayout;
 
+/** @internal */
 export type PanelsLayout = (RowLayout | PanelLayout) & { id: string; flex?: number; when?: string };
 
 export type FarMoreConfig = {
