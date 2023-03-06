@@ -36,6 +36,7 @@ const ColumnRoot = styled.div`
   /* &:last-child {
     border-right: ${(p) => p.theme.filePanel.column.border.thickness} solid ${(p) => p.theme.filePanel.column.border.color};
   } */
+  ${(p) => p.theme.filePanel.column.extension}
 `;
 const ColumnHeader = styled.div`
   text-align: center;
@@ -43,6 +44,7 @@ const ColumnHeader = styled.div`
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 0 calc(0.25rem - 1px);
+  ${(p) => p.theme.filePanel.column.header.extension}
 `;
 
 const TopScroller = styled.div`

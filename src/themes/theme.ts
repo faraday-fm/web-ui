@@ -5,7 +5,7 @@ type RecursivePartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends object ? RecursivePartial<T[P]> : T[P];
 };
 
-const murenaPalette: Palette = {
+export const darkPalette: Palette = {
   bgColor0: "#000000",
   bgColor1: "#004164",
   bgColor2: "#008000",
@@ -24,27 +24,8 @@ const murenaPalette: Palette = {
   fgColor7: "#ffffff",
 };
 
-const darkPalette: Palette = {
-  bgColor0: "#002b36",
-  bgColor1: "#073642",
-  bgColor2: "#008080",
-  bgColor3: "#3182a4",
-  bgColor4: "#cb4b16",
-  bgColor5: "#9c36b6",
-  bgColor6: "#859900",
-  bgColor7: "#eee8d5",
-  fgColor0: "#93a1a1",
-  fgColor1: "#268bd2",
-  fgColor2: "#4fb636",
-  fgColor3: "#2aa198",
-  fgColor4: "#dc322f",
-  fgColor5: "#d33682",
-  fgColor6: "#b58900",
-  fgColor7: "#fdf6e3",
-};
-
-const lightPalette = {
-  bgColor0: "#000000",
+export const lightPalette = {
+  bgColor0: "#ffffff",
   bgColor1: "#004164",
   bgColor2: "#008000",
   bgColor3: "#008080",
@@ -52,62 +33,62 @@ const lightPalette = {
   bgColor5: "#800080",
   bgColor6: "#008080",
   bgColor7: "#0c0c0c",
-  fgColor0: "#808080",
+  fgColor0: "#000000",
   fgColor1: "#0000ff",
   fgColor2: "#87c576",
-  fgColor3: "#00ffff",
+  fgColor3: "#000000",
   fgColor4: "#ff4b00",
   fgColor5: "#e68cd7",
   fgColor6: "#ffff00",
-  fgColor7: "#ffffff",
+  fgColor7: "#000000",
 };
 
-const baseTheme = (colors: Palette): DefaultTheme => ({
-  palette: colors,
+const baseTheme: DefaultTheme = {
   // fontFamily: "Verdana, Geneva, sans-serif",
   fontFamily: "ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace",
-  primaryBg: colors.bgColor0,
-  primaryText: colors.fgColor0,
+  fontSize: "16px",
+  primaryBg: "$bg0",
+  primaryText: "$fg0",
   actionsBar: {
-    bg: colors.bgColor3,
-    color: colors.bgColor0,
+    bg: "$bg3",
+    color: "$bg0",
     fnKey: {
-      color: colors.bgColor7,
+      color: "$bg7",
     },
   },
   filePanel: {
-    bg: colors.bgColor1,
-    activeBg: colors.bgColor3,
-    color: colors.fgColor2,
+    bg: "$bg1",
+    activeBg: "$bg3",
+    color: "$fg2",
     border: {
-      color: colors.fgColor3,
+      color: "$fg3",
       radius: "0",
       thickness: "1px",
       margin: "0.5em calc(0.5ch - 1px)",
       padding: "0",
     },
     header: {
-      activeBg: colors.bgColor3,
-      inactiveBg: colors.bgColor1,
-      activeColor: colors.bgColor0,
-      inactiveColor: colors.fgColor3,
+      activeBg: "$bg3",
+      inactiveBg: "$bg1",
+      activeColor: "$bg0",
+      inactiveColor: "$fg3",
       extension: {
-        border: `1px solid ${colors.fgColor3}`,
+        border: `1px solid $fg3`,
         marginBottom: 1,
       },
     },
     entries: {
-      dir: { activeColor: colors.fgColor7, inactiveColor: colors.fgColor7 },
-      file: { activeColor: colors.bgColor0, inactiveColor: colors.fgColor3 },
+      dir: { activeColor: "$fg7", inactiveColor: "$fg7" },
+      file: { activeColor: "$bg0", inactiveColor: "$fg3" },
     },
     content: { margin: "1px" },
     footer: {
-      bg: colors.bgColor1,
-      color: colors.fgColor2,
+      bg: "$bg1",
+      color: "$fg2",
     },
     fileInfo: {
       border: {
-        color: colors.fgColor3,
+        color: "$fg3",
         radius: "0",
         thickness: "1px",
         margin: "1px",
@@ -115,10 +96,14 @@ const baseTheme = (colors: Palette): DefaultTheme => ({
       },
     },
     column: {
+      header: {
+        bg: "none",
+        color: "$fg6",
+      },
       bg: "none",
-      color: colors.fgColor6,
+      color: "$fg6",
       border: {
-        color: colors.fgColor3,
+        color: "$fg3",
         radius: "0",
         thickness: "1px",
         margin: "1px",
@@ -127,10 +112,10 @@ const baseTheme = (colors: Palette): DefaultTheme => ({
     },
   },
   modalDialog: {
-    bg: colors.fgColor7,
-    color: colors.bgColor0,
+    bg: "$fg7",
+    color: "$bg0",
     border: {
-      color: colors.bgColor0,
+      color: "$bg0",
       radius: "0",
       thickness: "1px",
       margin: "0",
@@ -146,13 +131,35 @@ const baseTheme = (colors: Palette): DefaultTheme => ({
     shadow: "1rem 1rem 0 0 rgb(0 0 0 / 40%)",
   },
   misc: {
-    hotKeyText: colors.fgColor6,
+    hotKeyText: "$fg6",
   },
-});
+};
 
 export function extend(base: DefaultTheme, extension: RecursivePartial<DefaultTheme>) {
   return deepmerge(base, extension) as DefaultTheme;
 }
 
-export const lightTheme = baseTheme(lightPalette);
-export const darkTheme = baseTheme(darkPalette);
+export function applyPalette(theme: DefaultTheme, palette: Palette) {
+  let themeStr = JSON.stringify(theme);
+  themeStr = themeStr
+    .replaceAll("$bg0", palette.bgColor0)
+    .replaceAll("$bg1", palette.bgColor1)
+    .replaceAll("$bg2", palette.bgColor2)
+    .replaceAll("$bg3", palette.bgColor3)
+    .replaceAll("$bg4", palette.bgColor4)
+    .replaceAll("$bg5", palette.bgColor5)
+    .replaceAll("$bg6", palette.bgColor6)
+    .replaceAll("$bg7", palette.bgColor7)
+    .replaceAll("$fg0", palette.fgColor0)
+    .replaceAll("$fg1", palette.fgColor1)
+    .replaceAll("$fg2", palette.fgColor2)
+    .replaceAll("$fg3", palette.fgColor3)
+    .replaceAll("$fg4", palette.fgColor4)
+    .replaceAll("$fg5", palette.fgColor5)
+    .replaceAll("$fg6", palette.fgColor6)
+    .replaceAll("$fg7", palette.fgColor7);
+  return JSON.parse(themeStr);
+}
+
+export const lightTheme = applyPalette(baseTheme, lightPalette);
+export const darkTheme = applyPalette(baseTheme, darkPalette);

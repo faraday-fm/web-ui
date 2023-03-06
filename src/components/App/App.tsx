@@ -28,6 +28,7 @@ const AppDiv = styled.div`
     font-size: inherit;
   }
   font-family: ${(p) => p.theme.fontFamily};
+  font-size: ${(p) => p.theme.fontSize};
   text-rendering: geometricPrecision;
   background-color: ${(p) => p.theme.primaryBg};
   height: 100%;

@@ -1,9 +1,10 @@
 import { DefaultTheme } from "styled-components";
 
-import { extend, lightTheme } from "./theme";
+import { darkTheme, extend } from "./theme";
 
 const farTheme = (t: DefaultTheme) => {
   return extend(t, {
+    fontSize: "14px",
     filePanel: {
       border: { radius: 0 },
       header: {
@@ -48,7 +49,7 @@ const farTheme = (t: DefaultTheme) => {
             borderRight: "0",
             borderBottom: "0",
             "&:last-child": {
-              borderRight: `1px solid ${t.palette.fgColor3}`,
+              borderRight: `1px solid $fg3`,
             },
           },
         },
@@ -57,4 +58,4 @@ const farTheme = (t: DefaultTheme) => {
   });
 };
 
-export const theme = farTheme(lightTheme);
+export const theme = farTheme(darkTheme);

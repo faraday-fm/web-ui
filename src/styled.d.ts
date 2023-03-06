@@ -2,10 +2,10 @@ import "styled-components";
 
 import { Border } from "@themes/types";
 
-type Color = CSSProperties["color"];
-type BoxShadow = CSSProperties["boxShadow"];
-
 declare module "styled-components" {
+  export type Color = string;
+  export type BoxShadow = CSSProperties["boxShadow"];
+
   export type Palette = {
     bgColor0: Color;
     bgColor1: Color;
@@ -26,8 +26,8 @@ declare module "styled-components" {
   };
 
   export interface DefaultTheme {
-    palette: Palette;
     fontFamily: string;
+    fontSize: string;
     primaryBg: Color;
     primaryText: Color;
     actionsBar: {
@@ -67,6 +67,11 @@ declare module "styled-components" {
         file: { activeColor: Color; inactiveColor: Color };
       };
       column: {
+        header: {
+          bg: Color;
+          color: Color;
+          extension?: CSSObject;
+        };
         bg: Color;
         color: Color;
         border: Border;
