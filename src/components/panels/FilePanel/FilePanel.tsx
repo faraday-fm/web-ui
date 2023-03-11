@@ -225,7 +225,10 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
 
     const onMaxItemsPerColumnChanged = useCallback((maxItemsPerColumn: number) => setMaxItemsPerColumn(maxItemsPerColumn), []);
     const onItemClicked = useCallback((pos: number) => moveCursorToPos(pos), [moveCursorToPos]);
-    const onItemActivated = useCallback(() => executeBuiltInCommand("open", { path }), [executeBuiltInCommand, path]);
+    const onItemActivated = useCallback(() => {
+      console.info(path);
+      executeBuiltInCommand("open", { path });
+    }, [executeBuiltInCommand, path]);
 
     let cursorStyle: CursorStyle;
     if (focused) {
@@ -246,35 +249,12 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
       pathParts.push("/");
     }
 
-    const [touchY, setTouchY] = useState(0);
-
     if (!columnsCount) {
       return <PanelRoot ref={panelRootRef} tabIndex={0} onFocus={() => onFocus?.()} />;
     }
 
-    const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-      setTouchY(e.changedTouches.item(0).clientY);
-      e.stopPropagation();
-    };
-
-    const onTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-      scroll(-Math.sign(e.changedTouches.item(0).clientY - touchY), true);
-      setTouchY(e.changedTouches.item(0).clientY);
-      e.stopPropagation();
-    };
-
-    // const onTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-    // };
-
     return (
-      <PanelRoot
-        ref={panelRootRef}
-        tabIndex={0}
-        onFocus={() => onFocus?.()}
-        onTouchStartCapture={onTouchStart}
-        onTouchMoveCapture={onTouchMove}
-        // onTouchEndCapture={onTouchEnd}
-      >
+      <PanelRoot ref={panelRootRef} tabIndex={0} onFocus={() => onFocus?.()}>
         <GlyphSizeProvider>
           <Border {...theme.filePanel.border}>
             <PanelContent>
@@ -287,7 +267,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
                 </Breadcrumb>
               </PanelHeader>
               <PanelColumns
-                onWheel={(e) => scroll(Math.sign(e.deltaY), true)}
+                // onWheel={(e) => scroll(Math.sign(e.deltaY), true)}
                 onKeyDown={(e) => {
                   // dispatch({ type: "findFirst", char: e.key });
                   e.preventDefault();
@@ -313,6 +293,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
                     onItemActivated={onItemActivated}
                     onMaxItemsPerColumnChanged={onMaxItemsPerColumnChanged}
                     columnDef={view.columnDef}
+                    onScroll={(delta) => scroll(delta, true)}
                   />
                 )}
               </PanelColumns>

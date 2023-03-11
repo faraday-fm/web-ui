@@ -4,12 +4,13 @@ import styled, { DefaultTheme } from "styled-components";
 
 import { CursorStyle } from "../../types";
 
-type RowProps = {
+type CellProps = {
   cursorStyle: CursorStyle;
   data: any;
   field: string;
   onMouseOver?: MouseEventHandler<HTMLDivElement>;
   onMouseDown?: MouseEventHandler<HTMLDivElement>;
+  onDoubleClick?: MouseEventHandler<HTMLDivElement>;
 };
 
 function getColor(theme: DefaultTheme, name: string, dir: boolean | undefined, selected: boolean) {
@@ -22,6 +23,7 @@ function getColor(theme: DefaultTheme, name: string, dir: boolean | undefined, s
 const Root = styled.div<{ cursorStyle: CursorStyle }>`
   display: flex;
   cursor: default;
+  overflow: hidden;
   background-color: ${(p) => (p.cursorStyle === "firm" || p.cursorStyle === "inactive" ? p.theme.filePanel.activeBg : null)};
 `;
 
@@ -31,15 +33,15 @@ const LineItem = styled.span<{ $data: { name: string; isDir: boolean | undefined
   white-space: nowrap;
   padding: 0 calc(0.25rem - 1px);
   flex-grow: 1;
-  color: ${(p) => getColor(p.theme, p.$data.name, p.$data.isDir, p.$cursorStyle === "firm")};
+  color: ${(p) => getColor(p.theme, p.$data?.name, p.$data?.isDir, p.$cursorStyle === "firm")};
 `;
 
-export function Row({ cursorStyle, data, field, onMouseDown, onMouseOver }: RowProps) {
+export function Cell({ cursorStyle, data, field, onMouseDown, onMouseOver, onDoubleClick }: CellProps) {
   const { height } = useGlyphSize();
   return (
-    <Root cursorStyle={cursorStyle} onMouseDown={onMouseDown} onMouseOver={onMouseOver}>
+    <Root cursorStyle={cursorStyle} onMouseDown={onMouseDown} onMouseOver={onMouseOver} onDoubleClick={onDoubleClick}>
       <LineItem $data={data} $cursorStyle={cursorStyle} style={{ lineHeight: `${height}px` }}>
-        {String(data[field]) ?? "\u00A0"}
+        {String(data?.[field] ?? "\u00A0")}
       </LineItem>
     </Root>
   );

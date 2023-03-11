@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
 
 import { ColumnDef, CursorStyle } from "../../types";
-import { Row } from "./Row";
+import { Cell } from "./Cell";
 
 type ColumnProps = {
   items: List<{ name: string }>;
@@ -111,7 +111,7 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
             displayedItems.map((item) => {
               const localIdx = idx;
               const result = (
-                <Row
+                <Cell
                   key={item.name}
                   cursorStyle={localIdx + topmostIndex !== selectedIndex ? "hidden" : cursorStyle}
                   data={item}
