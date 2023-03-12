@@ -1,7 +1,7 @@
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { FsEntry } from "@features/fs/types";
-import { formatDateTime } from "@utils/dateUtils";
-import { bytesToSize } from "@utils/numberUtils";
+import { formatDateTime } from "@utils/date";
+import { bytesToSize } from "@utils/number";
 import styled from "styled-components";
 
 type FileInfoFooterProps = {

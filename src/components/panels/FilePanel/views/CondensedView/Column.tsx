@@ -2,7 +2,7 @@
 import { Border } from "@components/Border/Border";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { useElementSize } from "@hooks/useElementSize";
-import { clamp } from "@utils/numberUtils";
+import { clamp } from "@utils/number";
 import { List } from "list";
 import { useEffect, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";

@@ -2,7 +2,7 @@ import { FsEntry } from "@features/fs/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PanelsLayout } from "@types";
 import { traverseLayout } from "@utils/layout";
-import { append, truncateLastDir } from "@utils/urlUtils";
+import { append, truncateLastDir } from "@utils/path";
 import { empty, List } from "list";
 
 export type CursorPosition = {

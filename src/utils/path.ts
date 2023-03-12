@@ -14,11 +14,15 @@ export function truncateProtocol(path: string) {
   if (startsWithDriveName(path)) {
     return path;
   }
-  return path.replace(/^[\w._+-]{2,}:\/+/, "");
+  path = path.replace(/^[\w._+-]{2,}:+/, "").replace(/^\/+/, "/");
+  if (!path) {
+    path = "/";
+  }
+  return path;
 }
 
 export function isRoot(path: string) {
-  return truncateProtocol(path) === "";
+  return truncateProtocol(path) === "/";
 }
 
 export function truncateLastDir(path: string) {

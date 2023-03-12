@@ -75,7 +75,10 @@ export function ColumnsScroller({
   const fixedRef = useRef<HTMLDivElement>(null);
   const scrollableRef = useRef<HTMLDivElement>(null);
   const { height } = useElementSize(rootRef);
-  const itemsPerColumn = Math.floor(height / itemHeight);
+  let itemsPerColumn = Math.floor(height / itemHeight);
+  if (itemsPerColumn < 1) {
+    itemsPerColumn = 1;
+  }
   const [viewportY, setViewportY] = useState(0);
 
   useLayoutEffect(() => {

@@ -1,4 +1,4 @@
-import { truncateProtocol } from "@utils/urlUtils";
+import { truncateProtocol } from "@utils/path";
 
 import { FileSystemError } from "./FileSystemError";
 import { FileChangeEvent, FileSystemProvider } from "./types";

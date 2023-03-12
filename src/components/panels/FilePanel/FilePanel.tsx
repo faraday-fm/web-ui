@@ -7,7 +7,7 @@ import { useCommandContext } from "@hooks/useCommandContext";
 import { useElementSize } from "@hooks/useElementSize";
 import { useFocused } from "@hooks/useFocused";
 import { FilePanelView } from "@types";
-import { clamp } from "@utils/numberUtils";
+import { clamp } from "@utils/number";
 import { List } from "list";
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";

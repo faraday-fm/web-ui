@@ -4,6 +4,10 @@ export type FsEntry = {
   isDir?: boolean;
   isFile?: boolean;
   isSymlink?: boolean;
+  isBlockDevice?: boolean;
+  isCharacterDevice?: boolean;
+  isFIFO?: boolean;
+  isSocket?: boolean;
   size?: number;
   created?: number;
   accessed?: number;

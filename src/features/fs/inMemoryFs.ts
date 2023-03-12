@@ -1,4 +1,4 @@
-import { append, isRoot } from "@utils/urlUtils";
+import { append, isRoot } from "@utils/path";
 
 import { FileSystemError } from "./FileSystemError";
 import { FileSystemProvider, FileSystemWatcher, FsEntry } from "./types";
