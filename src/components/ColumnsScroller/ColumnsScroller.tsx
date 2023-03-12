@@ -1,10 +1,11 @@
 import { useElementSize } from "@hooks/useElementSize";
+import Enumerable from "linq";
 import { ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 type ColumnsScrollerProps = {
   selectedItem: number;
-  columnsCount: number;
+  columnCount: number;
   totalCount: number;
   itemHeight: number;
   itemContent(index: number): ReactNode;
@@ -21,9 +22,7 @@ const Fixed = styled.div`
   position: absolute;
   inset: 0;
   overflow: hidden;
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
+  column-gap: 0;
 `;
 
 const ScrollableRoot = styled.div`
@@ -36,36 +35,36 @@ const ScrollableRoot = styled.div`
   }
 `;
 
+const ColumnBorders = styled.div`
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-auto-flow: column;
+`;
+const ColumnBorder = styled.div`
+  border-right: 1px solid ${(p) => p.theme.filePanel.column.color};
+  /* border-right-width: 0; */
+  &:last-child {
+    border-right-width: 0px;
+  }
+`;
+
 const Scrollable = styled.div``;
 
-type ColumnProps = {
-  offsetY: number;
-  viewportY: number;
-  viewportHeight: number;
-  totalCount: number;
-  itemHeight: number;
-  itemContent(index: number): ReactNode;
-};
-
-function Column({ offsetY, viewportY, viewportHeight, totalCount, itemHeight, itemContent }: ColumnProps) {
-  const y = offsetY + viewportY;
-  const fromIndex = Math.floor(y / itemHeight);
-  const toIndex = Math.floor((y + viewportHeight) / itemHeight);
-  const items = [];
-  for (let i = fromIndex; i <= toIndex; i += 1) {
-    items.push(
-      <div key={i} style={{ position: "absolute", width: "100%", top: -viewportY + i * itemHeight, overflow: "hidden" }}>
-        {itemContent(i)}
-      </div>
-    );
-  }
-
-  return <div style={{ position: "relative", transform: `translateY(-${offsetY}px)`, height: totalCount * itemHeight }}>{items}</div>;
+function Borders({ columnCount }: { columnCount: number }) {
+  return (
+    <ColumnBorders>
+      {Enumerable.repeat(0, columnCount).select((_, i) => (
+        <ColumnBorder key={i} />
+      ))}
+    </ColumnBorders>
+  );
 }
 
 export function ColumnsScroller({
   selectedItem,
-  columnsCount,
+  columnCount,
   totalCount,
   itemHeight,
   itemContent,
@@ -78,21 +77,6 @@ export function ColumnsScroller({
   const { height } = useElementSize(rootRef);
   const itemsPerColumn = Math.floor(height / itemHeight);
   const [viewportY, setViewportY] = useState(0);
-
-  const columns = new Array(columnsCount);
-  for (let i = 0; i < columnsCount; i += 1) {
-    columns.push(
-      <Column
-        key={i}
-        offsetY={i * itemsPerColumn * itemHeight}
-        viewportY={Math.floor(viewportY / itemHeight) * itemHeight}
-        viewportHeight={height}
-        itemContent={itemContent}
-        itemHeight={itemHeight}
-        totalCount={totalCount}
-      />
-    );
-  }
 
   useLayoutEffect(() => {
     onMaxItemsPerColumnChanged?.(itemsPerColumn);
@@ -111,12 +95,12 @@ export function ColumnsScroller({
     const topIndex = Math.floor(viewportY / itemHeight);
     if (selectedItem < topIndex) {
       setViewportY(selectedItem * itemHeight);
-    } else if (selectedItem > topIndex + columnsCount * itemsPerColumn - 1) {
-      setViewportY((selectedItem - columnsCount * itemsPerColumn + 1) * itemHeight);
-    } else if (viewportY > (totalCount - columnsCount * itemsPerColumn) * itemHeight) {
-      setViewportY(Math.max(0, totalCount - columnsCount * itemsPerColumn) * itemHeight);
+    } else if (selectedItem > topIndex + columnCount * itemsPerColumn - 1) {
+      setViewportY((selectedItem - columnCount * itemsPerColumn + 1) * itemHeight);
+    } else if (viewportY > (totalCount - columnCount * itemsPerColumn) * itemHeight) {
+      setViewportY(Math.max(0, totalCount - columnCount * itemsPerColumn) * itemHeight);
     }
-  }, [columnsCount, itemHeight, itemsPerColumn, selectedItem, totalCount, viewportY]);
+  }, [columnCount, itemHeight, itemsPerColumn, selectedItem, totalCount, viewportY]);
 
   const handleMouseEvent = useCallback((e: React.MouseEvent) => {
     let targetEl: Element | undefined;
@@ -133,8 +117,13 @@ export function ColumnsScroller({
 
   return (
     <Root ref={rootRef}>
-      <Fixed ref={fixedRef} style={{ height: itemsPerColumn * itemHeight }}>
-        {columns}
+      <Borders columnCount={columnCount} />
+      <Fixed ref={fixedRef} style={{ columnCount }}>
+        {Enumerable.range(Math.floor(viewportY / itemHeight), itemsPerColumn * columnCount).select((e) => (
+          <div key={e} style={{ height: itemHeight }}>
+            {itemContent(e)}
+          </div>
+        ))}
       </Fixed>
       <ScrollableRoot
         ref={scrollableRef}

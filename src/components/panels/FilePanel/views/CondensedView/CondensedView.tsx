@@ -12,7 +12,7 @@ type CondensedViewProps = {
   items: List<FsEntry>;
   cursor: Required<CursorPosition>;
   cursorStyle: CursorStyle;
-  columnsCount: number;
+  columnCount: number;
   columnDef: ColumnDef;
   onMaxItemsPerColumnChanged?: (count: number) => void;
   onScroll?: (delta: number) => void;
@@ -24,7 +24,7 @@ export function CondensedView({
   cursorStyle,
   items,
   cursor,
-  columnsCount,
+  columnCount,
   columnDef,
   onMaxItemsPerColumnChanged,
   onScroll,
@@ -37,7 +37,7 @@ export function CondensedView({
   return (
     <ColumnsScroller
       selectedItem={cursor.selectedIndex}
-      columnsCount={columnsCount}
+      columnCount={columnCount}
       itemContent={(index) => (
         <Cell
           cursorStyle={index === cursor.selectedIndex && cursorStyle === "firm" ? "firm" : "hidden"}

@@ -132,14 +132,14 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
     const { width } = useElementSize(panelRootRef);
     const [maxItemsPerColumn, setMaxItemsPerColumn] = useState<number>();
 
-    let columnsCount: number | undefined;
+    let columnCount: number | undefined;
     if (view.type === "full") {
-      columnsCount = 1;
+      columnCount = 1;
     } else if (width) {
-      columnsCount = Math.ceil(width / 350);
+      columnCount = Math.ceil(width / 350);
     }
 
-    const displayedItems = columnsCount && maxItemsPerColumn ? Math.min(items.length, maxItemsPerColumn * columnsCount) : 1;
+    const displayedItems = columnCount && maxItemsPerColumn ? Math.min(items.length, maxItemsPerColumn * columnCount) : 1;
 
     let adjustedCursor = adjustCursor(cursor, items, displayedItems);
 
@@ -249,7 +249,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
       pathParts.push("/");
     }
 
-    if (!columnsCount) {
+    if (!columnCount) {
       return <PanelRoot ref={panelRootRef} tabIndex={0} onFocus={() => onFocus?.()} />;
     }
 
@@ -288,7 +288,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
                     cursorStyle={cursorStyle}
                     items={items}
                     cursor={adjustedCursor}
-                    columnsCount={columnsCount}
+                    columnCount={columnCount}
                     onItemClicked={onItemClicked}
                     onItemActivated={onItemActivated}
                     onMaxItemsPerColumnChanged={onMaxItemsPerColumnChanged}
