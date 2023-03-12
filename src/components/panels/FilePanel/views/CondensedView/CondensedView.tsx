@@ -1,66 +1,60 @@
+/* eslint-disable react/no-unstable-nested-components */
+import { ColumnsScroller } from "@components/ColumnsScroller/ColumnsScroller";
+import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { FsEntry } from "@features/fs/types";
 import { CursorPosition } from "@features/panels/panelsSlice";
 import { List } from "list";
-import { useCallback, useState } from "react";
-import styled from "styled-components";
 
 import { ColumnDef, CursorStyle } from "../../types";
-import { Column } from "./Column";
+import { Cell } from "./Cell";
 
 type CondensedViewProps = {
   items: List<FsEntry>;
   cursor: Required<CursorPosition>;
   cursorStyle: CursorStyle;
-  columnsCount: number;
+  columnCount: number;
   columnDef: ColumnDef;
   onMaxItemsPerColumnChanged?: (count: number) => void;
+  onScroll?: (delta: number) => void;
   onItemClicked?: (pos: number) => void;
   onItemActivated?: (pos: number) => void;
 };
-
-const Columns = styled.div`
-  display: grid;
-  grid-auto-columns: 1fr;
-  grid-auto-flow: column;
-  overflow: hidden;
-`;
 
 export function CondensedView({
   cursorStyle,
   items,
   cursor,
-  columnsCount,
+  columnCount,
   columnDef,
   onMaxItemsPerColumnChanged,
+  onScroll,
   onItemClicked,
   onItemActivated,
 }: CondensedViewProps) {
-  const [maxItemsPerColumn, setMaxItemsPerColumn] = useState(1000);
+  const { height: glyphHeight } = useGlyphSize();
+  const rowHeight = Math.ceil(glyphHeight);
 
-  const columns = new Array(columnsCount);
-
-  const onMaxItemsCountChange = useCallback(
-    (maxCount: number) => {
-      setMaxItemsPerColumn(maxCount);
-      onMaxItemsPerColumnChanged?.(maxCount);
-    },
-    [onMaxItemsPerColumnChanged]
+  return (
+    <ColumnsScroller
+      selectedItem={cursor.selectedIndex}
+      columnCount={columnCount}
+      itemContent={(index) => (
+        <Cell
+          cursorStyle={index === cursor.selectedIndex && cursorStyle === "firm" ? "firm" : "hidden"}
+          data={items.nth(index)}
+          onMouseDown={() => onItemClicked?.(index)}
+          onDoubleClick={(e) => {
+            onItemActivated?.(index);
+            e.stopPropagation();
+            e.preventDefault();
+          }}
+          field={columnDef.field}
+        />
+      )}
+      totalCount={items.length}
+      itemHeight={rowHeight}
+      onScroll={(scrollDelta) => onScroll?.(scrollDelta)}
+      onMaxItemsPerColumnChanged={onMaxItemsPerColumnChanged}
+    />
   );
-
-  for (let i = 0; i < columnsCount; i += 1) {
-    columns.push(
-      <Column
-        key={i}
-        items={items}
-        columnDef={columnDef}
-        topmostIndex={cursor.topmostIndex + i * maxItemsPerColumn}
-        selectedIndex={cursor.selectedIndex}
-        cursorStyle={cursorStyle}
-        onMaxItemsCountChange={i === 0 ? onMaxItemsCountChange : undefined}
-        selectItem={onItemClicked}
-        activateItem={onItemActivated}
-      />
-    );
-  }
-  return <Columns>{columns}</Columns>;
 }

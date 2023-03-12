@@ -23,6 +23,7 @@ specifiers:
   focus-trap-react: ^10.1.0
   git-cz: ^4.9.0
   json5: ^2.2.3
+  linq: ^4.0.1
   list: ^2.0.19
   monaco-editor: ^0.36.1
   parsimmon: ^1.18.1
@@ -59,6 +60,7 @@ dependencies:
   deepmerge: 4.3.0
   focus-trap-react: 10.1.0_v2m5e27vhdewzwhryxwfaorcca
   json5: 2.2.3
+  linq: 4.0.1
   list: 2.0.19
   parsimmon: 1.18.1
   react-icons: 4.8.0_react@18.2.0
@@ -3620,6 +3622,10 @@ packages:
   /lines-and-columns/1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
     dev: true
+
+  /linq/4.0.1:
+    resolution: {integrity: sha512-Apjyhhtra/JMcJZT+RQUGU8lO5jhfKNAKA/A8TFnL39u4JyvTAAvwe8J090St4BVFEldI2/Lh/5RdUFNALTI3g==}
+    dev: false
 
   /list/2.0.19:
     resolution: {integrity: sha512-nnVaRp4RaMAQkCpypTThsdxKqgPMiSwJq93eAm2/IbpUa8sd04XKBhkKu+bMk63HmdjK8b8Cuh4xARHWX2ye/Q==}

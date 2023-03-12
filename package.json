@@ -90,6 +90,7 @@
     "deepmerge": "^4.3.0",
     "focus-trap-react": "^10.1.0",
     "json5": "^2.2.3",
+    "linq": "^4.0.1",
     "list": "^2.0.19",
     "parsimmon": "^1.18.1",
     "react-icons": "^4.8.0",
