@@ -1,6 +1,7 @@
 import { useFileIconResolver } from "@contexts/fileIconsContext";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
-import { MouseEventHandler, useEffect, useState } from "react";
+import isPromise from "is-promise";
+import { MouseEventHandler, useEffect, useMemo, useState } from "react";
 import { ReactElement } from "react-markdown/lib/react-markdown";
 import styled, { DefaultTheme } from "styled-components";
 
@@ -43,11 +44,19 @@ const LineItem = styled.span<{ $data: { name: string; isDir: boolean | undefined
 export function Cell({ cursorStyle, data, field, onMouseDown, onMouseOver, onDoubleClick }: CellProps) {
   const iconResolver = useFileIconResolver();
   const { height } = useGlyphSize();
-  const [icon, setIcon] = useState<ReactElement | undefined>(<div style={{ width: 17 }} />);
+
+  const resolvedIcon = useMemo(() => iconResolver(data?.[field] ?? "", data?.isDir ?? false), [data, field, iconResolver]);
+
+  const [icon, setIcon] = useState<ReactElement | undefined>(!isPromise(resolvedIcon) ? resolvedIcon : <div style={{ width: 17 }} />);
 
   useEffect(() => {
-    iconResolver(data?.[field] ?? "", data?.isDir ?? false).then((i) => i && setIcon(i));
-  }, [data, field, iconResolver]);
+    (async () => {
+      const iconElement = await resolvedIcon;
+      if (iconElement) {
+        setIcon(iconElement);
+      }
+    })();
+  }, [resolvedIcon]);
 
   return (
     <Root cursorStyle={cursorStyle} onMouseDown={onMouseDown} onMouseOver={onMouseOver} onDoubleClick={onDoubleClick}>

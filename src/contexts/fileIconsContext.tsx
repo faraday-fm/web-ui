@@ -1,10 +1,11 @@
 import { useFileJsonContent } from "@hooks/useFileContent";
 import { useFs } from "@hooks/useFs";
 import { append } from "@utils/path";
+import isPromise from "is-promise";
 import { createContext, PropsWithChildren, useCallback, useContext, useMemo } from "react";
 import styled from "styled-components";
 
-export type IconResolver = (path: string, isDir: boolean) => Promise<React.ReactElement | undefined>;
+export type IconResolver = (path: string, isDir: boolean) => Promise<React.ReactElement | undefined> | React.ReactElement | undefined;
 
 const FileIconsContext = createContext<IconResolver>(() => Promise.reject());
 
@@ -65,7 +66,7 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
   const cache = useMemo(() => new Map<string, string>(), [packageJson]);
 
   const resolver: IconResolver = useCallback(
-    async (path, isDir) => {
+    (path, isDir) => {
       if (!iconsThemeJson) {
         return undefined;
       }
@@ -73,7 +74,6 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
       const cachedIcon = cache.get(iconDefinitionName);
 
       if (cachedIcon) {
-        // eslint-disable-next-line react/no-danger
         return (
           <IconWrapper
             ref={(dref) => {
@@ -90,17 +90,24 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
         return undefined;
       }
 
-      const svgContent = decoder.decode(await fs.readFile(iconPathAbsolute));
+      const parseSvg = (svg: Uint8Array) => {
+        const svgContent = decoder.decode(svg);
+        cache.set(iconDefinitionName, svgContent);
 
-      cache.set(iconDefinitionName, svgContent);
+        return (
+          <IconWrapper
+            ref={(dref) => {
+              if (dref) dref.innerHTML = svgContent;
+            }}
+          />
+        );
+      };
 
-      return (
-        <IconWrapper
-          ref={(dref) => {
-            if (dref) dref.innerHTML = svgContent;
-          }}
-        />
-      );
+      const readFile = fs.readFile(iconPathAbsolute);
+      if (isPromise(readFile)) {
+        return readFile.then(parseSvg);
+      }
+      return parseSvg(readFile);
     },
     [cache, fs, iconsThemeJson, iconsThemeJsonPathAbsolute]
   );

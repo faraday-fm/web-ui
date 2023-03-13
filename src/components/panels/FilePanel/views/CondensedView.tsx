@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
-import { ColumnsScroller } from "@components/ColumnsScroller";
+import { ColumnsScroller } from "@components/panels/FilePanel/ColumnsScroller";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { FsEntry } from "@features/fs/types";
 import { CursorPosition } from "@features/panels/panelsSlice";

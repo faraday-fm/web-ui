@@ -125,8 +125,11 @@ export function ColumnsScroller({
     <Root ref={rootRef}>
       <Borders columnCount={columnCount} />
       <Fixed ref={fixedRef} style={{ columnCount }}>
-        {Enumerable.range(firstItem, Math.min(totalCount, itemsPerColumn * columnCount)).select((e, i) => (
-          <div key={i} style={{ height: itemHeight }}>
+        {/* BUG in Chrome (macOS)? When we use `e` as a key, the column layout works incorrectly without this hidden div */}
+        {/* To reproduce: comment out the next line, navigate to a directory with big amount of files and use left-right keyboard arrows. */}
+        <div style={{ height: 0.01, overflow: "hidden" }} />
+        {Enumerable.range(firstItem, Math.min(totalCount, itemsPerColumn * columnCount)).select((e) => (
+          <div key={e} style={{ height: itemHeight }}>
             {itemContent(e)}
           </div>
         ))}
