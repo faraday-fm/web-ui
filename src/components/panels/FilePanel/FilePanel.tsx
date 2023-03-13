@@ -186,6 +186,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
         let cur = adjustedCursor;
         cur.selectedIndex = pos;
         cur.selectedName = items.nth(pos)?.name ?? "";
+        cur.topmostName = items.nth(cur.topmostIndex)?.name ?? "";
         cur = adjustCursor(cur, items, displayedItems);
         onCursorPositionChange(cur);
       },
@@ -293,7 +294,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
                     onItemActivated={onItemActivated}
                     onMaxItemsPerColumnChanged={onMaxItemsPerColumnChanged}
                     columnDef={view.columnDef}
-                    onScroll={(delta) => scroll(delta, true)}
+                    onSelect={(topmost, selected) => scroll(selected - (cursor.selectedIndex ?? 0), true)}
                   />
                 )}
               </PanelColumns>

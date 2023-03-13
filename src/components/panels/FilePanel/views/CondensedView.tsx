@@ -15,7 +15,7 @@ type CondensedViewProps = {
   columnCount: number;
   columnDef: ColumnDef;
   onMaxItemsPerColumnChanged?: (count: number) => void;
-  onScroll?: (delta: number) => void;
+  onSelect: (topmost: number, selected: number) => void;
   onItemClicked?: (pos: number) => void;
   onItemActivated?: (pos: number) => void;
 };
@@ -27,7 +27,7 @@ export function CondensedView({
   columnCount,
   columnDef,
   onMaxItemsPerColumnChanged,
-  onScroll,
+  onSelect,
   onItemClicked,
   onItemActivated,
 }: CondensedViewProps) {
@@ -36,6 +36,7 @@ export function CondensedView({
 
   return (
     <ColumnsScroller
+      topmostItem={cursor.topmostIndex}
       selectedItem={cursor.selectedIndex}
       columnCount={columnCount}
       itemContent={(index) => (
@@ -53,7 +54,7 @@ export function CondensedView({
       )}
       totalCount={items.length}
       itemHeight={rowHeight}
-      onScroll={(scrollDelta) => onScroll?.(scrollDelta)}
+      onSelect={(topmost, scroll) => onSelect(topmost, scroll)}
       onMaxItemsPerColumnChanged={onMaxItemsPerColumnChanged}
     />
   );

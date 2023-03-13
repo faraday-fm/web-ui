@@ -1,15 +1,16 @@
 import { useElementSize } from "@hooks/useElementSize";
 import Enumerable from "linq";
-import { ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
 
 type ColumnsScrollerProps = {
+  topmostItem: number;
   selectedItem: number;
   columnCount: number;
   totalCount: number;
   itemHeight: number;
   itemContent(index: number): ReactNode;
-  onScroll?: (scrollDelta: number) => void;
+  onSelect: (newTopmostItem: number, newSelectedItem: number) => void;
   onMaxItemsPerColumnChanged?: (count: number) => void;
 };
 
@@ -64,12 +65,13 @@ function Borders({ columnCount }: { columnCount: number }) {
 }
 
 export function ColumnsScroller({
+  topmostItem,
   selectedItem,
   columnCount,
   totalCount,
   itemHeight,
   itemContent,
-  onScroll,
+  onSelect,
   onMaxItemsPerColumnChanged,
 }: ColumnsScrollerProps) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -80,8 +82,6 @@ export function ColumnsScroller({
   if (itemsPerColumn < 1) {
     itemsPerColumn = 1;
   }
-  const [viewportY, setViewportY] = useState(0);
-
   useLayoutEffect(() => {
     onMaxItemsPerColumnChanged?.(itemsPerColumn);
   }, [itemsPerColumn, onMaxItemsPerColumnChanged]);
@@ -90,21 +90,19 @@ export function ColumnsScroller({
     if (!scrollableRef.current) {
       return;
     }
+    // console.error("***");
     if (Math.abs(scrollableRef.current.scrollTop - selectedItem * itemHeight) >= itemHeight) {
       scrollableRef.current.scrollTop = selectedItem * itemHeight;
     }
   }, [itemHeight, selectedItem]);
 
-  useLayoutEffect(() => {
-    const topIndex = Math.floor(viewportY / itemHeight);
-    if (selectedItem < topIndex) {
-      setViewportY(selectedItem * itemHeight);
-    } else if (selectedItem > topIndex + columnCount * itemsPerColumn - 1) {
-      setViewportY((selectedItem - columnCount * itemsPerColumn + 1) * itemHeight);
-    } else if (viewportY > (totalCount - columnCount * itemsPerColumn) * itemHeight) {
-      setViewportY(Math.max(0, totalCount - columnCount * itemsPerColumn) * itemHeight);
-    }
-  }, [columnCount, itemHeight, itemsPerColumn, selectedItem, totalCount, viewportY]);
+  if (selectedItem < topmostItem) {
+    topmostItem = selectedItem;
+  } else if (selectedItem > topmostItem + columnCount * itemsPerColumn - 1) {
+    topmostItem = selectedItem - columnCount * itemsPerColumn + 1;
+  } else if (topmostItem > totalCount - columnCount * itemsPerColumn) {
+    topmostItem = Math.max(0, totalCount - columnCount * itemsPerColumn);
+  }
 
   const handleMouseEvent = useCallback((e: React.MouseEvent) => {
     let targetEl: Element | undefined;
@@ -119,8 +117,6 @@ export function ColumnsScroller({
     }
   }, []);
 
-  const firstItem = Math.floor(viewportY / itemHeight);
-
   return (
     <Root ref={rootRef}>
       <Borders columnCount={columnCount} />
@@ -128,7 +124,7 @@ export function ColumnsScroller({
         {/* BUG in Chrome (macOS)? When we use `e` as a key, the column layout works incorrectly without this hidden div */}
         {/* To reproduce: comment out the next line, navigate to a directory with big amount of files and use left-right keyboard arrows. */}
         <div style={{ height: 0.1, overflow: "hidden" }} />
-        {Enumerable.range(firstItem, Math.min(totalCount, itemsPerColumn * columnCount)).select((e) => (
+        {Enumerable.range(topmostItem, Math.min(totalCount, itemsPerColumn * columnCount)).select((e) => (
           <div key={e} style={{ height: itemHeight }}>
             {itemContent(e)}
           </div>
@@ -142,8 +138,10 @@ export function ColumnsScroller({
             return;
           }
           const newSelectedItem = Math.round(scrollableRef.current.scrollTop / itemHeight);
-          const scrollDelta = newSelectedItem - selectedItem;
-          onScroll?.(scrollDelta);
+          const delta = newSelectedItem - selectedItem;
+          if (delta) {
+            onSelect?.(topmostItem + delta, newSelectedItem);
+          }
         }}
       >
         <Scrollable

@@ -19,11 +19,11 @@ function getPathParts(path: string) {
   if (path === "") {
     return [];
   }
-  let parts = path.split("/").filter((p) => p !== ".");
+  const parts = path.split("/").filter((p) => p !== ".");
   let i = 0;
   while (i < parts.length) {
     if (parts[i] === ".." && i > 0) {
-      parts = parts.splice(i - 1, 2);
+      parts.splice(i - 1, 2);
     } else {
       i += 1;
     }
