@@ -1,7 +1,6 @@
-import { ReduxFilePanel } from "@components/hocs/ReduxFilePanel";
-import { QuickView } from "@components/panels/QuickView/QuickView";
-import { RenderWhen } from "@components/RenderWhen/RenderWhen";
-import { useIsInCommandContext } from "@hooks/useCommandContext";
+import { QuickView } from "@components/panels/QuickView";
+import { ReduxFilePanel } from "@components/ReduxFilePanel";
+import { RenderWhen } from "@components/RenderWhen";
 import { PanelsLayout } from "@types";
 import styled from "styled-components";
 

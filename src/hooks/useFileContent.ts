@@ -1,3 +1,4 @@
+import JSON5 from "json5";
 import { useEffect, useRef, useState } from "react";
 
 import { useFs } from "./useFs";
@@ -46,4 +47,18 @@ export function useFileContent(url: string) {
   }, [fs, url]);
 
   return result;
+}
+
+const decoder = new TextDecoder();
+
+export function useFileStringContent(url: string) {
+  const { content } = useFileContent(url);
+
+  return content ? decoder.decode(content) : undefined;
+}
+
+export function useFileJsonContent(url: string) {
+  const str = useFileStringContent(url);
+
+  return str ? JSON5.parse(str) : undefined;
 }

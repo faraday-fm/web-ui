@@ -23,6 +23,7 @@ const Fixed = styled.div`
   inset: 0;
   overflow: hidden;
   column-gap: 0;
+  column-fill: auto;
 `;
 
 const ScrollableRoot = styled.div`
@@ -118,12 +119,14 @@ export function ColumnsScroller({
     }
   }, []);
 
+  const firstItem = Math.floor(viewportY / itemHeight);
+
   return (
     <Root ref={rootRef}>
       <Borders columnCount={columnCount} />
       <Fixed ref={fixedRef} style={{ columnCount }}>
-        {Enumerable.range(Math.floor(viewportY / itemHeight), itemsPerColumn * columnCount).select((e) => (
-          <div key={e} style={{ height: itemHeight }}>
+        {Enumerable.range(firstItem, Math.min(totalCount, itemsPerColumn * columnCount)).select((e, i) => (
+          <div key={i} style={{ height: itemHeight }}>
             {itemContent(e)}
           </div>
         ))}

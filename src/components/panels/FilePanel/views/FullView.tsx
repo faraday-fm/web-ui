@@ -3,8 +3,8 @@ import { CursorPosition } from "@features/panels/panelsSlice";
 import { List } from "list";
 import styled from "styled-components";
 
-import { ColumnDef, CursorStyle } from "../../types";
-import { Column } from "../CondensedView/Column";
+import { Column } from "../Column";
+import { ColumnDef, CursorStyle } from "../types";
 
 type FullViewProps = {
   items: List<FsEntry>;

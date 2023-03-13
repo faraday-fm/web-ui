@@ -1,4 +1,4 @@
-import { Border } from "@components/Border/Border";
+import { Border } from "@components/Border";
 import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
 import { FsEntry } from "@features/fs/types";
 import { CursorPosition } from "@features/panels/panelsSlice";
@@ -12,11 +12,11 @@ import { List } from "list";
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
 
-import { Breadcrumb } from "../../Breadcrumb/Breadcrumb";
-import { FileInfoFooter } from "./FileInfoFooter/FileInfoFooter";
+import { Breadcrumb } from "../../Breadcrumb";
+import { FileInfoFooter } from "./FileInfoFooter";
 import { CursorStyle } from "./types";
-import { CondensedView } from "./views/CondensedView/CondensedView";
-import { FullView } from "./views/FullView/FullView";
+import { CondensedView } from "./views/CondensedView";
+import { FullView } from "./views/FullView";
 
 export type FilePanelProps = {
   items: List<FsEntry>;

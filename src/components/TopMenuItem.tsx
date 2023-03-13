@@ -1,4 +1,4 @@
-import { AutoHotKeyLabel } from "@components/AutoHotKeyLabel/AutoHotKeyLabel";
+import { AutoHotKeyLabel } from "@components/AutoHotKeyLabel";
 import styled from "styled-components";
 
 type TopMenuItemProps = {

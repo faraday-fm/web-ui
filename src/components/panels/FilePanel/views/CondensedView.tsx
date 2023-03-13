@@ -1,12 +1,12 @@
 /* eslint-disable react/no-unstable-nested-components */
-import { ColumnsScroller } from "@components/ColumnsScroller/ColumnsScroller";
+import { ColumnsScroller } from "@components/ColumnsScroller";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { FsEntry } from "@features/fs/types";
 import { CursorPosition } from "@features/panels/panelsSlice";
 import { List } from "list";
 
-import { ColumnDef, CursorStyle } from "../../types";
-import { Cell } from "./Cell";
+import { Cell } from "../Cell";
+import { ColumnDef, CursorStyle } from "../types";
 
 type CondensedViewProps = {
   items: List<FsEntry>;

@@ -1,7 +1,7 @@
 import defaultLayout from "@assets/layout.json5";
-import { ActionsBar } from "@components/ActionsBar/ActionsBar";
-import DialogPlaceholder from "@components/DialogPlaceholder/DialogPlaceholder";
-import { LayoutContainer } from "@components/LayoutContainer/LayoutContainer";
+import { ActionsBar } from "@components/ActionsBar";
+import DialogPlaceholder from "@components/DialogPlaceholder";
+import { LayoutContainer } from "@components/LayoutContainer";
 import { useFarMoreHost } from "@contexts/farMoreHostContext";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { changeDir, focusNextPanel, setPanelsLayout } from "@features/panels/panelsSlice";

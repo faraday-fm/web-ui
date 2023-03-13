@@ -1,9 +1,10 @@
 import "list/methods";
 
-import App from "@components/App/App";
+import App from "@components/App";
 import { FarMoreHostProvider } from "@contexts/farMoreHostContext";
 import { GlobalContextProvider } from "@contexts/globalContext";
 import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
+import { FileIconsProvider } from "@contexts/fileIconsContext";
 import { KeyBindingProvider } from "@contexts/keyBindingContext";
 import { useMediaQuery } from "@hooks/useMediaQuery";
 import { store } from "@store";
@@ -26,7 +27,9 @@ export function FarMore({ host }: FarMoreProps) {
           <ThemeProvider theme={dark ? darkTheme : farTheme}>
             <KeyBindingProvider>
               <GlyphSizeProvider>
-                <App />
+                <FileIconsProvider>
+                  <App />
+                </FileIconsProvider>
               </GlyphSizeProvider>
             </KeyBindingProvider>
           </ThemeProvider>

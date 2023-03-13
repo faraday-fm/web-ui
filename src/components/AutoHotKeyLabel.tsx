@@ -1,4 +1,4 @@
-import { Highlight } from "@components/Highlight/Highlight";
+import { Highlight } from "@components/Highlight";
 import { useQuickNavigation } from "@contexts/quickNavigationContext";
 import { PropsWithChildren, ReactElement, useRef } from "react";
 import styled from "styled-components";

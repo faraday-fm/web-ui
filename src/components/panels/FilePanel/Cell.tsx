@@ -1,8 +1,10 @@
+import { useFileIconResolver } from "@contexts/fileIconsContext";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
+import { ReactElement } from "react-markdown/lib/react-markdown";
 import styled, { DefaultTheme } from "styled-components";
 
-import { CursorStyle } from "../../types";
+import { CursorStyle } from "./types";
 
 type CellProps = {
   cursorStyle: CursorStyle;
@@ -22,9 +24,11 @@ function getColor(theme: DefaultTheme, name: string, dir: boolean | undefined, s
 
 const Root = styled.div<{ cursorStyle: CursorStyle }>`
   display: flex;
+  margin-right: 1px;
   cursor: default;
   overflow: hidden;
   background-color: ${(p) => (p.cursorStyle === "firm" || p.cursorStyle === "inactive" ? p.theme.filePanel.activeBg : null)};
+  /* ${(p) => p.cursorStyle === "firm" && "filter: invert(1);"} */
 `;
 
 const LineItem = styled.span<{ $data: { name: string; isDir: boolean | undefined }; $cursorStyle: CursorStyle }>`
@@ -37,9 +41,17 @@ const LineItem = styled.span<{ $data: { name: string; isDir: boolean | undefined
 `;
 
 export function Cell({ cursorStyle, data, field, onMouseDown, onMouseOver, onDoubleClick }: CellProps) {
+  const iconResolver = useFileIconResolver();
   const { height } = useGlyphSize();
+  const [icon, setIcon] = useState<ReactElement | undefined>(<div style={{ width: 17 }} />);
+
+  useEffect(() => {
+    iconResolver(data?.[field] ?? "", data?.isDir ?? false).then((i) => i && setIcon(i));
+  }, [data, field, iconResolver]);
+
   return (
     <Root cursorStyle={cursorStyle} onMouseDown={onMouseDown} onMouseOver={onMouseOver} onDoubleClick={onDoubleClick}>
+      <div style={{ filter: cursorStyle === "firm" ? "grayscale(0.5)" : undefined }}>{icon}</div>
       <LineItem $data={data} $cursorStyle={cursorStyle} style={{ lineHeight: `${height}px` }}>
         {String(data?.[field] ?? "\u00A0")}
       </LineItem>

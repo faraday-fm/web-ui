@@ -1,4 +1,4 @@
-import { Border } from "@components/Border/Border";
+import { Border } from "@components/Border";
 import { setActivePanel } from "@features/panels/panelsSlice";
 import { useCommandContext } from "@hooks/useCommandContext";
 import { useFileContent } from "@hooks/useFileContent";

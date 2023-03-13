@@ -29,12 +29,37 @@ const FileTime = styled.div`
   justify-self: flex-end;
 `;
 
+function formatFileSize(e?: FsEntry) {
+  if (!e) {
+    return "";
+  }
+  // if (e.isDir) {
+  //   return e.name === ".." ? "up" : "dir";
+  // }
+  if (e.isSymlink) {
+    return "symlink";
+  }
+  if (e.isBlockDevice) {
+    return "block dev";
+  }
+  if (e.isCharacterDevice) {
+    return "char dev";
+  }
+  if (e.isFIFO) {
+    return "fifo";
+  }
+  if (e.isSocket) {
+    return "socket";
+  }
+  return bytesToSize(e.size ?? 0, 999999);
+}
+
 export function FileInfoFooter({ file }: FileInfoFooterProps) {
   const { height } = useGlyphSize();
   return (
     <FileRoot>
-      <FileName style={{ lineHeight: `${height}px` }}>{file?.name}</FileName>
-      <FileSize>{file?.isDir ? "Папка" : bytesToSize(file?.size ?? 0, 999999)}</FileSize>
+      <FileName style={{ height }}>{file?.name}</FileName>
+      <FileSize>{formatFileSize(file)}</FileSize>
       <FileTime>{file?.modified ? formatDateTime(new Date(file.modified)) : undefined}</FileTime>
     </FileRoot>
   );

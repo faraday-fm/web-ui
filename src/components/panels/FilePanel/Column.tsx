@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import { Border } from "@components/Border/Border";
+import { Border } from "@components/Border";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { useElementSize } from "@hooks/useElementSize";
 import { clamp } from "@utils/number";
@@ -7,8 +7,8 @@ import { List } from "list";
 import { useEffect, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
 
-import { ColumnDef, CursorStyle } from "../../types";
 import { Cell } from "./Cell";
+import { ColumnDef, CursorStyle } from "./types";
 
 type ColumnProps = {
   items: List<{ name: string }>;

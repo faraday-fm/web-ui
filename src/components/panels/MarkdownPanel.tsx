@@ -1,8 +1,6 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import { Border } from "../../Border/Border";
-
 export function MarkdownPanel() {
   const markdown = `
   # remark-frontmatter

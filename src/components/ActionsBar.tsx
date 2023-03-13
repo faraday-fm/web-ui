@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { ActionButton } from "../ActionButton/ActionButton";
+import { ActionButton } from "./ActionButton";
 
 const Root = styled.div`
   display: grid;
