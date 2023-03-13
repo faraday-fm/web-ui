@@ -103,11 +103,15 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
         );
       };
 
-      const readFile = fs.readFile(iconPathAbsolute);
-      if (isPromise(readFile)) {
-        return readFile.then(parseSvg);
+      try {
+        const readFile = fs.readFile(iconPathAbsolute);
+        if (isPromise(readFile)) {
+          return readFile.then(parseSvg).catch(() => undefined);
+        }
+        return parseSvg(readFile);
+      } catch {
+        return undefined;
       }
-      return parseSvg(readFile);
     },
     [cache, fs, iconsThemeJson, iconsThemeJsonPathAbsolute]
   );
