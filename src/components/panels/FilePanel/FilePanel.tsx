@@ -227,7 +227,6 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
     const onMaxItemsPerColumnChanged = useCallback((maxItemsPerColumn: number) => setMaxItemsPerColumn(maxItemsPerColumn), []);
     const onItemClicked = useCallback((pos: number) => moveCursorToPos(pos), [moveCursorToPos]);
     const onItemActivated = useCallback(() => {
-      console.info(path);
       executeBuiltInCommand("open", { path });
     }, [executeBuiltInCommand, path]);
 

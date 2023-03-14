@@ -21,7 +21,7 @@ export type FileChangeEvent = { type: FileChangeType; path: string; entry: FsEnt
 export type FileSystemWatcher = (events: FileChangeEvent[]) => void;
 
 export type FileSystemProvider = {
-  watch(path: string, watcher: FileSystemWatcher, options?: { recursive?: boolean; excludes?: string[]; signal?: AbortSignal }): void | Promise<void>;
+  watch(path: string, watcher: FileSystemWatcher, options?: { signal?: AbortSignal }): void | Promise<void>;
   readDirectory(path: string, options?: { signal?: AbortSignal }): FsEntry[] | Promise<FsEntry[]>;
   createDirectory(path: string, options?: { signal?: AbortSignal }): void | Promise<void>;
   readFile(path: string, options?: { signal?: AbortSignal }): Uint8Array | Promise<Uint8Array>;

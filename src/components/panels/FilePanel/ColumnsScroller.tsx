@@ -90,7 +90,6 @@ export function ColumnsScroller({
     if (!scrollableRef.current) {
       return;
     }
-    // console.error("***");
     if (Math.abs(scrollableRef.current.scrollTop - selectedItem * itemHeight) >= itemHeight) {
       scrollableRef.current.scrollTop = selectedItem * itemHeight;
     }
