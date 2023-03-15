@@ -1,1 +1,1 @@
-Far More Web UI Component.
+Faraday Web UI Component.

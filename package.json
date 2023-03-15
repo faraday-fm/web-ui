@@ -1,12 +1,12 @@
 {
-  "name": "@far-more/web-ui",
+  "name": "@frdy/web-ui",
   "private": false,
   "version": "0.0.0-development",
-  "description": "Web front-end for Far More file manager",
+  "description": "Web front-end for Faraday file manager",
   "source": "src/main.tsx",
-  "main": "dist/far-more-web.js",
-  "module": "dist/far-more-web.esm.js",
-  "types": "dist/far-more-web.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
     "watch": "rollup -c -w",
@@ -23,10 +23,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/far-more/web-ui.git"
+    "url": "https://github.com/frdy/web-ui.git"
   },
   "keywords": [
-    "far-more",
+    "faraday",
     "web",
     "ui",
     "frontend"
@@ -34,9 +34,9 @@
   "author": "Mikhail Isupov",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/far-more/web-ui/issues"
+    "url": "https://github.com/frdy/web-ui/issues"
   },
-  "homepage": "https://github.com/far-more/web-ui#readme",
+  "homepage": "https://github.com/frdy/web-ui#readme",
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"

@@ -1,6 +1,6 @@
 export function useTerminal() {
   // const path = useAppSelector((state) => state.panels.states[state.panels.active]?.path) ?? "";
-  // const host = useFarMoreHost();
+  // const host = useFaradayHost();
   // return useMemo(() => {
   //   const size = { rows: 25, cols: 80 };
   //   // eslint-disable-next-line @typescript-eslint/no-empty-function

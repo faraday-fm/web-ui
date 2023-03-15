@@ -30,7 +30,7 @@ export type PanelLayout = FilePanelLayout | QuickViewLayout;
 /** @internal */
 export type PanelsLayout = (RowLayout | PanelLayout) & { id: string; flex?: number; when?: string };
 
-export type FarMoreConfig = {
+export type FaradayConfig = {
   isDesktop(): boolean;
 };
 
@@ -43,13 +43,13 @@ export type Terminal = {
   sendData(session: TerminalSession, data: string | Uint8Array): Promise<void>;
 };
 
-export type FarMoreHost = {
-  config: FarMoreConfig;
-  farMoreFs: FileSystemProvider;
+export type FaradayHost = {
+  config: FaradayConfig;
+  faradayFs: FileSystemProvider;
   rootFs: FileSystemProvider;
   terminal?: Terminal;
 };
 
-export type FarMoreProps = {
-  host: FarMoreHost;
+export type FaradayProps = {
+  host: FaradayHost;
 };

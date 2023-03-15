@@ -2,7 +2,7 @@ import defaultLayout from "@assets/layout.json5";
 import { ActionsBar } from "@components/ActionsBar";
 import DialogPlaceholder from "@components/DialogPlaceholder";
 import { LayoutContainer } from "@components/LayoutContainer";
-import { useFarMoreHost } from "@contexts/farMoreHostContext";
+import { useFaradayHost } from "@contexts/faradayHostContext";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { changeDir, focusNextPanel, setPanelsLayout } from "@features/panels/panelsSlice";
 import { useCommandBindings } from "@hooks/useCommandBinding";
@@ -64,9 +64,9 @@ function App() {
   const [panelsOpen, setPanelsOpen] = useState(true);
   const [executing, setExecuting] = useState(false);
   const panelsLayout = useAppSelector((state) => state.panels.layout);
-  const host = useFarMoreHost();
+  const host = useFaradayHost();
 
-  const { content: layoutContent } = useFileContent("far-more:/layout.json5");
+  const { content: layoutContent } = useFileContent("faraday:/layout.json5");
   useEffect(() => {
     if (layoutContent) {
       try {

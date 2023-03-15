@@ -66,7 +66,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
 
   useEffect(() => {
     if (monaco) {
-      monaco.editor.defineTheme("far-more", {
+      monaco.editor.defineTheme("faraday", {
         inherit: true,
         base: "vs-dark",
         rules: [
@@ -121,7 +121,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
         <Content>
           {monaco && (
             <Editor
-              theme="far-more"
+              theme="faraday"
               path={activePath}
               value={quickViewContent}
               options={{

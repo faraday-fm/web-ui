@@ -9,7 +9,7 @@ export type IconResolver = (path: string, isDir: boolean) => Promise<React.React
 
 const FileIconsContext = createContext<IconResolver>(() => Promise.reject());
 
-const themeRoot = "far-more:/icons";
+const themeRoot = "faraday:/icons";
 
 const decoder = new TextDecoder();
 
