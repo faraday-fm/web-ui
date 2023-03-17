@@ -1,15 +1,15 @@
-import { useFileJsonContent } from "@hooks/useFileContent";
+import { Extension } from "@features/extensions/extension";
+import { IconTheme, isSvgIcon } from "@features/extensions/schemas/iconTheme";
 import { useFs } from "@hooks/useFs";
-import { append } from "@utils/path";
 import isPromise from "is-promise";
-import { createContext, PropsWithChildren, useCallback, useContext, useMemo } from "react";
+import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 export type IconResolver = (path: string, isDir: boolean) => Promise<React.ReactElement | undefined> | React.ReactElement | undefined;
 
 const FileIconsContext = createContext<IconResolver>(() => Promise.reject());
 
-const themeRoot = "faraday:/icons";
+const themeRoot = "faraday:/extensions/PKief.material-icon-theme-4.25.0";
 
 const decoder = new TextDecoder();
 
@@ -27,7 +27,7 @@ const IconWrapper = styled.div`
   }
 `;
 
-function resolveIconDefinitionName(iconTheme: any, path: string, isDir: boolean): string {
+function resolveIconDefinitionName(iconTheme: IconTheme, path: string, isDir: boolean): string {
   const direntName = path.split("/").at(-1) ?? "";
   if (isDir) {
     return iconTheme.folderNames?.[direntName] ?? iconTheme.folder;
@@ -53,24 +53,34 @@ function resolveIconDefinitionName(iconTheme: any, path: string, isDir: boolean)
 
 export function FileIconsProvider({ children }: PropsWithChildren) {
   const fs = useFs();
-  const packageJson = useFileJsonContent(append(themeRoot, "package.json"));
+  const [iconTheme, setIconTheme] = useState<{ path: string; theme: IconTheme }>();
+  // const packageJson = useFileJsonContent(append(themeRoot, "package.json"));
 
-  const iconThemes = packageJson?.contributes?.iconThemes;
-  const iconsThemeJsonPath = Array.isArray(iconThemes) ? (iconThemes[0]?.path as string) : undefined;
-  const iconsThemeJsonPathAbsolute = append(themeRoot, iconsThemeJsonPath ?? "");
+  useEffect(() => {
+    (async () => {
+      const ext = new Extension(themeRoot, fs);
+      await ext.load();
+      const theme = await ext.getIconTheme();
+      setIconTheme(theme);
+    })();
+  }, [fs]);
 
-  const iconsThemeJson = useFileJsonContent(iconsThemeJsonPathAbsolute);
+  // const iconThemes = packageJson?.contributes?.iconThemes;
+  // const iconsThemeJsonPath = Array.isArray(iconThemes) ? (iconThemes[0]?.path as string) : undefined;
+  // const iconsThemeJsonPathAbsolute = append(themeRoot, iconsThemeJsonPath ?? "");
+
+  // const iconsThemeJson = useFileJsonContent(iconsThemeJsonPathAbsolute);
   // console.log(iconsThemeJson);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const cache = useMemo(() => new Map<string, string>(), [packageJson]);
+  const cache = useMemo(() => new Map<string, string>(), [iconTheme]);
 
   const resolver: IconResolver = useCallback(
     (path, isDir) => {
-      if (!iconsThemeJson) {
+      if (!iconTheme) {
         return undefined;
       }
-      const iconDefinitionName = resolveIconDefinitionName(iconsThemeJson, path, isDir);
+      const iconDefinitionName = resolveIconDefinitionName(iconTheme.theme, path, isDir);
       const cachedIcon = cache.get(iconDefinitionName);
 
       if (cachedIcon) {
@@ -82,10 +92,9 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
           />
         );
       }
-
-      const iconDefinition = iconDefinitionName ? iconsThemeJson.iconDefinitions[iconDefinitionName] : undefined;
-      const iconPath = iconDefinition?.iconPath;
-      const iconPathAbsolute = iconPath ? new URL(iconPath, iconsThemeJsonPathAbsolute).href : undefined;
+      const iconDefinition = iconDefinitionName ? iconTheme.theme.iconDefinitions[iconDefinitionName] : undefined;
+      const iconPath = isSvgIcon(iconDefinition) ? iconDefinition?.iconPath : undefined;
+      const iconPathAbsolute = iconPath ? new URL(iconPath, iconTheme.path).href : undefined;
       if (!iconPathAbsolute) {
         return undefined;
       }
@@ -113,7 +122,7 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
         return undefined;
       }
     },
-    [cache, fs, iconsThemeJson, iconsThemeJsonPathAbsolute]
+    [cache, fs, iconTheme]
   );
 
   return <FileIconsContext.Provider value={resolver}>{children}</FileIconsContext.Provider>;

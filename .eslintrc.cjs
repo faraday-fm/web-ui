@@ -10,6 +10,7 @@ module.exports = {
     "import/extensions": "off",
     "import/prefer-default-export": "off",
     "no-param-reassign": "off",
+    "no-useless-constructor": "off",
     "react/react-in-jsx-scope": "off",
     "react/require-default-props": "off",
     "react/jsx-props-no-spreading": "off",

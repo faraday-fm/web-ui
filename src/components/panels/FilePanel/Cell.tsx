@@ -47,7 +47,8 @@ export function Cell({ cursorStyle, data, field, onMouseDown, onMouseOver, onDou
 
   const resolvedIcon = useMemo(() => iconResolver(data?.[field] ?? "", data?.isDir ?? false), [data, field, iconResolver]);
 
-  const [icon, setIcon] = useState<ReactElement | undefined>(!isPromise(resolvedIcon) ? resolvedIcon : <div style={{ width: 17 }} />);
+  const emptyIcon = <div style={{ width: 17 }} />;
+  const [icon, setIcon] = useState<ReactElement | undefined>(!isPromise(resolvedIcon) ? resolvedIcon ?? emptyIcon : emptyIcon);
 
   useEffect(() => {
     (async () => {

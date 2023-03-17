@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from "react";
 
 import { useFs } from "./useFs";
 
-export function useFileContent(url: string) {
+export function useFileContent(path: string) {
   const fs = useFs();
-  const [result, setResult] = useState<{ done: boolean; error?: unknown; content?: Uint8Array }>({ done: false });
+  const [result, setResult] = useState<{ done: boolean; error?: unknown; content?: Uint8Array; path: string }>({ done: false, path });
   const counter = useRef(0);
 
   useEffect(() => {
@@ -15,18 +15,17 @@ export function useFileContent(url: string) {
       counter.current += 1;
       const pendingOp = counter.current;
       try {
-        setResult({ done: false });
-        // const content = await fs.readFile(url, { signal: abortController.signal });
+        setResult({ done: false, path });
         fs.watch(
-          url,
+          path,
           async (events) => {
             try {
               events.forEach((e) => {
                 if (e.type === "ready") isReady = true;
               });
               if (isReady) {
-                const content = await fs.readFile(url, { signal: abortController.signal });
-                setResult({ done: true, content });
+                const content = await fs.readFile(path, { signal: abortController.signal });
+                setResult({ done: true, content, path });
               }
             } catch {
               // console.error("File deleted");
@@ -39,12 +38,12 @@ export function useFileContent(url: string) {
         // }
       } catch (error) {
         if (counter.current === pendingOp) {
-          setResult({ done: false, error });
+          setResult({ done: false, error, path });
         }
       }
     })();
     return () => abortController.abort();
-  }, [fs, url]);
+  }, [fs, path]);
 
   return result;
 }

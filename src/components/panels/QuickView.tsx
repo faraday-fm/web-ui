@@ -3,11 +3,13 @@ import { setActivePanel } from "@features/panels/panelsSlice";
 import { useCommandContext } from "@hooks/useCommandContext";
 import { useFileContent } from "@hooks/useFileContent";
 import { useFocused } from "@hooks/useFocused";
-import Editor, { useMonaco } from "@monaco-editor/react";
+import { useMonaco } from "@monaco-editor/react";
 import { useAppDispatch, useAppSelector } from "@store";
 import { QuickViewLayout } from "@types";
 import { useEffect, useRef } from "react";
 import styled, { useTheme } from "styled-components";
+
+import QuickViewHost from "./QuickViewHost";
 
 const Root = styled.div`
   position: relative;
@@ -54,7 +56,7 @@ type QuickViewPanelProps = { layout: QuickViewLayout & { id: string } };
 export function QuickView({ layout }: QuickViewPanelProps) {
   const dispatch = useAppDispatch();
   const { id } = layout;
-  const monaco = useMonaco();
+  // const monaco = useMonaco();
   const theme = useTheme();
   // const [quickViewContent, setQuickViewContent] = useState<string>();
   const activePanelId = useAppSelector((state) => state.panels.activePanelId);
@@ -64,34 +66,34 @@ export function QuickView({ layout }: QuickViewPanelProps) {
   const panelRootRef = useRef<HTMLDivElement>(null);
   const focused = useFocused(panelRootRef);
 
-  useEffect(() => {
-    if (monaco) {
-      monaco.editor.defineTheme("faraday", {
-        inherit: true,
-        base: "vs-dark",
-        rules: [
-          {
-            token: "comment",
-            foreground: "ffa500",
-            fontStyle: "italic underline",
-          },
-          { token: "comment.js", foreground: "008800", fontStyle: "bold" },
-          { token: "comment.css", foreground: "0000ff" }, // will inherit fontStyle from `comment` above
-        ],
-        colors: {
-          "editor.foreground": theme.filePanel.color, // "#2aa198",
-          "editor.background": theme.filePanel.bg, // "#073642",
-        },
-      });
-    }
-  }, [monaco, theme.filePanel.bg, theme.filePanel.color]);
+  // useEffect(() => {
+  //   if (monaco) {
+  //     monaco.editor.defineTheme("faraday", {
+  //       inherit: true,
+  //       base: "vs-dark",
+  //       rules: [
+  //         {
+  //           token: "comment",
+  //           foreground: "ffa500",
+  //           fontStyle: "italic underline",
+  //         },
+  //         { token: "comment.js", foreground: "008800", fontStyle: "bold" },
+  //         { token: "comment.css", foreground: "0000ff" }, // will inherit fontStyle from `comment` above
+  //       ],
+  //       colors: {
+  //         "editor.foreground": theme.filePanel.color, // "#2aa198",
+  //         "editor.background": theme.filePanel.bg, // "#073642",
+  //       },
+  //     });
+  //   }
+  // }, [monaco, theme.filePanel.bg, theme.filePanel.color]);
 
   useCommandContext("quickView.visible");
   useCommandContext("quickView.focus", focused);
 
   useEffect(() => {
     if (focused) {
-      dispatch(setActivePanel(id));
+      // dispatch(setActivePanel(id));
     }
   }, [dispatch, id, focused]);
 
@@ -101,16 +103,16 @@ export function QuickView({ layout }: QuickViewPanelProps) {
     }
   }, [dispatch, isActive]);
 
-  const { content, error } = useFileContent(activePath ?? "");
+  const { content, path: contentPath, error } = useFileContent(activePath ?? "");
 
-  let quickViewContent: string;
-  if (error) {
-    quickViewContent = String(error);
-  } else if (content !== undefined) {
-    quickViewContent = new TextDecoder().decode(content);
-  } else {
-    quickViewContent = "Loading...";
-  }
+  // let quickViewContent: string;
+  // if (error) {
+  //   quickViewContent = String(error);
+  // } else if (content !== undefined) {
+  //   quickViewContent = new TextDecoder().decode(content);
+  // } else {
+  //   quickViewContent = "Loading...";
+  // }
 
   // const quickViewContentDeferred = useDeferred(quickViewContent, 100);
 
@@ -119,7 +121,8 @@ export function QuickView({ layout }: QuickViewPanelProps) {
       <Border {...theme.filePanel.border}>
         <HeaderText isActive={isActive}>Quick View</HeaderText>
         <Content>
-          {monaco && (
+          <QuickViewHost content={content} path={contentPath} />
+          {/* {monaco && (
             <Editor
               theme="faraday"
               path={activePath}
@@ -140,7 +143,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
                 overviewRulerLanes: 0,
               }}
             />
-          )}
+          )} */}
           {/* <div className={classes.footerPanel}>123</div> */}
         </Content>
       </Border>

@@ -11,8 +11,8 @@ export const settingsSlice = createSlice({
     wheelSensitivity: 64,
   } as SliceState,
   reducers: {
-    setWheelSensitivity: (state, action: PayloadAction<number>) => {
-      state.wheelSensitivity = action.payload;
+    setWheelSensitivity: (state, { payload }: PayloadAction<number>) => {
+      state.wheelSensitivity = payload;
     },
   },
 });
