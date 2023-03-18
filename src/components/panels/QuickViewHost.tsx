@@ -32,7 +32,9 @@ export default function QuickViewHost({ path, content }: { path: string; content
       await ext2.load();
       const ext3 = new Extension("faraday:/extensions/faraday.markdown-viewer", fs);
       await ext3.load();
-      setExtensions([ext1, ext2, ext3]);
+      const ext4 = new Extension("faraday:/extensions/faraday.code-viewer", fs);
+      await ext4.load();
+      setExtensions([ext1, ext2, ext3, ext4]);
     })();
   }, [fs]);
 
