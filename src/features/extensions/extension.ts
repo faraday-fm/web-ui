@@ -6,6 +6,8 @@ import { IconTheme, IconThemeSchema } from "./schemas/iconTheme";
 import { Manifest, ManifestSchema } from "./schemas/manifest";
 
 export class Extension {
+  id = "";
+
   manifest?: Manifest;
 
   quickViewScriptsCache = new Map<string, string>();
@@ -17,6 +19,7 @@ export class Extension {
       const packageJsonRaw = await this.fs.readFile(append(this.path, "package.json"));
       const packageJson = JSON5.parse(new TextDecoder().decode(packageJsonRaw));
       this.manifest = ManifestSchema.parse(packageJson);
+      this.id = `${this.manifest.publisher}.${this.manifest.name}`;
     } catch (err) {
       throw new Error(`Cannot load extension from path '${this.path}'.`, { cause: err });
     }

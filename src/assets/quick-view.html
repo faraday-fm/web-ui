@@ -12,27 +12,44 @@
         height: 100%;
         margin: 0;
       }
+      img {
+        max-width: 100%;
+      }
     </style>
     <script type="module">
       // const pm = window.parent.postMessage.bind(window.parent);
       let res;
       let module = new Promise((r) => (res = r));
+      const errorMessage = document.createElement("div");
+      errorMessage.style.position = "fixed";
+      errorMessage.style.inset = "0";
+      errorMessage.style.background = "#fffc";
+      errorMessage.style.zIndex = "1";
+      errorMessage.style.visibility = "collapse";
+      document.body.appendChild(errorMessage);
       onmessage = (e) => {
         switch (e.data?.type) {
           case "init":
             if (e.data.js) {
-              import("data:text/javascript;base64," + btoa(e.data.js)).then((m) => {
+              import("data:text/javascript;base64," + btoa(unescape(encodeURIComponent(e.data.js)))).then((m) => {
                 m.init?.();
                 res(m);
               });
             }
             break;
           case "content":
-            setTimeout(() => {
-              if (e.data.content) {
-                module.then((m) => m.updateContent?.(e.data.content, e.data.path));
-              }
-            }, 0);
+            errorMessage.style.visibility = "collapse";
+            if (e.data.content) {
+              module
+                .then((m) => m.updateContent?.({ content: e.data.content, path: e.data.path }))
+                .catch((err) => {
+                  let errorText = "";
+                  if (typeof err === "string") errorText = err;
+                  else if (err instanceof Error) errorText = err.message;
+                  errorMessage.style.visibility = "visible";
+                  errorMessage.innerText = errorText;
+                });
+            }
             break;
         }
       };
