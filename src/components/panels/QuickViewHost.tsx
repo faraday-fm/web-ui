@@ -16,11 +16,12 @@ const Root = styled.div`
   justify-items: stretch;
 `;
 
+type Frame = { element: ReactElement; actions: DeferredPromise<QuickViewFrameActions> };
+
 export default function QuickViewHost({ path, content }: { path: string; content?: Uint8Array }) {
   const [extensions, setExtensions] = useState<Extension[]>();
-  const [quickViewScript, setQuickViewScript] = useState<{ id: string; script: string }>();
-  const frames = useRef<Record<string, { frame: ReactElement; actions: DeferredPromise<QuickViewFrameActions> }>>({});
-  const [frame, setFrame] = useState<ReactElement>();
+  const frames = useRef<Record<string, Frame>>({});
+  const [frame, setFrame] = useState<Frame>();
   const fs = useFs();
 
   useEffect(() => {
@@ -40,56 +41,36 @@ export default function QuickViewHost({ path, content }: { path: string; content
       if (!extensions) {
         return;
       }
-      let scriptFound = false;
+      let frame: Frame | undefined;
       for (const ext of extensions) {
         // eslint-disable-next-line no-await-in-loop, @typescript-eslint/no-non-null-assertion
         const script = await ext.getQuickViewScript({ filename: filename(path)! });
         if (script) {
-          setQuickViewScript({ id: ext.id, script });
-          scriptFound = true;
+          frame = frames.current[ext.id];
+          if (!frame) {
+            const qw = (
+              <QuickViewFrame
+                key={ext.id}
+                ref={(r) => {
+                  if (r) {
+                    frames.current[ext.id].actions.resolve(r);
+                  }
+                }}
+                script={script}
+              />
+            );
+            frame = { element: qw, actions: deferredPromise() };
+            frames.current[ext.id] = frame;
+            setFrame(frame);
+          }
           break;
         }
       }
-      if (!scriptFound) {
-        setQuickViewScript(undefined);
-      }
+      setFrame(frame);
+      frame?.actions.promise.then((a) => a.setContent({ content, path }));
+      Object.values(frames.current).forEach((f) => f.actions.promise.then((a) => a.setVisibility(f.element === frame?.element)));
     })();
-  }, [extensions, path]);
+  }, [extensions, content, path]);
 
-  // FIXME: if effect (2) is placed before (1), quick view will stop working
-
-  /* (1) */
-  useEffect(() => {
-    if (!quickViewScript) {
-      setFrame(undefined);
-      return;
-    }
-    const existingFrame = frames.current[quickViewScript.id];
-    if (existingFrame) {
-      setFrame(existingFrame.frame);
-      return;
-    }
-    const f = (
-      <QuickViewFrame
-        key={quickViewScript.id}
-        ref={(r) => {
-          if (r) {
-            frames.current[quickViewScript.id].actions.resolve(r);
-          }
-        }}
-        script={quickViewScript.script}
-      />
-    );
-    frames.current[quickViewScript.id] = { frame: f, actions: deferredPromise() };
-    setFrame(f);
-  }, [quickViewScript]);
-
-  /* (2) */
-  useEffect(() => {
-    if (content && quickViewScript) {
-      frames.current[quickViewScript.id]?.actions.promise.then((a) => a.setContent({ content, path }));
-    }
-  }, [content, path, quickViewScript]);
-
-  return <Root>{frame}</Root>;
+  return <Root>{Object.values(frames.current).map((f) => f.element)}</Root>;
 }

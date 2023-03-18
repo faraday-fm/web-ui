@@ -4,7 +4,8 @@ import { ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef, useSt
 import styled from "styled-components";
 
 export type QuickViewFrameActions = {
-  setContent({ content, path }: { content: Uint8Array; path: string }): Promise<void>;
+  setContent({ content, path }: { content?: Uint8Array; path: string }): Promise<void>;
+  setVisibility(show: boolean): Promise<void>;
 };
 
 const WebView = styled.iframe`
@@ -27,8 +28,23 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
     ref,
     () => ({
       async setContent({ content, path }) {
-        await loadedPromise.current.promise;
-        iframeRef.current?.contentWindow?.postMessage({ type: "content", content, path }, "*");
+        if (iframeRef.current) {
+          await loadedPromise.current.promise;
+          iframeRef.current.contentWindow?.postMessage({ type: "content", content, path }, "*");
+        }
+      },
+      async setVisibility(show) {
+        if (iframeRef.current) {
+          if (show) {
+            if (iframeRef.current.style.display === "none") {
+              iframeRef.current.style.removeProperty("display");
+            }
+          } else if (iframeRef.current.style.display !== "none") {
+            iframeRef.current.style.display = "none";
+            await loadedPromise.current.promise;
+            iframeRef.current.contentWindow?.postMessage({ type: "content" }, "*");
+          }
+        }
       },
     }),
     []

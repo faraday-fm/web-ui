@@ -39,17 +39,15 @@
             break;
           case "content":
             errorMessage.style.visibility = "collapse";
-            if (e.data.content) {
-              module
-                .then((m) => m.updateContent?.({ content: e.data.content, path: e.data.path }))
-                .catch((err) => {
-                  let errorText = "";
-                  if (typeof err === "string") errorText = err;
-                  else if (err instanceof Error) errorText = err.message;
-                  errorMessage.style.visibility = "visible";
-                  errorMessage.innerText = errorText;
-                });
-            }
+            module
+              .then((m) => m.updateContent?.({ content: e.data.content, path: e.data.path }))
+              .catch((err) => {
+                let errorText = "";
+                if (typeof err === "string") errorText = err;
+                else if (err instanceof Error) errorText = err.message;
+                errorMessage.style.visibility = "visible";
+                errorMessage.innerText = errorText;
+              });
             break;
         }
       };
