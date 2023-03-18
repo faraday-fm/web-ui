@@ -1,7 +1,7 @@
 import quickViewHtml from "@assets/quick-view.html";
 import { deferredPromise } from "@utils/promise";
 import { ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 
 export type QuickViewFrameActions = {
   setContent({ content, path }: { content?: Uint8Array; path: string }): Promise<void>;
@@ -17,8 +17,10 @@ const quickViewHtmlBase64 = btoa(quickViewHtml);
 
 export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { script: string }, ref: ForwardedRef<QuickViewFrameActions>) {
   const [initialScript] = useState(script);
-  const loadedPromise = useRef(deferredPromise());
+  const loadedPromise = useRef(deferredPromise<Window>());
+  const themeSetPromise = useRef(deferredPromise<Window>());
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const theme = useTheme();
 
   if (script !== initialScript) {
     throw new Error("'script' should not be changed.");
@@ -29,8 +31,8 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
     () => ({
       async setContent({ content, path }) {
         if (iframeRef.current) {
-          await loadedPromise.current.promise;
-          iframeRef.current.contentWindow?.postMessage({ type: "content", content, path }, "*");
+          const iframeWindow = await themeSetPromise.current.promise;
+          iframeWindow.postMessage({ type: "content", content, path }, "*");
         }
       },
       async setVisibility(show) {
@@ -41,8 +43,8 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
             }
           } else if (iframeRef.current.style.display !== "none") {
             iframeRef.current.style.display = "none";
-            await loadedPromise.current.promise;
-            iframeRef.current.contentWindow?.postMessage({ type: "content" }, "*");
+            const iframeWindow = await themeSetPromise.current.promise;
+            iframeWindow.postMessage({ type: "content" }, "*");
           }
         }
       },
@@ -52,12 +54,22 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
 
   useEffect(() => {
     if (iframeRef.current) {
-      iframeRef.current.onload = () => {
-        iframeRef.current?.contentWindow?.postMessage({ type: "init", js: initialScript }, "*");
-        loadedPromise.current.resolve(null);
+      const iframe = iframeRef.current;
+      iframe.onload = () => {
+        const iframeWindow = iframe.contentWindow as Window;
+        iframeWindow.postMessage({ type: "init", js: initialScript }, "*");
+        loadedPromise.current.resolve(iframeWindow);
       };
     }
   }, [initialScript]);
+
+  useEffect(() => {
+    (async () => {
+      const iframeWindow = await loadedPromise.current.promise;
+      iframeWindow.postMessage({ type: "theme", theme }, "*");
+      themeSetPromise.current.resolve(iframeWindow);
+    })();
+  }, [theme]);
 
   return <WebView ref={iframeRef} title="" src={`data:text/html;base64,${quickViewHtmlBase64}`} />;
 });

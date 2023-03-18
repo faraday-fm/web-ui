@@ -1,8 +1,7 @@
 import { useFileIconResolver } from "@contexts/fileIconsContext";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 import isPromise from "is-promise";
-import { MouseEventHandler, useEffect, useMemo, useState } from "react";
-import { ReactElement } from "react-markdown/lib/react-markdown";
+import { MouseEventHandler, ReactElement, useEffect, useMemo, useState } from "react";
 import styled, { DefaultTheme } from "styled-components";
 
 import { CursorStyle } from "./types";

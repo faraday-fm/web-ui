@@ -7,7 +7,6 @@ import { useShell } from "@hooks/useShell";
 import { useTerminal } from "@hooks/useTerminal";
 import { useAppDispatch, useAppSelector } from "@store";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { HiTerminal } from "react-icons/hi";
 import useResizeObserver from "use-resize-observer";
 import { Terminal as XTerm } from "xterm";
 import { FitAddon } from "xterm-addon-fit";

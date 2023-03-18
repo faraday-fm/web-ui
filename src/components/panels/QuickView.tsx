@@ -1,9 +1,7 @@
 import { Border } from "@components/Border";
-import { setActivePanel } from "@features/panels/panelsSlice";
 import { useCommandContext } from "@hooks/useCommandContext";
 import { useFileContent } from "@hooks/useFileContent";
 import { useFocused } from "@hooks/useFocused";
-import { useMonaco } from "@monaco-editor/react";
 import { useAppDispatch, useAppSelector } from "@store";
 import { QuickViewLayout } from "@types";
 import { useEffect, useRef } from "react";

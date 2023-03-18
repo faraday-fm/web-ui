@@ -18,6 +18,7 @@
     </style>
     <script type="module">
       // const pm = window.parent.postMessage.bind(window.parent);
+      window.faraday = {};
       let res;
       let module = new Promise((r) => (res = r));
       const errorMessage = document.createElement("div");
@@ -29,6 +30,12 @@
       document.body.appendChild(errorMessage);
       onmessage = (e) => {
         switch (e.data?.type) {
+          case "theme":
+            window.faraday.theme = e.data.theme;
+            document.body.style.fontFamily = e.data.theme.fontFamily;
+            document.body.style.color = e.data.theme.primaryText;
+            window.faraday.onthemechange?.();
+            break;
           case "init":
             if (e.data.js) {
               import("data:text/javascript;base64," + btoa(unescape(encodeURIComponent(e.data.js)))).then((m) => {
