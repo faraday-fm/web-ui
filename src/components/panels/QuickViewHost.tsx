@@ -1,6 +1,7 @@
 import { Extension } from "@features/extensions/extension";
 import { useFs } from "@hooks/useFs";
 import { filename } from "@utils/path";
+import { DeferredPromise, deferredPromise } from "@utils/promise";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
@@ -18,7 +19,7 @@ const Root = styled.div`
 export default function QuickViewHost({ path, content }: { path: string; content?: Uint8Array }) {
   const [extensions, setExtensions] = useState<Extension[]>();
   const [quickViewScript, setQuickViewScript] = useState<{ id: string; script: string }>();
-  const frames = useRef<Record<string, { frame: ReactElement; ref: QuickViewFrameActions | null }>>({});
+  const frames = useRef<Record<string, { frame: ReactElement; actions: DeferredPromise<QuickViewFrameActions> }>>({});
   const [frame, setFrame] = useState<ReactElement>();
   const fs = useFs();
 
@@ -55,12 +56,9 @@ export default function QuickViewHost({ path, content }: { path: string; content
     })();
   }, [extensions, path]);
 
-  useEffect(() => {
-    if (content && quickViewScript) {
-      frames.current[quickViewScript.id].ref?.setContent({ content, path });
-    }
-  }, [content, path, quickViewScript]);
+  // FIXME: if effect (2) is placed before (1), quick view will stop working
 
+  /* (1) */
   useEffect(() => {
     if (!quickViewScript) {
       setFrame(undefined);
@@ -75,14 +73,23 @@ export default function QuickViewHost({ path, content }: { path: string; content
       <QuickViewFrame
         key={quickViewScript.id}
         ref={(r) => {
-          frames.current[quickViewScript.id].ref = r;
+          if (r) {
+            frames.current[quickViewScript.id].actions.resolve(r);
+          }
         }}
         script={quickViewScript.script}
       />
     );
-    frames.current[quickViewScript.id] = { frame: f, ref: null };
+    frames.current[quickViewScript.id] = { frame: f, actions: deferredPromise() };
     setFrame(f);
   }, [quickViewScript]);
+
+  /* (2) */
+  useEffect(() => {
+    if (content && quickViewScript) {
+      frames.current[quickViewScript.id]?.actions.promise.then((a) => a.setContent({ content, path }));
+    }
+  }, [content, path, quickViewScript]);
 
   return <Root>{frame}</Root>;
 }
