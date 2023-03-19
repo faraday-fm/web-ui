@@ -26,20 +26,13 @@ const ColumnRoot = styled.div`
   display: grid;
   grid-template-rows: min-content 1fr 0.25rem;
   height: 100%;
-  /* border: ${(p) => p.theme.filePanel.column.border.thickness} solid ${(p) => p.theme.filePanel.column.border.color};
-  border-right: none;
-  border-bottom: none;
-  border-radius: ${(p) => p.theme.filePanel.column.border.radius}; */
   text-align: left;
   box-sizing: border-box;
   padding-top: calc(0.5rem - 1px);
-  /* &:last-child {
-    border-right: ${(p) => p.theme.filePanel.column.border.thickness} solid ${(p) => p.theme.filePanel.column.border.color};
-  } */
 `;
 const ColumnHeader = styled.div`
   text-align: center;
-  color: ${(p) => p.theme.filePanel.column.color};
+  color: ${(p) => p.theme.colors["panel.header.foreground"]};
   text-overflow: ellipsis;
   overflow: hidden;
   padding: 0 calc(0.25rem - 1px);
@@ -86,11 +79,9 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
 
   const displayedItems = items.slice(topmostIndex, Math.min(items.length, topmostIndex + (maxItemsCount ?? 0)));
 
-  const theme = useTheme();
-
   let idx = 0;
   return (
-    <Border {...theme.filePanel.column.border}>
+    <Border>
       <ColumnRoot className="ColumnRoot" style={{ overflow: "hidden" }}>
         <ColumnHeader className="ColumnHeader">{columnDef.name}</ColumnHeader>
         <div

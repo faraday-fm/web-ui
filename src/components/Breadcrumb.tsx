@@ -4,7 +4,11 @@ import styled from "styled-components";
 import { BreadcrumbItem } from "./BreadcrumbItem";
 
 const NavWithBackgroundProp = styled.nav<{ $isActive: boolean }>`
-  --background: linear-gradient(to right, transparent, ${(p) => (p.$isActive ? p.theme.filePanel.header.activeBg : p.theme.filePanel.header.inactiveBg)});
+  --background: linear-gradient(
+    to right,
+    transparent,
+    ${(p) => (p.$isActive ? p.theme.colors["panel.header.background:focus"] : p.theme.colors["panel.header.background"])}
+  );
   display: flex;
   flex-direction: row;
   overflow: hidden;

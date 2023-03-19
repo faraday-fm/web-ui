@@ -8,7 +8,7 @@ import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
 import { KeyBindingProvider } from "@contexts/keyBindingContext";
 import { useMediaQuery } from "@hooks/useMediaQuery";
 import { store } from "@store";
-import { theme as farTheme } from "@themes/far-theme";
+// import { theme as farTheme } from "@themes/theme";
 import { darkTheme } from "@themes/theme";
 import { FaradayProps } from "@types";
 import { Provider as ReduxProvider } from "react-redux";
@@ -24,7 +24,7 @@ export function Faraday({ host }: FaradayProps) {
     <ReduxProvider store={store}>
       <GlobalContextProvider>
         <FaradayHostProvider host={host}>
-          <ThemeProvider theme={dark ? darkTheme : farTheme}>
+          <ThemeProvider theme={dark ? darkTheme : darkTheme}>
             <KeyBindingProvider>
               <GlyphSizeProvider>
                 <FileIconsProvider>

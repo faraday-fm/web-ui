@@ -12,7 +12,7 @@ const Label = styled.label`
   cursor: pointer;
   em {
     font-style: normal;
-    color: ${(p) => p.theme.misc.hotKeyText};
+    color: ${(p) => p.theme.colors["textAcceleratorKey.foreground"]};
   }
 `;
 

@@ -37,21 +37,19 @@ const PanelRoot = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
-  color: ${(p) => p.theme.filePanel.color};
-  background: ${(p) => p.theme.filePanel.bg};
+  color: ${(p) => p.theme.colors["panel.foreground"]};
+  background: ${(p) => p.theme.colors["panel.background"]};
   display: grid;
   overflow: hidden;
   outline: none;
   user-select: none;
-  ${(p) => p.theme.filePanel.extension}
 `;
 
 const PanelContent = styled.div`
   display: grid;
   grid-template-rows: auto 1fr auto auto;
   overflow: hidden;
-  margin: ${(p) => p.theme.filePanel.content.margin};
-  ${(p) => p.theme.filePanel.content.extension}
+  margin: 1px;
 `;
 
 const PanelColumns = styled.div`
@@ -65,15 +63,12 @@ const PanelColumns = styled.div`
 `;
 
 const PanelHeader = styled.div<{ active: boolean }>`
-  color: ${(p) => (p.active ? p.theme.filePanel.header.activeColor : p.theme.filePanel.header.inactiveColor)};
-  background-color: ${(p) => (p.active ? p.theme.filePanel.header.activeBg : p.theme.filePanel.header.inactiveBg)};
+  color: ${(p) => p.theme.colors[p.active ? "panel.header.foreground:focus" : "panel.header.foreground"]};
+  background-color: ${(p) => p.theme.colors[p.active ? "panel.header.background:focus" : "panel.header.background"]};
   overflow: hidden;
-  ${(p) => p.theme.filePanel.header.extension}
 `;
 
 const PanelFooter = styled.div`
-  color: ${(p) => p.theme.filePanel.footer.color};
-  background-color: ${(p) => p.theme.filePanel.footer.bg};
   /* position: absolute; */
   /* bottom: 0;
   left: 50%;
@@ -85,7 +80,6 @@ const PanelFooter = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: left;
-  ${(p) => p.theme.filePanel.footer.extension}
 `;
 
 const FileInfoPanel = styled.div`
@@ -256,7 +250,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
     return (
       <PanelRoot ref={panelRootRef} tabIndex={0} onFocus={() => onFocus?.()}>
         <GlyphSizeProvider>
-          <Border {...theme.filePanel.border}>
+          <Border>
             <PanelContent>
               <PanelHeader active={focused}>
                 <Breadcrumb isActive={focused}>
@@ -298,7 +292,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
                 )}
               </PanelColumns>
               <FileInfoPanel>
-                <Border {...theme.filePanel.fileInfo.border}>
+                <Border>
                   <FileInfoFooter file={items.nth(adjustedCursor.selectedIndex)} />
                 </Border>
               </FileInfoPanel>

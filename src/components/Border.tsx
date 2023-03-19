@@ -1,12 +1,8 @@
-import { Border as BorderProps } from "@themes/types";
 import styled from "styled-components";
 
-export const Border = styled.div<BorderProps>`
-  border: ${(p) => p.thickness} solid ${(p) => p.color};
-  border-radius: ${(p) => p.radius};
-  margin: ${(p) => p.margin};
-  padding: ${(p) => p.padding};
+export const Border = styled.div`
   display: grid;
   overflow: hidden;
-  ${(p) => p.extension}
+  border: ${(p) => `1px solid ${p.theme.colors["dialog.border"]}`};
+  margin: 1px;
 `;

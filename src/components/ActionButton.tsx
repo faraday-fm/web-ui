@@ -16,14 +16,15 @@ const Root = styled.span`
 `;
 
 const FnKey = styled.span`
-  color: ${(p) => p.theme.actionsBar.fnKey.color};
+  color: ${(p) => p.theme.colors["actionBar.keyForeground"]};
+  background-color: ${(p) => p.theme.colors["actionBar.keyBackground"]};
 `;
 
 const HeaderButton = styled.div`
   text-align: left;
   width: 100%;
-  background-color: ${(p) => p.theme.actionsBar.bg};
-  color: ${(p) => p.theme.actionsBar.color};
+  background-color: ${(p) => p.theme.colors["actionBar.buttonBackground"]};
+  color: ${(p) => p.theme.colors["actionBar.buttonForeground"]};
   padding: 0;
   cursor: pointer;
 `;

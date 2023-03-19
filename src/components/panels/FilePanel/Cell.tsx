@@ -16,10 +16,10 @@ type CellProps = {
 };
 
 function getColor(theme: DefaultTheme, name: string, dir: boolean | undefined, selected: boolean) {
-  if (dir) return selected ? theme.filePanel.entries.dir.activeColor : theme.filePanel.entries.dir.inactiveColor;
+  if (dir) return selected ? theme.colors["files.directory.foreground:focus"] : theme.colors["files.directory.foreground"];
   // if (name.startsWith(".")) return selected ? "var(--color-01)" : "var(--color-02)";
   // if (name.endsWith(".toml") || name.endsWith(".json")) return selected ? "var(--color-01)" : "var(--color-10)";
-  return selected ? theme.filePanel.entries.file.activeColor : theme.filePanel.entries.file.inactiveColor;
+  return selected ? theme.colors["files.file.foreground:focus"] : theme.colors["files.file.foreground"];
 }
 
 const Root = styled.div<{ cursorStyle: CursorStyle }>`
@@ -27,7 +27,11 @@ const Root = styled.div<{ cursorStyle: CursorStyle }>`
   margin-right: 1px;
   cursor: default;
   overflow: hidden;
-  background-color: ${(p) => (p.cursorStyle === "firm" || p.cursorStyle === "inactive" ? p.theme.filePanel.activeBg : null)};
+  background-color: ${(p) => (p.cursorStyle === "firm" || p.cursorStyle === "inactive" ? p.theme.colors["files.file.background:focus"] : null)};
+  border: 1px solid ${(p) => (p.cursorStyle === "firm" || p.cursorStyle === "inactive" ? p.theme.colors["files.file.border:focus"] : "transparent")};
+  padding: 0 2px;
+  /* margin: 0 2px; */
+  border-radius: 2px;
   /* ${(p) => p.cursorStyle === "firm" && "filter: invert(1);"} */
 `;
 

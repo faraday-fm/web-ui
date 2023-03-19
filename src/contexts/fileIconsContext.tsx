@@ -93,7 +93,7 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
         );
       }
       const iconDefinition = iconDefinitionName ? iconTheme.theme.iconDefinitions[iconDefinitionName] : undefined;
-      const iconPath = isSvgIcon(iconDefinition) ? iconDefinition?.iconPath : undefined;
+      const iconPath = isSvgIcon(iconDefinition) ? iconDefinition.iconPath : undefined;
       const iconPathAbsolute = iconPath ? new URL(iconPath, iconTheme.path).href : undefined;
       if (!iconPathAbsolute) {
         return undefined;

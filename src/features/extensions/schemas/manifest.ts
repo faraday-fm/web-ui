@@ -7,15 +7,22 @@ const QuickViewSchema = z.object({
   path: z.string(),
 });
 
-const IconViewSchema = z.object({
+const IconThemeSchema = z.object({
   id: z.string(),
   label: z.string(),
   path: z.string(),
 });
 
+const ThemeSchema = z.object({
+  label: z.string(),
+  uiTheme: z.enum(["fd", "fd-light", "hc", "hc-light"]),
+  path: z.string(),
+});
+
 const ContributesSchema = z.object({
   quickViews: z.optional(z.array(QuickViewSchema)),
-  iconThemes: z.optional(z.array(IconViewSchema)),
+  iconThemes: z.optional(z.array(IconThemeSchema)),
+  themes: z.optional(z.array(ThemeSchema)),
 });
 
 export const ManifestSchema = z.object({

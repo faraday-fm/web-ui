@@ -25,7 +25,7 @@ const centeredAnimation = keyframes`
 `;
 
 const Backdrop = styled.div`
-  background-color: ${(p) => p.theme.modalDialog.backdropColor};
+  background-color: ${(p) => p.theme.colors["dialog.backdrop"]};
   position: absolute;
   left: 0;
   top: 0;
@@ -45,9 +45,9 @@ const Centered = styled.div`
 `;
 
 const Content = styled.div`
-  background-color: ${(p) => p.theme.modalDialog.bg};
-  color: ${(p) => p.theme.modalDialog.color};
-  box-shadow: ${(p) => p.theme.modalDialog.shadow};
+  background-color: ${(p) => p.theme.colors["dialog.background"]};
+  color: ${(p) => p.theme.colors["dialog.foreground"]};
+  box-shadow: ${(p) => p.theme.colors["dialog.shadow"]};
   padding: 0.5rem;
   p {
     margin: 0;
@@ -86,14 +86,14 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
         <Backdrop role="dialog" aria-modal="true" onMouseDown={() => onClose?.()}>
           <Centered onMouseDown={(e) => e.stopPropagation()}>
             <Content>
-              <Border {...theme.modalDialog.border}>
-                <Border {...theme.modalDialog.border}>
+              <Border>
+                <Border>
                   <p style={{ display: "flex", flexDirection: "column" }}>
                     <AutoHotKeyLabel text="Copy to:" htmlFor={`${dialogId}copyTo`} />
                     <input id={`${dialogId}copyTo`} />
                   </p>
                 </Border>
-                <Border {...theme.modalDialog.border}>
+                <Border>
                   <p>
                     <AutoHotKeyLabel text="Already existing files:" htmlFor={`${dialogId}alreadyExisting`} />
                     <input id={`${dialogId}alreadyExisting`} />
@@ -126,7 +126,7 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
                     <AutoHotKeyLabel text="With symlinks:" />
                   </p>
                 </Border>
-                <Border {...theme.modalDialog.border}>
+                <Border>
                   <DialogButton id={`${dialogId}copy`}>
                     <AutoHotKeyLabel text="Copy" htmlFor={`${dialogId}copy`} />
                   </DialogButton>

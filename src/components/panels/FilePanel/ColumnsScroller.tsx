@@ -45,7 +45,7 @@ const ColumnBorders = styled.div`
   grid-auto-flow: column;
 `;
 const ColumnBorder = styled.div`
-  border-right: 1px solid ${(p) => p.theme.filePanel.column.color};
+  border-right: 1px solid ${(p) => p.theme.colors["panel.border"]};
   /* border-right-width: 0; */
   &:last-child {
     border-right-width: 0px;

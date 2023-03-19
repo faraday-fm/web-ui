@@ -12,7 +12,8 @@ import QuickViewHost from "./QuickViewHost";
 const Root = styled.div`
   position: relative;
   width: 100%;
-  background-color: ${(p) => p.theme.filePanel.bg};
+  color: ${(p) => p.theme.colors["panel.foreground"]};
+  background-color: ${(p) => p.theme.colors["panel.background"]};
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
   overflow: hidden;
@@ -26,26 +27,25 @@ const Root = styled.div`
 `;
 
 const HeaderText = styled.div<{ isActive: boolean }>`
-  position: absolute;
+  /* position: absolute;
   top: 0;
   left: 50%;
   transform: translate(-50%, 0);
   padding: 0 0.5ch;
-  white-space: nowrap;
+  white-space: nowrap; */
   overflow: hidden;
-  text-overflow: ellipsis;
+  /* text-overflow: ellipsis;
   max-width: calc(100% - 2rem);
-  text-align: left;
-  color: ${(p) => (p.isActive ? p.theme.filePanel.header.activeColor : p.theme.filePanel.header.inactiveColor)};
-  background-color: ${(p) => (p.isActive ? p.theme.filePanel.header.activeBg : p.theme.filePanel.header.inactiveBg)};
+  text-align: left; */
+  color: ${(p) => p.theme.colors[p.isActive ? "panel.header.foreground:focus" : "panel.header.foreground"]};
+  background-color: ${(p) => p.theme.colors[p.isActive ? "panel.header.background:focus" : "panel.header.background"]};
 `;
 
 const Content = styled.div`
   display: grid;
   margin: 1px;
-  border: 1px solid ${(p) => p.theme.filePanel.border.color};
-  grid-template-rows: minmax(0, 1fr) auto;
-  padding: 1ch 0 0 0.25ch;
+  border: 1px solid ${(p) => p.theme.colors["panel.border"]};
+  grid-template-rows: auto 1fr;
   overflow: hidden;
 `;
 
@@ -54,37 +54,12 @@ type QuickViewPanelProps = { layout: QuickViewLayout & { id: string } };
 export function QuickView({ layout }: QuickViewPanelProps) {
   const dispatch = useAppDispatch();
   const { id } = layout;
-  // const monaco = useMonaco();
-  const theme = useTheme();
-  // const [quickViewContent, setQuickViewContent] = useState<string>();
   const activePanelId = useAppSelector((state) => state.panels.activePanelId);
   const isActive = activePanelId === id;
   const activePath = useAppSelector((state) => state.globalContext["filePanel.selectedPath"]);
 
   const panelRootRef = useRef<HTMLDivElement>(null);
   const focused = useFocused(panelRootRef);
-
-  // useEffect(() => {
-  //   if (monaco) {
-  //     monaco.editor.defineTheme("faraday", {
-  //       inherit: true,
-  //       base: "vs-dark",
-  //       rules: [
-  //         {
-  //           token: "comment",
-  //           foreground: "ffa500",
-  //           fontStyle: "italic underline",
-  //         },
-  //         { token: "comment.js", foreground: "008800", fontStyle: "bold" },
-  //         { token: "comment.css", foreground: "0000ff" }, // will inherit fontStyle from `comment` above
-  //       ],
-  //       colors: {
-  //         "editor.foreground": theme.filePanel.color, // "#2aa198",
-  //         "editor.background": theme.filePanel.bg, // "#073642",
-  //       },
-  //     });
-  //   }
-  // }, [monaco, theme.filePanel.bg, theme.filePanel.color]);
 
   useCommandContext("quickView.visible");
   useCommandContext("quickView.focus", focused);
@@ -103,46 +78,12 @@ export function QuickView({ layout }: QuickViewPanelProps) {
 
   const { content, path: contentPath, error } = useFileContent(activePath ?? "");
 
-  // let quickViewContent: string;
-  // if (error) {
-  //   quickViewContent = String(error);
-  // } else if (content !== undefined) {
-  //   quickViewContent = new TextDecoder().decode(content);
-  // } else {
-  //   quickViewContent = "Loading...";
-  // }
-
-  // const quickViewContentDeferred = useDeferred(quickViewContent, 100);
-
   return (
     <Root ref={panelRootRef} tabIndex={0}>
-      <Border {...theme.filePanel.border}>
-        <HeaderText isActive={isActive}>Quick View</HeaderText>
+      <Border>
         <Content>
+          <HeaderText isActive={isActive}>Quick View</HeaderText>
           <QuickViewHost content={content} path={contentPath} />
-          {/* {monaco && (
-            <Editor
-              theme="faraday"
-              path={activePath}
-              value={quickViewContent}
-              options={{
-                readOnly: true,
-                minimap: { enabled: false },
-                lineNumbers: "off",
-                renderLineHighlight: "none",
-                scrollbar: { horizontal: "hidden", vertical: "hidden" },
-                folding: false,
-                lineNumbersMinChars: 0,
-                lineDecorationsWidth: 0,
-                overviewRulerBorder: false,
-                codeLens: false,
-                scrollBeyondLastLine: false,
-                stickyScroll: { enabled: true },
-                overviewRulerLanes: 0,
-              }}
-            />
-          )} */}
-          {/* <div className={classes.footerPanel}>123</div> */}
         </Content>
       </Border>
     </Root>
