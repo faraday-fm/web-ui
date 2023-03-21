@@ -62,6 +62,7 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
   const [autoscroll, setAutoscroll] = useState(0);
   const { height } = useElementSize(ref);
   const lastClickTime = useRef(0);
+  const theme = useTheme();
 
   const maxItemsCount = height ? Math.max(1, Math.trunc(height / glyphHeight)) : undefined;
 
@@ -81,7 +82,7 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
 
   let idx = 0;
   return (
-    <Border>
+    <Border $color={theme.colors["panel.border"]}>
       <ColumnRoot className="ColumnRoot" style={{ overflow: "hidden" }}>
         <ColumnHeader className="ColumnHeader">{columnDef.name}</ColumnHeader>
         <div

@@ -1,4 +1,5 @@
 import { Border } from "@components/Border";
+import { setActivePanel } from "@features/panels/panelsSlice";
 import { useCommandContext } from "@hooks/useCommandContext";
 import { useFileContent } from "@hooks/useFileContent";
 import { useFocused } from "@hooks/useFocused";
@@ -43,7 +44,6 @@ const HeaderText = styled.div<{ isActive: boolean }>`
 
 const Content = styled.div`
   display: grid;
-  margin: 1px;
   border: 1px solid ${(p) => p.theme.colors["panel.border"]};
   grid-template-rows: auto 1fr;
   overflow: hidden;
@@ -53,6 +53,7 @@ type QuickViewPanelProps = { layout: QuickViewLayout & { id: string } };
 
 export function QuickView({ layout }: QuickViewPanelProps) {
   const dispatch = useAppDispatch();
+  const theme = useTheme();
   const { id } = layout;
   const activePanelId = useAppSelector((state) => state.panels.activePanelId);
   const isActive = activePanelId === id;
@@ -66,7 +67,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
 
   useEffect(() => {
     if (focused) {
-      // dispatch(setActivePanel(id));
+      dispatch(setActivePanel(id));
     }
   }, [dispatch, id, focused]);
 
@@ -80,7 +81,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
 
   return (
     <Root ref={panelRootRef} tabIndex={0}>
-      <Border>
+      <Border $color={focused ? theme.colors["panel.border:focus"] : theme.colors["panel.border"]}>
         <Content>
           <HeaderText isActive={isActive}>Quick View</HeaderText>
           <QuickViewHost content={content} path={contentPath} />

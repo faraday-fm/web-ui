@@ -16,6 +16,7 @@
         max-width: 100%;
       }
     </style>
+    <style id="default_style"></style>
     <script type="module">
       // const pm = window.parent.postMessage.bind(window.parent);
       window.faraday = {};
@@ -31,7 +32,9 @@
       onmessage = (e) => {
         switch (e.data?.type) {
           case "theme":
-            window.faraday.theme = e.data.theme;
+            const theme = (window.faraday.theme = e.data.theme);
+            const style = document.getElementById("default_style");
+            style.innerHTML = `a {color: ${theme.colors["textLink.foreground"]}}`;
             document.body.style.fontFamily = e.data.theme.fontFamily;
             document.body.style.color = e.data.theme.primaryText;
             window.faraday.onthemechange?.();

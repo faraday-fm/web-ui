@@ -80,7 +80,9 @@ declare module "styled-components" {
       "panel.header.background:focus": string;
       "panel.foreground": string;
       "panel.background": string;
+      "panel.background:focus": string;
       "panel.border": string;
+      "panel.border:focus": string;
 
       /* Files */
       "files.directory.background": string;

@@ -33,12 +33,12 @@ export type FilePanelActions = {
   focus(): void;
 };
 
-const PanelRoot = styled.div`
+const PanelRoot = styled.div<{ $focused: boolean }>`
   width: 100%;
   height: 100%;
   position: relative;
   color: ${(p) => p.theme.colors["panel.foreground"]};
-  background: ${(p) => p.theme.colors["panel.background"]};
+  background-color: ${(p) => (p.$focused ? p.theme.colors["panel.background:focus"] : p.theme.colors["panel.background"])};
   display: grid;
   overflow: hidden;
   outline: none;
@@ -244,13 +244,13 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
     }
 
     if (!columnCount) {
-      return <PanelRoot ref={panelRootRef} tabIndex={0} onFocus={() => onFocus?.()} />;
+      return <PanelRoot ref={panelRootRef} tabIndex={0} $focused={focused} onFocus={() => onFocus?.()} />;
     }
 
     return (
-      <PanelRoot ref={panelRootRef} tabIndex={0} onFocus={() => onFocus?.()}>
+      <PanelRoot ref={panelRootRef} tabIndex={0} $focused={focused} onFocus={() => onFocus?.()}>
         <GlyphSizeProvider>
-          <Border>
+          <Border $color={focused ? theme.colors["panel.border:focus"] : theme.colors["panel.border"]}>
             <PanelContent>
               <PanelHeader active={focused}>
                 <Breadcrumb isActive={focused}>
@@ -292,7 +292,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
                 )}
               </PanelColumns>
               <FileInfoPanel>
-                <Border>
+                <Border $color={theme.colors["panel.border"]}>
                   <FileInfoFooter file={items.nth(adjustedCursor.selectedIndex)} />
                 </Border>
               </FileInfoPanel>

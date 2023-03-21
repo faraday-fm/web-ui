@@ -29,7 +29,7 @@ const AppDiv = styled.div`
   }
   font-family: ${(p) => p.theme.fontFamily};
   text-rendering: geometricPrecision;
-  background-color: #1e1e1e;
+  background-color: #172637;
   height: 100%;
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;

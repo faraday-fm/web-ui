@@ -86,14 +86,14 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
         <Backdrop role="dialog" aria-modal="true" onMouseDown={() => onClose?.()}>
           <Centered onMouseDown={(e) => e.stopPropagation()}>
             <Content>
-              <Border>
-                <Border>
+              <Border $color={theme.colors["dialog.border"]}>
+                <Border $color={theme.colors["dialog.border"]}>
                   <p style={{ display: "flex", flexDirection: "column" }}>
                     <AutoHotKeyLabel text="Copy to:" htmlFor={`${dialogId}copyTo`} />
                     <input id={`${dialogId}copyTo`} />
                   </p>
                 </Border>
-                <Border>
+                <Border $color={theme.colors["dialog.border"]}>
                   <p>
                     <AutoHotKeyLabel text="Already existing files:" htmlFor={`${dialogId}alreadyExisting`} />
                     <input id={`${dialogId}alreadyExisting`} />
@@ -126,7 +126,7 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
                     <AutoHotKeyLabel text="With symlinks:" />
                   </p>
                 </Border>
-                <Border>
+                <Border $color={theme.colors["dialog.border"]}>
                   <DialogButton id={`${dialogId}copy`}>
                     <AutoHotKeyLabel text="Copy" htmlFor={`${dialogId}copy`} />
                   </DialogButton>
