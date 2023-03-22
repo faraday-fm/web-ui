@@ -8,10 +8,12 @@ import { useEffect, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
 
 import { Cell } from "./Cell";
+import { CellText } from "./CellText";
+import { FullFileName } from "./FullFileName";
 import { ColumnDef, CursorStyle } from "./types";
 
 type ColumnProps = {
-  items: List<{ name: string }>;
+  items: List<Record<string, unknown> & { name: string }>;
   cursorStyle: CursorStyle;
   topmostIndex: number;
   selectedIndex: number;
@@ -106,8 +108,6 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
                 <Cell
                   key={item.name}
                   cursorStyle={localIdx + topmostIndex !== selectedIndex ? "hidden" : cursorStyle}
-                  data={item}
-                  field={columnDef.field}
                   onMouseOver={(e) => {
                     if (e.buttons === 1) {
                       e.stopPropagation();
@@ -124,7 +124,13 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
                       lastClickTime.current = Date.now();
                     }
                   }}
-                />
+                >
+                  {columnDef.field === "name" ? (
+                    <FullFileName data={item} cursorStyle={cursorStyle} />
+                  ) : (
+                    <CellText text={item[columnDef.field]} cursorStyle={cursorStyle} />
+                  )}
+                </Cell>
               );
               idx += 1;
               return result;

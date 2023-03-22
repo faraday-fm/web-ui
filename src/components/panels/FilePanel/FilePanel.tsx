@@ -280,7 +280,6 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
                     onItemClicked={onItemClicked}
                     onItemActivated={onItemActivated}
                     onMaxItemsPerColumnChanged={onMaxItemsPerColumnChanged}
-                    columnDef={view.columnDef}
                     onSelect={(topmost, selected) => scroll(selected - (cursor.selectedIndex ?? 0), true)}
                   />
                 )}

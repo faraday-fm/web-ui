@@ -1,93 +1,33 @@
-import { useFileIconResolver } from "@contexts/fileIconsContext";
-import { useGlyphSize } from "@contexts/glyphSizeContext";
-import isPromise from "is-promise";
-import { MouseEventHandler, ReactElement, useEffect, useMemo, useState } from "react";
-import styled, { DefaultTheme } from "styled-components";
+import { MouseEventHandler, PropsWithChildren } from "react";
+import styled from "styled-components";
 
 import { CursorStyle } from "./types";
 
 type CellProps = {
   cursorStyle: CursorStyle;
-  data: any;
-  field: string;
   onMouseOver?: MouseEventHandler<HTMLDivElement>;
   onMouseDown?: MouseEventHandler<HTMLDivElement>;
   onDoubleClick?: MouseEventHandler<HTMLDivElement>;
 };
 
-function getColor(theme: DefaultTheme, name: string, dir: boolean | undefined, selected: boolean) {
-  if (dir) return selected ? theme.colors["files.directory.foreground:focus"] : theme.colors["files.directory.foreground"];
-  // if (name.startsWith(".")) return selected ? "var(--color-01)" : "var(--color-02)";
-  // if (name.endsWith(".toml") || name.endsWith(".json")) return selected ? "var(--color-01)" : "var(--color-10)";
-  return selected ? theme.colors["files.file.foreground:focus"] : theme.colors["files.file.foreground"];
-}
-
-const Root = styled.div<{ cursorStyle: CursorStyle }>`
+const Root = styled.div<{ $cursorStyle: CursorStyle }>`
   display: flex;
   margin-right: 1px;
   cursor: default;
   overflow: hidden;
-  background-color: ${(p) => (p.cursorStyle === "firm" || p.cursorStyle === "inactive" ? p.theme.colors["files.file.background:focus"] : null)};
-  border: 1px solid ${(p) => (p.cursorStyle === "firm" || p.cursorStyle === "inactive" ? p.theme.colors["files.file.border:focus"] : "transparent")};
+  background-color: ${(p) => (p.$cursorStyle === "firm" || p.$cursorStyle === "inactive" ? p.theme.colors["files.file.background:focus"] : null)};
+  border: 1px solid ${(p) => (p.$cursorStyle === "firm" || p.$cursorStyle === "inactive" ? p.theme.colors["files.file.border:focus"] : "transparent")};
   padding: 0 2px;
   /* margin: 0 2px; */
   border-radius: 2px;
-  /* ${(p) => p.cursorStyle === "firm" && "filter: invert(1);"} */
+  /* ${(p) => p.$cursorStyle === "firm" && "filter: invert(1);"} */
 `;
 
-const LineItem = styled.span<{ $data: { name: string; isDir: boolean | undefined }; $cursorStyle: CursorStyle }>`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  padding: 0 calc(0.25rem - 1px);
-  flex-grow: 1;
-  display: flex;
-  color: ${(p) => getColor(p.theme, p.$data?.name, p.$data?.isDir, p.$cursorStyle === "firm")};
-`;
-
-const FileName = styled.span`
-  flex-grow: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-const FileExt = styled.span``;
-
-export function Cell({ cursorStyle, data, field, onMouseDown, onMouseOver, onDoubleClick }: CellProps) {
-  const iconResolver = useFileIconResolver();
-  const { height } = useGlyphSize();
-
-  const resolvedIcon = useMemo(() => iconResolver(data?.[field] ?? "", data?.isDir ?? false), [data, field, iconResolver]);
-
-  const emptyIcon = <div style={{ width: 17 }} />;
-  const [icon, setIcon] = useState<ReactElement | undefined>(!isPromise(resolvedIcon) ? resolvedIcon ?? emptyIcon : emptyIcon);
-
-  useEffect(() => {
-    (async () => {
-      const iconElement = await resolvedIcon;
-      if (iconElement) {
-        setIcon(iconElement);
-      }
-    })();
-  }, [resolvedIcon]);
-
-  const fullName: string = data?.[field] ?? "";
-  let fileName = fullName;
-  let fileExt = "";
-  if (!data?.isDir) {
-    const dotIdx = fullName.lastIndexOf(".");
-    if (dotIdx > 0) {
-      fileName = fullName.substring(0, dotIdx);
-      fileExt = fullName.substring(dotIdx + 1);
-    }
-  }
-
+export function Cell({ children, cursorStyle, onMouseDown, onMouseOver, onDoubleClick }: PropsWithChildren<CellProps>) {
   return (
-    <Root cursorStyle={cursorStyle} onMouseDown={onMouseDown} onMouseOver={onMouseOver} onDoubleClick={onDoubleClick}>
-      <div style={{ filter: cursorStyle === "firm" ? "grayscale(0.5)" : undefined }}>{icon}</div>
-      <LineItem $data={data} $cursorStyle={cursorStyle} style={{ lineHeight: `${height}px` }}>
-        <FileName>{fileName}</FileName>
-        <FileExt>{fileExt}</FileExt>
-      </LineItem>
+    // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
+    <Root $cursorStyle={cursorStyle} onMouseDown={onMouseDown} onMouseOver={onMouseOver} onDoubleClick={onDoubleClick}>
+      {children}
     </Root>
   );
 }

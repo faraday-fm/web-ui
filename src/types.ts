@@ -18,7 +18,7 @@ export type ColumnDef = {
 };
 
 export type FullView = { type: "full"; columnDefs: ColumnDef[] };
-export type CondensedView = { type: "condensed"; columnDef: ColumnDef };
+export type CondensedView = { type: "condensed" };
 export type FilePanelView = FullView | CondensedView;
 
 export type QuickViewLayout = {

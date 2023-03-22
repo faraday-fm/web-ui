@@ -66,7 +66,7 @@ function App() {
   const panelsLayout = useAppSelector((state) => state.panels.layout);
   const host = useFaradayHost();
 
-  const { content: layoutContent } = useFileContent("faraday:/layout.json5");
+  const { content: layoutContent } = useFileContent("faraday:/layout.json");
   useEffect(() => {
     if (layoutContent) {
       try {

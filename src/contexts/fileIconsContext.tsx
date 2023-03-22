@@ -54,7 +54,6 @@ function resolveIconDefinitionName(iconTheme: IconTheme, path: string, isDir: bo
 export function FileIconsProvider({ children }: PropsWithChildren) {
   const fs = useFs();
   const [iconTheme, setIconTheme] = useState<{ path: string; theme: IconTheme }>();
-  // const packageJson = useFileJsonContent(append(themeRoot, "package.json"));
 
   useEffect(() => {
     (async () => {
@@ -64,13 +63,6 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
       setIconTheme(theme);
     })();
   }, [fs]);
-
-  // const iconThemes = packageJson?.contributes?.iconThemes;
-  // const iconsThemeJsonPath = Array.isArray(iconThemes) ? (iconThemes[0]?.path as string) : undefined;
-  // const iconsThemeJsonPathAbsolute = append(themeRoot, iconsThemeJsonPath ?? "");
-
-  // const iconsThemeJson = useFileJsonContent(iconsThemeJsonPathAbsolute);
-  // console.log(iconsThemeJson);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const cache = useMemo(() => new Map<string, string>(), [iconTheme]);

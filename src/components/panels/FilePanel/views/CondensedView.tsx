@@ -6,14 +6,14 @@ import { CursorPosition } from "@features/panels/panelsSlice";
 import { List } from "list";
 
 import { Cell } from "../Cell";
-import { ColumnDef, CursorStyle } from "../types";
+import { FullFileName } from "../FullFileName";
+import { CursorStyle } from "../types";
 
 type CondensedViewProps = {
   items: List<FsEntry>;
   cursor: Required<CursorPosition>;
   cursorStyle: CursorStyle;
   columnCount: number;
-  columnDef: ColumnDef;
   onMaxItemsPerColumnChanged?: (count: number) => void;
   onSelect: (topmost: number, selected: number) => void;
   onItemClicked?: (pos: number) => void;
@@ -25,7 +25,6 @@ export function CondensedView({
   items,
   cursor,
   columnCount,
-  columnDef,
   onMaxItemsPerColumnChanged,
   onSelect,
   onItemClicked,
@@ -41,16 +40,16 @@ export function CondensedView({
       columnCount={columnCount}
       itemContent={(index) => (
         <Cell
-          cursorStyle={index === cursor.selectedIndex && cursorStyle === "firm" ? "firm" : "hidden"}
-          data={items.nth(index)}
           onMouseDown={() => onItemClicked?.(index)}
           onDoubleClick={(e) => {
             onItemActivated?.(index);
             e.stopPropagation();
             e.preventDefault();
           }}
-          field={columnDef.field}
-        />
+          cursorStyle={index === cursor.selectedIndex && cursorStyle === "firm" ? "firm" : "hidden"}
+        >
+          <FullFileName cursorStyle={index === cursor.selectedIndex && cursorStyle === "firm" ? "firm" : "hidden"} data={items.nth(index)} />
+        </Cell>
       )}
       totalCount={items.length}
       itemHeight={rowHeight}
