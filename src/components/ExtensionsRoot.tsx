@@ -37,40 +37,13 @@ function ExtensionContributions({ path, extension }: { path: string; extension: 
 }
 
 function Extension({ path }: { path: string }) {
-  const manifestJson = useFileJsonContent(`${path}/package.json`);
-
-  const manifest = useMemo(() => {
-    const { content, error } = manifestJson;
-    if (error) {
-      return { error };
-    }
-    if (!content) {
-      return {};
-    }
-    try {
-      return { content: ExtensionManifestSchema.parse(content) };
-    } catch (error) {
-      return { error };
-    }
-  }, [manifestJson]);
+  const manifest = useFileJsonContent(`${path}/package.json`, ExtensionManifestSchema);
 
   return manifest.content ? <ExtensionContributions path={path} extension={manifest.content} /> : null;
 }
 
 export function ExtensionsRoot({ root }: { root: string }) {
-  const json = useFileJsonContent(`${root}/extensions.json`);
-
-  const repo = useMemo(() => {
-    const { content, error } = json;
-    if (error) {
-      return { error };
-    }
-    try {
-      return { content: ExtensionRepoSchema.parse(content) };
-    } catch (error) {
-      return { error };
-    }
-  }, [json]);
+  const repo = useFileJsonContent(`${root}/extensions.json`, ExtensionRepoSchema);
 
   const exts = useMemo(
     () => repo.content && repo.content.map((ext) => <Extension key={ext.identifier.uuid} path={combine(root, ext.relativeLocation)} />),

@@ -1,8 +1,6 @@
-import { Extension } from "@features/extensions/extension";
 import { quickViewSelector } from "@features/extensions/selectors";
-import { useFs } from "@hooks/useFs";
+import { QuickView } from "@schemas/manifest";
 import { useAppSelector } from "@store";
-import { filename } from "@utils/path";
 import { DeferredPromise, deferredPromise } from "@utils/promise";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
@@ -18,41 +16,48 @@ const Root = styled.div`
   justify-items: stretch;
 `;
 
-type Frame = { element: ReactElement; actions: DeferredPromise<QuickViewFrameActions> };
+type Frame = { quickView: QuickView; element: ReactElement; actions: DeferredPromise<QuickViewFrameActions> };
 
 export default function QuickViewHost({ path, content }: { path: string; content?: Uint8Array }) {
-  // const [extensions, setExtensions] = useState<Extension[]>();
-  const frames = useRef<Record<string, Frame>>({});
-  const [frame, setFrame] = useState<Frame>();
+  const [frames, setFrames] = useState<Record<string, Frame>>({});
   const quickView = useAppSelector(quickViewSelector);
+  const key = quickView ? `${quickView.extId}.${quickView.quickView.id}` : undefined;
+
+  const activeFrame = key ? frames[key] : undefined;
 
   useEffect(() => {
     (async () => {
-      let frame: Frame | undefined;
-      if (quickView?.script) {
-        frame = frames.current[quickView.quickView.id];
-        if (!frame) {
-          const qw = (
-            <QuickViewFrame
-              key={quickView.quickView.id}
-              ref={(r) => {
-                if (r) {
-                  frames.current[quickView.quickView.id].actions.resolve(r);
-                }
-              }}
-              script={quickView.script}
-            />
-          );
-          frame = { element: qw, actions: deferredPromise() };
-          frames.current[quickView.quickView.id] = frame;
-          setFrame(frame);
+      setFrames((frames) => {
+        const newFrames = { ...frames };
+        let frame: Frame | undefined;
+        if (key && quickView) {
+          frame = frames[key];
+          if (!frame) {
+            const qw = (
+              <QuickViewFrame
+                key={key}
+                ref={(r) => {
+                  if (r) {
+                    newFrames[key].actions.resolve(r);
+                  }
+                }}
+                script={quickView.script}
+              />
+            );
+            frame = { quickView: quickView.quickView, element: qw, actions: deferredPromise() };
+            newFrames[key] = frame;
+          }
         }
-      }
-      setFrame(frame);
-      frame?.actions.promise.then((a) => a.setContent({ content, path }));
-      Object.values(frames.current).forEach((f) => f.actions.promise.then((a) => a.setVisibility(f.element === frame?.element)));
+        Object.values(newFrames).forEach((f) => f.actions.promise.then((a) => a.setVisibility(f.element === frame?.element)));
+        return newFrames;
+      });
     })();
-  }, [quickView, content, path]);
+  }, [key, quickView]);
 
-  return <Root>{Object.values(frames.current).map((f) => f.element)}</Root>;
+  useEffect(() => {
+    // console.info("***", path, content?.length);
+    activeFrame?.actions.promise.then((a) => a.setContent({ content, path }));
+  }, [content, path, activeFrame]);
+
+  return <Root>{Object.values(frames).map((f) => f.element)}</Root>;
 }
