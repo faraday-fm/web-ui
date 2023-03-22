@@ -1,6 +1,6 @@
 import JSON5 from "json5";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ZodAny, ZodType } from "zod";
+import { ZodType } from "zod";
 
 import { useFs } from "./useFs";
 

@@ -38,12 +38,18 @@ function ExtensionContributions({ path, extension }: { path: string; extension: 
 
 function Extension({ path }: { path: string }) {
   const manifest = useFileJsonContent(`${path}/package.json`, ExtensionManifestSchema);
+  if (manifest.error) {
+    console.error("Cannot load extension.", manifest.error);
+  }
 
   return manifest.content ? <ExtensionContributions path={path} extension={manifest.content} /> : null;
 }
 
 export function ExtensionsRoot({ root }: { root: string }) {
   const repo = useFileJsonContent(`${root}/extensions.json`, ExtensionRepoSchema);
+  if (repo.error) {
+    console.error("extensions.json is corrupted.", repo.error);
+  }
 
   const exts = useMemo(
     () => repo.content && repo.content.map((ext) => <Extension key={ext.identifier.uuid} path={combine(root, ext.relativeLocation)} />),
