@@ -5,7 +5,7 @@ import { CursorPosition, initPanelState, popDir, setActivePanel, setPanelCursorP
 import { useDirListing } from "@hooks/useDirListing";
 import { selectPanelState, useAppDispatch, useAppSelector } from "@store";
 import { FilePanelLayout } from "@types";
-import { append, isRoot } from "@utils/path";
+import { combine, isRoot } from "@utils/path";
 import { empty, Ordering } from "list";
 import { useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
@@ -41,7 +41,7 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
     if (isActive && state?.path && selectedItem) {
       dispatch(
         updateState({
-          "filePanel.selectedPath": append(state.path, selectedItem.name),
+          "filePanel.selectedPath": combine(state.path, selectedItem.name),
           "filePanel.selectedName": selectedItem.name,
           "filePanel.isFileSelected": selectedItem.isFile ?? false,
           "filePanel.isDirectorySelected": selectedItem.isDir ?? false,

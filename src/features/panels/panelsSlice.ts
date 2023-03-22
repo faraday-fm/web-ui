@@ -2,7 +2,7 @@ import { FsEntry } from "@features/fs/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PanelsLayout } from "@types";
 import { traverseLayout } from "@utils/layout";
-import { append, truncateLastDir } from "@utils/path";
+import { combine, truncateLastDir } from "@utils/path";
 import { empty, List } from "list";
 
 export type CursorPosition = {
@@ -114,7 +114,7 @@ export const panelsSlice = createSlice({
                 }
               } else {
                 panelsStack.push({
-                  path: append(s.path, selectedItem.name),
+                  path: combine(s.path, selectedItem.name),
                   cursor: {},
                   items: empty(),
                 });

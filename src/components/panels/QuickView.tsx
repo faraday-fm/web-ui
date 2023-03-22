@@ -1,4 +1,5 @@
 import { Border } from "@components/Border";
+import { PanelHeader } from "@components/PanelHeader";
 import { setActivePanel } from "@features/panels/panelsSlice";
 import { useCommandContext } from "@hooks/useCommandContext";
 import { useFileContent } from "@hooks/useFileContent";
@@ -44,7 +45,6 @@ const HeaderText = styled.div<{ isActive: boolean }>`
 
 const Content = styled.div`
   display: grid;
-  border: 1px solid ${(p) => p.theme.colors["panel.border"]};
   grid-template-rows: auto 1fr;
   overflow: hidden;
 `;
@@ -83,7 +83,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
     <Root ref={panelRootRef} tabIndex={0}>
       <Border $color={focused ? theme.colors["panel.border:focus"] : theme.colors["panel.border"]}>
         <Content>
-          <HeaderText isActive={isActive}>Quick View</HeaderText>
+          <PanelHeader $active={isActive}>Quick View</PanelHeader>
           <QuickViewHost content={content} path={contentPath} />
         </Content>
       </Border>

@@ -29,6 +29,7 @@
       "@types": ["types"],
       "@store": ["store"],
       "@styled": ["styled"],
+      "@schemas/*": ["schemas/*"],
       "@features/*": ["features/*"],
       "@utils/*": ["utils/*"],
       "@themes/*": ["themes/*"],

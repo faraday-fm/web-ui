@@ -26,6 +26,18 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
     throw new Error("'script' should not be changed.");
   }
 
+  useEffect(() => {
+    const listener = (e: MessageEvent) => {
+      if (e.source === iframeRef.current?.contentWindow) {
+        if (e.data === "focus") {
+          iframeRef.current.focus();
+        }
+      }
+    };
+    window.addEventListener("message", listener);
+    return () => window.removeEventListener("message", listener);
+  }, []);
+
   useImperativeHandle(
     ref,
     () => ({
@@ -71,5 +83,5 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
     })();
   }, [theme]);
 
-  return <WebView ref={iframeRef} title="" src={`data:text/html;base64,${quickViewHtmlBase64}`} />;
+  return <WebView ref={iframeRef} tabIndex={0} title="" src={`data:text/html;base64,${quickViewHtmlBase64}`} />;
 });

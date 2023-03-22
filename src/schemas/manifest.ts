@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 const QuickViewSchema = z.object({
+  id: z.string(),
   extensions: z.optional(z.array(z.string())),
   filenames: z.optional(z.array(z.string())),
   mimetypes: z.optional(z.array(z.string())),
@@ -25,7 +26,7 @@ const ContributesSchema = z.object({
   themes: z.optional(z.array(ThemeSchema)),
 });
 
-export const ManifestSchema = z.object({
+export const ExtensionManifestSchema = z.object({
   name: z.string(),
   version: z.string(),
   displayName: z.string(),
@@ -36,4 +37,8 @@ export const ManifestSchema = z.object({
   contributes: z.optional(ContributesSchema),
 });
 
-export type Manifest = z.infer<typeof ManifestSchema>;
+export type QuickView = z.infer<typeof QuickViewSchema>;
+
+export type Contributes = z.infer<typeof ContributesSchema>;
+
+export type ExtensionManifest = z.infer<typeof ExtensionManifestSchema>;

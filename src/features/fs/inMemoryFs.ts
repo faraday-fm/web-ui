@@ -1,4 +1,4 @@
-import { append } from "@utils/path";
+import { combine } from "@utils/path";
 
 import { FileSystemError } from "./FileSystemError";
 import { FileSystemProvider, FileSystemWatcher, FsEntry } from "./types";
@@ -96,7 +96,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
             watcher(
               events.map((e) => {
                 if (e.type === "ready") return e;
-                return { ...e, path: append(parts.slice(0, i).join("/"), e.path) };
+                return { ...e, path: combine(parts.slice(0, i).join("/"), e.path) };
               })
             ),
           options
@@ -117,10 +117,10 @@ export class InMemoryFsProvider implements FileSystemProvider {
 
     if (entry.isDir) {
       const entries = await this.readDirectory(path, options);
-      watcher(entries.map((e) => ({ type: "created", entry: e, path: append(path, e.name) })));
+      watcher(entries.map((e) => ({ type: "created", entry: e, path: combine(path, e.name) })));
       watcher([{ type: "ready" }]);
     } else {
-      watcher([{ type: "created", entry: currEntry, path: append(path, currEntry.name) }]);
+      watcher([{ type: "created", entry: currEntry, path: combine(path, currEntry.name) }]);
       watcher([{ type: "ready" }]);
     }
 

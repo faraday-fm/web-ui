@@ -1,6 +1,7 @@
 import "list/methods";
 
 import App from "@components/App";
+import { ExtensionsRoot } from "@components/ExtensionsRoot";
 import { FaradayHostProvider } from "@contexts/faradayHostContext";
 import { FileIconsProvider } from "@contexts/fileIconsContext";
 import { GlobalContextProvider } from "@contexts/globalContext";
@@ -24,6 +25,7 @@ export function Faraday({ host }: FaradayProps) {
     <ReduxProvider store={store}>
       <GlobalContextProvider>
         <FaradayHostProvider host={host}>
+          <ExtensionsRoot root="faraday:/extensions" />
           <ThemeProvider theme={dark ? darkTheme : darkTheme}>
             <KeyBindingProvider>
               <GlyphSizeProvider>

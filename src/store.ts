@@ -1,4 +1,5 @@
 import { commandsSlice } from "@features/commands/commandsSlice";
+import { extensionsSlice } from "@features/extensions/extensionsSlice";
 import { globalContextSlice } from "@features/globalContext/globalContextSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
@@ -12,6 +13,7 @@ export const store = configureStore({
     settings: settingsSlice.reducer,
     panels: panelsSlice.reducer,
     commands: commandsSlice.reducer,
+    extensions: extensionsSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

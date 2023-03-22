@@ -1,4 +1,5 @@
 import { Border } from "@components/Border";
+import { PanelHeader } from "@components/PanelHeader";
 import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
 import { FsEntry } from "@features/fs/types";
 import { CursorPosition } from "@features/panels/panelsSlice";
@@ -49,7 +50,6 @@ const PanelContent = styled.div`
   display: grid;
   grid-template-rows: auto 1fr auto auto;
   overflow: hidden;
-  margin: 1px;
 `;
 
 const PanelColumns = styled.div`
@@ -60,12 +60,6 @@ const PanelColumns = styled.div`
   &:focus {
     outline: none;
   }
-`;
-
-const PanelHeader = styled.div<{ active: boolean }>`
-  color: ${(p) => p.theme.colors[p.active ? "panel.header.foreground:focus" : "panel.header.foreground"]};
-  background-color: ${(p) => p.theme.colors[p.active ? "panel.header.background:focus" : "panel.header.background"]};
-  overflow: hidden;
 `;
 
 const PanelFooter = styled.div`
@@ -252,7 +246,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
         <GlyphSizeProvider>
           <Border $color={focused ? theme.colors["panel.border:focus"] : theme.colors["panel.border"]}>
             <PanelContent>
-              <PanelHeader active={focused}>
+              <PanelHeader $active={focused}>
                 <Breadcrumb isActive={focused}>
                   {pathParts.map((x, i) => (
                     // eslint-disable-next-line react/no-array-index-key

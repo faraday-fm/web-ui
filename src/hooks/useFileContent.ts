@@ -1,5 +1,5 @@
 import JSON5 from "json5";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useFs } from "./useFs";
 
@@ -51,13 +51,39 @@ export function useFileContent(path: string) {
 const decoder = new TextDecoder();
 
 export function useFileStringContent(url: string) {
-  const { content } = useFileContent(url);
+  const fc = useFileContent(url);
 
-  return content ? decoder.decode(content) : undefined;
+  return useMemo(() => {
+    const { content, error } = fc;
+    if (error) {
+      return { error };
+    }
+    if (typeof content === "undefined") {
+      return {};
+    }
+    try {
+      return { content: content ? decoder.decode(content) : undefined };
+    } catch (error) {
+      return { error };
+    }
+  }, [fc]);
 }
 
-export function useFileJsonContent(url: string) {
-  const str = useFileStringContent(url);
+export function useFileJsonContent<T = unknown>(url: string) {
+  const stringContent = useFileStringContent(url);
 
-  return str ? JSON5.parse(str) : undefined;
+  return useMemo(() => {
+    const { error, content } = stringContent;
+    if (error) {
+      return { error };
+    }
+    if (typeof content === "undefined") {
+      return {};
+    }
+    try {
+      return { content: content ? (JSON5.parse(content) as T) : undefined };
+    } catch (error) {
+      return { error };
+    }
+  }, [stringContent]);
 }

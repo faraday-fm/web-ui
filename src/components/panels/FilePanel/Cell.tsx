@@ -41,8 +41,16 @@ const LineItem = styled.span<{ $data: { name: string; isDir: boolean | undefined
   white-space: nowrap;
   padding: 0 calc(0.25rem - 1px);
   flex-grow: 1;
+  display: flex;
   color: ${(p) => getColor(p.theme, p.$data?.name, p.$data?.isDir, p.$cursorStyle === "firm")};
 `;
+
+const FileName = styled.span`
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+const FileExt = styled.span``;
 
 export function Cell({ cursorStyle, data, field, onMouseDown, onMouseOver, onDoubleClick }: CellProps) {
   const iconResolver = useFileIconResolver();
@@ -62,11 +70,23 @@ export function Cell({ cursorStyle, data, field, onMouseDown, onMouseOver, onDou
     })();
   }, [resolvedIcon]);
 
+  const fullName: string = data?.[field] ?? "";
+  let fileName = fullName;
+  let fileExt = "";
+  if (!data?.isDir) {
+    const dotIdx = fullName.lastIndexOf(".");
+    if (dotIdx > 0) {
+      fileName = fullName.substring(0, dotIdx);
+      fileExt = fullName.substring(dotIdx + 1);
+    }
+  }
+
   return (
     <Root cursorStyle={cursorStyle} onMouseDown={onMouseDown} onMouseOver={onMouseOver} onDoubleClick={onDoubleClick}>
       <div style={{ filter: cursorStyle === "firm" ? "grayscale(0.5)" : undefined }}>{icon}</div>
       <LineItem $data={data} $cursorStyle={cursorStyle} style={{ lineHeight: `${height}px` }}>
-        {String(data?.[field] ?? "\u00A0")}
+        <FileName>{fileName}</FileName>
+        <FileExt>{fileExt}</FileExt>
       </LineItem>
     </Root>
   );

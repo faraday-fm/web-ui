@@ -1,7 +1,3 @@
-export function append(path: string, name: string) {
-  return path.endsWith("/") ? `${path}${name}` : `${path}/${name}`;
-}
-
 export function startsWithDriveName(path: string) {
   if (path.charAt(1) !== ":") {
     return false;
@@ -22,7 +18,13 @@ export function truncateProtocol(path: string) {
 }
 
 export function isRoot(path: string) {
-  return truncateProtocol(path) === "/";
+  path = truncateProtocol(path);
+  return path === "/" || startsWithDriveName(path);
+}
+
+export function isAbsolute(path: string) {
+  path = truncateProtocol(path);
+  return path.startsWith("/") || (startsWithDriveName(path) && (path.charAt(2) === "\\" || path.charAt(2) === "/"));
 }
 
 export function truncateLastDir(path: string) {
@@ -50,4 +52,11 @@ export function* getAllExtensions(path: string, dotPrefix = false) {
     const ext = extParts.slice(i).join(".");
     yield dotPrefix ? `.${ext}` : ext;
   }
+}
+
+export function combine(path: string, name: string) {
+  if (isAbsolute(name)) {
+    return name;
+  }
+  return path.endsWith("/") ? `${path}${name}` : `${path}/${name}`;
 }

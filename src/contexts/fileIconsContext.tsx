@@ -1,6 +1,6 @@
 import { Extension } from "@features/extensions/extension";
-import { IconTheme, isSvgIcon } from "@features/extensions/schemas/iconTheme";
 import { useFs } from "@hooks/useFs";
+import { IconTheme, isSvgIcon } from "@schemas/iconTheme";
 import isPromise from "is-promise";
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
