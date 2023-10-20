@@ -1,66 +1,66 @@
 import deepmerge from "deepmerge";
-import { DefaultTheme, Palette } from "styled-components";
+import { DefaultTheme } from "styled-components";
 
 type RecursivePartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends object ? RecursivePartial<T[P]> : T[P];
 };
 
-const murenaPalette: Palette = {
-  bgColor0: "#000000",
-  bgColor1: "#004164",
-  bgColor2: "#008000",
-  bgColor3: "#008080",
-  bgColor4: "#080000",
-  bgColor5: "#800080",
-  bgColor6: "#008080",
-  bgColor7: "#0c0c0c",
-  fgColor0: "#808080",
-  fgColor1: "#0000ff",
-  fgColor2: "#87c576",
-  fgColor3: "#00ffff",
-  fgColor4: "#ff4b00",
-  fgColor5: "#e68cd7",
-  fgColor6: "#ffff00",
-  fgColor7: "#ffffff",
-};
+// const murenaPalette: Palette = {
+//   bgColor0: "#000000",
+//   bgColor1: "#004164",
+//   bgColor2: "#008000",
+//   bgColor3: "#008080",
+//   bgColor4: "#080000",
+//   bgColor5: "#800080",
+//   bgColor6: "#008080",
+//   bgColor7: "#0c0c0c",
+//   fgColor0: "#808080",
+//   fgColor1: "#0000ff",
+//   fgColor2: "#87c576",
+//   fgColor3: "#00ffff",
+//   fgColor4: "#ff4b00",
+//   fgColor5: "#e68cd7",
+//   fgColor6: "#ffff00",
+//   fgColor7: "#ffffff",
+// };
 
-const darkPalette: Palette = {
-  bgColor0: "#002b36",
-  bgColor1: "#073642",
-  bgColor2: "#008080",
-  bgColor3: "#3182a4",
-  bgColor4: "#cb4b16",
-  bgColor5: "#9c36b6",
-  bgColor6: "#859900",
-  bgColor7: "#eee8d5",
-  fgColor0: "#93a1a1",
-  fgColor1: "#268bd2",
-  fgColor2: "#4fb636",
-  fgColor3: "#2aa198",
-  fgColor4: "#dc322f",
-  fgColor5: "#d33682",
-  fgColor6: "#b58900",
-  fgColor7: "#fdf6e3",
-};
+// const darkPalette: Palette = {
+//   bgColor0: "#002b36",
+//   bgColor1: "#073642",
+//   bgColor2: "#008080",
+//   bgColor3: "#3182a4",
+//   bgColor4: "#cb4b16",
+//   bgColor5: "#9c36b6",
+//   bgColor6: "#859900",
+//   bgColor7: "#eee8d5",
+//   fgColor0: "#93a1a1",
+//   fgColor1: "#268bd2",
+//   fgColor2: "#4fb636",
+//   fgColor3: "#2aa198",
+//   fgColor4: "#dc322f",
+//   fgColor5: "#d33682",
+//   fgColor6: "#b58900",
+//   fgColor7: "#fdf6e3",
+// };
 
-const lightPalette = {
-  bgColor0: "#000000",
-  bgColor1: "#004164",
-  bgColor2: "#008000",
-  bgColor3: "#008080",
-  bgColor4: "#080000",
-  bgColor5: "#800080",
-  bgColor6: "#008080",
-  bgColor7: "#0c0c0c",
-  fgColor0: "#808080",
-  fgColor1: "#0000ff",
-  fgColor2: "#87c576",
-  fgColor3: "#00ffff",
-  fgColor4: "#ff4b00",
-  fgColor5: "#e68cd7",
-  fgColor6: "#ffff00",
-  fgColor7: "#ffffff",
-};
+// const lightPalette = {
+//   bgColor0: "#000000",
+//   bgColor1: "#004164",
+//   bgColor2: "#008000",
+//   bgColor3: "#008080",
+//   bgColor4: "#080000",
+//   bgColor5: "#800080",
+//   bgColor6: "#008080",
+//   bgColor7: "#0c0c0c",
+//   fgColor0: "#808080",
+//   fgColor1: "#0000ff",
+//   fgColor2: "#87c576",
+//   fgColor3: "#00ffff",
+//   fgColor4: "#ff4b00",
+//   fgColor5: "#e68cd7",
+//   fgColor6: "#ffff00",
+//   fgColor7: "#ffffff",
+// };
 
 const baseTheme = (): DefaultTheme => ({
   // palette: colors,

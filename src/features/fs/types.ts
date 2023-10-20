@@ -1,4 +1,4 @@
-export type FsEntry = {
+export type FsEntry = Record<string, unknown> & {
   name: string;
   ext?: string;
   isDir?: boolean;
@@ -20,9 +20,9 @@ export type FileChangeEvent = { type: FileChangeType; path: string; entry: FsEnt
 
 export type FileSystemWatcher = (events: FileChangeEvent[]) => void;
 
-type Result<T> = T | Promise<T>;
+type Result<T> = Promise<T>;
 
-export type FileSystemProvider = {
+export interface FileSystemProvider {
   watch(path: string, watcher: FileSystemWatcher, options?: { signal?: AbortSignal }): Result<void>;
   readDirectory(path: string, options?: { signal?: AbortSignal }): Result<FsEntry[]>;
   createDirectory(path: string, options?: { signal?: AbortSignal }): Result<void>;
@@ -32,4 +32,4 @@ export type FileSystemProvider = {
   rename(oldPath: string, newPath: string, options?: { overwrite?: boolean; signal?: AbortSignal }): Result<void>;
   copy?(source: string, destination: string, options?: { overwrite?: boolean; signal?: AbortSignal }): Result<void>;
   mount?(path: string, fs: FileSystemProvider): Result<void>;
-};
+}

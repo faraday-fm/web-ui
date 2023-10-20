@@ -7,10 +7,10 @@ import styled, { DefaultTheme } from "styled-components";
 import { CellText } from "./CellText";
 import { CursorStyle } from "./types";
 
-type CellProps = {
+interface CellProps {
   cursorStyle: CursorStyle;
-  data: any;
-};
+  data?: { name: string; isDir?: boolean | undefined };
+}
 
 function getColor(theme: DefaultTheme, name: string, dir: boolean | undefined, selected: boolean) {
   if (dir) return selected ? theme.colors["files.directory.foreground:focus"] : theme.colors["files.directory.foreground"];
@@ -19,7 +19,7 @@ function getColor(theme: DefaultTheme, name: string, dir: boolean | undefined, s
   return selected ? theme.colors["files.file.foreground:focus"] : theme.colors["files.file.foreground"];
 }
 
-const LineItem = styled.span<{ $data: { name: string; isDir: boolean | undefined }; $cursorStyle: CursorStyle }>`
+const LineItem = styled.span<{ $data: { name: string; isDir?: boolean | undefined }; $cursorStyle: CursorStyle }>`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -46,7 +46,7 @@ export function FullFileName({ cursorStyle, data }: CellProps) {
   const [icon, setIcon] = useState<ReactElement | undefined>(!isPromise(resolvedIcon) ? resolvedIcon ?? emptyIcon : emptyIcon);
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       const iconElement = await resolvedIcon;
       if (iconElement) {
         setIcon(iconElement);
@@ -63,6 +63,10 @@ export function FullFileName({ cursorStyle, data }: CellProps) {
       fileName = fullName.substring(0, dotIdx);
       fileExt = fullName.substring(dotIdx + 1);
     }
+  }
+
+  if (!data) {
+    return null;
   }
 
   return (

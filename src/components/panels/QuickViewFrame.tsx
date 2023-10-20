@@ -3,10 +3,10 @@ import { deferredPromise } from "@utils/promise";
 import { ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
 
-export type QuickViewFrameActions = {
+export interface QuickViewFrameActions {
   setContent({ content, path }: { content?: Uint8Array; path: string }): Promise<void>;
   setVisibility(show: boolean): Promise<void>;
-};
+}
 
 const WebView = styled.iframe`
   border: none;
@@ -68,7 +68,7 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
     if (iframeRef.current) {
       const iframe = iframeRef.current;
       iframe.onload = () => {
-        const iframeWindow = iframe.contentWindow as Window;
+        const iframeWindow = iframe.contentWindow!;
         iframeWindow.postMessage({ type: "init", js: initialScript }, "*");
         loadedPromise.current.resolve(iframeWindow);
       };
@@ -76,7 +76,7 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
   }, [initialScript]);
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       const iframeWindow = await loadedPromise.current.promise;
       iframeWindow.postMessage({ type: "theme", theme }, "*");
       themeSetPromise.current.resolve(iframeWindow);

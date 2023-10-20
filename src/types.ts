@@ -1,55 +1,60 @@
 import { FileSystemProvider } from "@features/fs/types";
 
-export type RowLayout = {
+export interface RowLayout {
   type: "row";
   children: PanelsLayout[];
-};
+}
 
-export type FilePanelLayout = {
+export interface FilePanelLayout {
   type: "file-panel";
   path: string;
   view: FilePanelView;
-};
+}
 
-export type ColumnDef = {
+export interface ColumnDef {
   name: string;
   field: string;
   width?: string;
-};
+}
 
-export type FullView = { type: "full"; columnDefs: ColumnDef[] };
-export type CondensedView = { type: "condensed" };
+export interface FullView {
+  type: "full";
+  columnDefs: ColumnDef[];
+}
+export interface CondensedView {
+  type: "condensed";
+}
 export type FilePanelView = FullView | CondensedView;
 
-export type QuickViewLayout = {
+export interface QuickViewLayout {
   type: "quick-view";
-};
+}
 
 export type PanelLayout = FilePanelLayout | QuickViewLayout;
 
 /** @internal */
 export type PanelsLayout = (RowLayout | PanelLayout) & { id: string; flex?: number; when?: string };
 
-export type FaradayConfig = {
+export interface FaradayConfig {
   isDesktop(): boolean;
-};
+}
 
 export type TerminalSession = symbol;
 
-export type Terminal = {
+export interface Terminal {
   createSession(command: string, cwd: string, onData: (data: Uint8Array) => void, initialTtySize: { rows: number; cols: number }): Promise<TerminalSession>;
   destroySession(session: TerminalSession): Promise<void>;
   setTtySize(session: TerminalSession, size: { rows: number; cols: number }): Promise<void>;
   sendData(session: TerminalSession, data: string | Uint8Array): Promise<void>;
-};
+}
 
-export type FaradayHost = {
+export interface FaradayHost {
   config: FaradayConfig;
   faradayFs: FileSystemProvider;
   rootFs: FileSystemProvider;
   terminal?: Terminal;
-};
+}
 
-export type FaradayProps = {
+export interface FaradayProps {
   host: FaradayHost;
-};
+}

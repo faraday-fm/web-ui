@@ -6,9 +6,9 @@ type QuickViewId = string;
 
 export type QuickViews = Record<ExtId, Record<QuickViewId, { quickView: QuickView; script: string }>>;
 
-type SliceState = {
+interface SliceState {
   quickViews: QuickViews;
-};
+}
 
 /** @internal */
 export const extensionsSlice = createSlice({

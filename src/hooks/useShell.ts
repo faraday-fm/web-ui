@@ -1,3 +1,5 @@
+/* eslint-disable */
+/* @ts-ignore */
 // import { shell } from "@tauri-apps/api";
 import { isRunningUnderTauri } from "@utils/tauriUtils";
 import { useMemo } from "react";

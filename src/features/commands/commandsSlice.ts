@@ -2,9 +2,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type ContextVariables = Record<string, Record<string, unknown>>;
 
-type SliceState = {
+interface SliceState {
   variables: ContextVariables;
-};
+}
 
 /** @internal */
 export const commandsSlice = createSlice({

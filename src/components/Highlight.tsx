@@ -1,7 +1,7 @@
-type HighlightProps = {
+interface HighlightProps {
   text: string;
   highlight?: string;
-};
+}
 
 export function Highlight({ text, highlight }: HighlightProps) {
   if (!highlight) return <span>{text}</span>;

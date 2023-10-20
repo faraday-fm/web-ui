@@ -1,12 +1,10 @@
 import "styled-components";
 
-import { Border } from "@themes/types";
-
 type Color = CSSProperties["color"];
 type BoxShadow = CSSProperties["boxShadow"];
 
 declare module "styled-components" {
-  export type Palette = {
+  export interface Palette {
     bgColor0: Color;
     bgColor1: Color;
     bgColor2: Color;
@@ -23,7 +21,7 @@ declare module "styled-components" {
     fgColor5: Color;
     fgColor6: Color;
     fgColor7: Color;
-  };
+  }
 
   export interface DefaultTheme {
     fontFamily: string;

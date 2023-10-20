@@ -12,7 +12,7 @@ import { CellText } from "./CellText";
 import { FullFileName } from "./FullFileName";
 import { ColumnDef, CursorStyle } from "./types";
 
-type ColumnProps = {
+interface ColumnProps {
   items: List<Record<string, unknown> & { name: string }>;
   cursorStyle: CursorStyle;
   topmostIndex: number;
@@ -21,7 +21,7 @@ type ColumnProps = {
   onMaxItemsCountChange?: (maxCount: number) => void;
   selectItem?: (position: number) => void;
   activateItem?: (position: number, shiftModifier: boolean) => void;
-};
+}
 
 const ColumnRoot = styled.div`
   position: relative;

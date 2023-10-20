@@ -1,20 +1,45 @@
 import { FsEntry } from "@features/fs/types";
 
-export type ColumnDef = {
+export interface ColumnDef {
   name: string;
   field: string;
   width?: string;
-  valueFormatter?: (data: any, value: any) => string;
-};
+  valueFormatter?: (data: unknown, value: unknown) => string;
+}
 
-type ScrollAction = { type: "scroll"; delta: number; followCursor: boolean };
-type MoveCursorToPosAction = { type: "moveCursorToPos"; pos: number };
-type MoveCursorLeftRightAction = { type: "moveCursorLeftRight"; direction: "left" | "right" };
-type MoveCursorPageAction = { type: "moveCursorPage"; direction: "up" | "down" };
-type ResizeAction = { type: "resize"; maxItemsPerColumn: number };
-type SetItemsAction = { type: "setItems"; items: FsEntry[] };
-type SetColumnsCountAction = { type: "setColumnsCount"; count: number };
-type FindFirstAction = { type: "findFirst"; char: string };
+interface ScrollAction {
+  type: "scroll";
+  delta: number;
+  followCursor: boolean;
+}
+interface MoveCursorToPosAction {
+  type: "moveCursorToPos";
+  pos: number;
+}
+interface MoveCursorLeftRightAction {
+  type: "moveCursorLeftRight";
+  direction: "left" | "right";
+}
+interface MoveCursorPageAction {
+  type: "moveCursorPage";
+  direction: "up" | "down";
+}
+interface ResizeAction {
+  type: "resize";
+  maxItemsPerColumn: number;
+}
+interface SetItemsAction {
+  type: "setItems";
+  items: FsEntry[];
+}
+interface SetColumnsCountAction {
+  type: "setColumnsCount";
+  count: number;
+}
+interface FindFirstAction {
+  type: "findFirst";
+  char: string;
+}
 
 export type FilePanelAction =
   | ScrollAction

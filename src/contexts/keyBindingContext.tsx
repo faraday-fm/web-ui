@@ -1,11 +1,12 @@
 import keyBindingsContent from "@assets/keybindings.json5";
 import { useExecuteCommand } from "@hooks/useCommandBinding";
 import { useIsInCommandContext } from "@hooks/useCommandContext";
+import { KeyBindingsSchema } from "@schemas/keyBindings";
 import JSON5 from "json5";
 import { alt, regexp, seq, string } from "parsimmon";
 import { createContext, PropsWithChildren, useEffect } from "react";
 
-const keyBindings = JSON5.parse(keyBindingsContent);
+const keyBindings = KeyBindingsSchema.parse(JSON5.parse(keyBindingsContent));
 
 type KeyCombination =
   | { error: true }
@@ -43,12 +44,12 @@ function parseKeyCombination(keyCombinationStr: string): KeyCombination {
   return { error: true };
 }
 
-export type KeyBinding = {
+export interface KeyBinding {
   key: string;
   command: string;
   when?: string;
   args?: unknown;
-};
+}
 
 const KeyBindingContext = createContext<KeyBinding[]>([]);
 
@@ -92,7 +93,7 @@ export function KeyBindingProvider({ children }: PropsWithChildren) {
         const binding = bindings[i];
         if (matchKey(binding.key, e) && (!binding.when || isInContext(binding.when))) {
           console.debug(binding.command, "(", binding.args, ")");
-          executeCommand(binding.command, binding.args);
+          void executeCommand(binding.command, binding.args);
           e.stopPropagation();
           e.preventDefault();
           break;

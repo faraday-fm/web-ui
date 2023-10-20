@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { AutoHotKeyLabel } from "@components/AutoHotKeyLabel";
 import { Button } from "@components/Button";
 import { QuickNavigationProvider } from "@contexts/quickNavigationContext";
@@ -9,10 +8,10 @@ import styled, { keyframes, useTheme } from "styled-components";
 
 import { Border } from "./Border";
 
-type DialogPlaceholderProps = {
+interface DialogPlaceholderProps {
   open: boolean;
   onClose?: () => void;
-};
+}
 
 const backdropAnimation = keyframes`
  0% { opacity: 0 }

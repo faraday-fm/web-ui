@@ -10,7 +10,7 @@ import { empty, Ordering } from "list";
 import { useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
 
-type ReduxFilePanelProps = { layout: FilePanelLayout & { id: string } };
+interface ReduxFilePanelProps { layout: FilePanelLayout & { id: string } }
 
 const Root = styled.div`
   width: 100%;

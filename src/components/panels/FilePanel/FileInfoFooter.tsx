@@ -4,9 +4,9 @@ import { formatDateTime } from "@utils/date";
 import { bytesToSize } from "@utils/number";
 import styled from "styled-components";
 
-type FileInfoFooterProps = {
+interface FileInfoFooterProps {
   file?: FsEntry;
-};
+}
 
 const FileRoot = styled.div`
   display: flex;

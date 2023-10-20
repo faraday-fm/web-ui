@@ -4,10 +4,10 @@ import { RenderWhen } from "@components/RenderWhen";
 import { PanelsLayout } from "@types";
 import styled from "styled-components";
 
-type LayoutContainerProps = {
+interface LayoutContainerProps {
   layout: PanelsLayout;
   direction: "h" | "v";
-};
+}
 
 const Row = styled.div<{ dir: "h" | "v" }>`
   width: 100%;

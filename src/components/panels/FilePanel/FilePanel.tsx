@@ -19,7 +19,7 @@ import { CursorStyle } from "./types";
 import { CondensedView } from "./views/CondensedView";
 import { FullView } from "./views/FullView";
 
-export type FilePanelProps = {
+export interface FilePanelProps {
   items: List<FsEntry>;
   cursor: CursorPosition;
   view: FilePanelView;
@@ -28,11 +28,11 @@ export type FilePanelProps = {
   onFocus?: () => void;
   onCursorPositionChange: (newPosition: CursorPosition) => void;
   onDirUp?: () => void;
-};
+}
 
-export type FilePanelActions = {
+export interface FilePanelActions {
   focus(): void;
-};
+}
 
 const PanelRoot = styled.div<{ $focused: boolean }>`
   width: 100%;
@@ -215,7 +215,7 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
     const onMaxItemsPerColumnChanged = useCallback((maxItemsPerColumn: number) => setMaxItemsPerColumn(maxItemsPerColumn), []);
     const onItemClicked = useCallback((pos: number) => moveCursorToPos(pos), [moveCursorToPos]);
     const onItemActivated = useCallback(() => {
-      executeBuiltInCommand("open", { path });
+      void executeBuiltInCommand("open", { path });
     }, [executeBuiltInCommand, path]);
 
     let cursorStyle: CursorStyle;
@@ -249,7 +249,6 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
               <PanelHeader $active={focused}>
                 <Breadcrumb isActive={focused}>
                   {pathParts.map((x, i) => (
-                    // eslint-disable-next-line react/no-array-index-key
                     <Breadcrumb.Item key={i}>{x}</Breadcrumb.Item>
                   ))}
                 </Breadcrumb>

@@ -28,12 +28,14 @@ export function QuickViewContribution({ path, extension, quickView }: { path: st
 }
 
 function ExtensionContributions({ path, extension }: { path: string; extension: ExtensionManifest }) {
-  const quickViews =
-    extension.contributes?.quickViews?.map((qv) => (
-      <QuickViewContribution key={`${getExtId(extension)}.${qv.id}`} path={path} extension={extension} quickView={qv} />
-    )) ?? [];
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-  return <>{quickViews}</>;
+  const quickViews = useMemo(
+    () =>
+      extension.contributes?.quickViews?.map((qv) => (
+        <QuickViewContribution key={`${getExtId(extension)}.${qv.id}`} path={path} extension={extension} quickView={qv} />
+      )) ?? [],
+    [extension, path]
+  );
+  return quickViews;
 }
 
 function Extension({ path }: { path: string }) {
@@ -52,10 +54,9 @@ export function ExtensionsRoot({ root }: { root: string }) {
   }
 
   const exts = useMemo(
-    () => repo.content && repo.content.map((ext) => <Extension key={ext.identifier.uuid} path={combine(root, ext.relativeLocation)} />),
+    () => repo.content?.map((ext) => <Extension key={ext.identifier.uuid} path={combine(root, ext.relativeLocation)} />) ?? null,
     [repo.content, root]
   );
 
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-  return <>{exts}</>;
+  return exts;
 }

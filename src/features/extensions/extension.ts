@@ -14,7 +14,7 @@ export class Extension {
   public async load() {
     try {
       const packageJsonRaw = await this.fs.readFile(combine(this.path, "package.json"));
-      const packageJson = JSON5.parse(new TextDecoder().decode(packageJsonRaw));
+      const packageJson: unknown = JSON5.parse(new TextDecoder().decode(packageJsonRaw));
       this.manifest = ExtensionManifestSchema.parse(packageJson);
       this.id = `${this.manifest.publisher}.${this.manifest.name}`;
     } catch (err) {

@@ -5,24 +5,24 @@ import { traverseLayout } from "@utils/layout";
 import { combine, truncateLastDir } from "@utils/path";
 import { empty, List } from "list";
 
-export type CursorPosition = {
+export interface CursorPosition {
   selectedName?: string;
   selectedIndex?: number;
   topmostName?: string;
   topmostIndex?: number;
-};
+}
 
-export type PanelState = {
+export interface PanelState {
   path: string;
   items: List<FsEntry>;
   cursor: CursorPosition;
-};
+}
 
-type SliceState = {
+interface SliceState {
   activePanelId?: string;
   layout?: PanelsLayout;
   states: Record<string, PanelState[] | undefined>;
-};
+}
 
 /** @internal */
 export const panelsSlice = createSlice({

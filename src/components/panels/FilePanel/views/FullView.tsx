@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { Column } from "../Column";
 import { ColumnDef, CursorStyle } from "../types";
 
-type FullViewProps = {
+interface FullViewProps {
   items: List<FsEntry>;
   cursor: Required<CursorPosition>;
   cursorStyle: CursorStyle;
@@ -14,7 +14,7 @@ type FullViewProps = {
   onMaxVisibleItemsChanged?: (count: number) => void;
   onItemClicked?: (pos: number) => void;
   onItemActivated?: (pos: number) => void;
-};
+}
 
 const Columns = styled.div`
   display: grid;

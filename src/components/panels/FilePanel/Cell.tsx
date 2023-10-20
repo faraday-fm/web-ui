@@ -3,12 +3,12 @@ import styled from "styled-components";
 
 import { CursorStyle } from "./types";
 
-type CellProps = {
+interface CellProps {
   cursorStyle: CursorStyle;
   onMouseOver?: MouseEventHandler<HTMLDivElement>;
   onMouseDown?: MouseEventHandler<HTMLDivElement>;
   onDoubleClick?: MouseEventHandler<HTMLDivElement>;
-};
+}
 
 const Root = styled.div<{ $cursorStyle: CursorStyle }>`
   display: flex;

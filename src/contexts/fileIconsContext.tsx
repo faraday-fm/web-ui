@@ -5,7 +5,7 @@ import isPromise from "is-promise";
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
-export type IconResolver = (path: string, isDir: boolean) => Promise<React.ReactElement | undefined> | React.ReactElement | undefined;
+export type IconResolver = (path: string, isDir: boolean) => Promise<React.ReactElement | undefined>;
 
 const FileIconsContext = createContext<IconResolver>(() => Promise.reject());
 
@@ -56,7 +56,7 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
   const [iconTheme, setIconTheme] = useState<{ path: string; theme: IconTheme }>();
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       const ext = new Extension(themeRoot, fs);
       await ext.load();
       const theme = await ext.getIconTheme();
@@ -68,7 +68,7 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
   const cache = useMemo(() => new Map<string, string>(), [iconTheme]);
 
   const resolver: IconResolver = useCallback(
-    (path, isDir) => {
+    async (path, isDir) => {
       if (!iconTheme) {
         return undefined;
       }

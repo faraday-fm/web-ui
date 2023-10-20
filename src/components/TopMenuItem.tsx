@@ -1,9 +1,9 @@
 import { AutoHotKeyLabel } from "@components/AutoHotKeyLabel";
 import styled from "styled-components";
 
-type TopMenuItemProps = {
+interface TopMenuItemProps {
   header: string;
-};
+}
 
 const Item = styled.div`
   position: relative;

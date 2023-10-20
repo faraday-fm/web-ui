@@ -138,7 +138,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
     });
   }
 
-  readDirectory(path: string, options?: { signal?: AbortSignal }): FsEntry[] | Promise<FsEntry[]> {
+  readDirectory(path: string, options?: { signal?: AbortSignal }) {
     const parts = getPathParts(path);
     let currEntry: Dir | MountedFs = this.root;
     for (let i = 0; i < parts.length; i += 1) {
@@ -160,10 +160,10 @@ export class InMemoryFsProvider implements FileSystemProvider {
       throw FileSystemError.FileNotFound();
     }
 
-    return currEntry.children;
+    return Promise.resolve(currEntry.children);
   }
 
-  createDirectory(path: string, options?: { signal?: AbortSignal }): void | Promise<void> {
+  createDirectory(path: string, options?: { signal?: AbortSignal }) {
     const parts = getPathParts(path);
     let currEntry: Dir | MountedFs = this.root;
     const newDirName = parts.at(-1) ?? "";
@@ -220,7 +220,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
       throw FileSystemError.FileIsADirectory();
     }
 
-    return entry.content;
+    return Promise.resolve(entry.content);
   }
 
   writeFile(path: string, content: Uint8Array, options?: { create?: boolean; overwrite?: boolean; signal?: AbortSignal }) {
@@ -261,15 +261,18 @@ export class InMemoryFsProvider implements FileSystemProvider {
     return Promise.resolve();
   }
 
-  delete(path: string, options?: { recursive: boolean; signal?: AbortSignal }) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  delete(path: string, options?: { recursive: boolean; signal?: AbortSignal }): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
-  rename(oldPath: string, newPath: string, options?: { overwrite?: boolean; signal?: AbortSignal }) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  rename(oldPath: string, newPath: string, options?: { overwrite?: boolean; signal?: AbortSignal }): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
-  copy?(source: string, destination: string, options?: { overwrite?: boolean; signal?: AbortSignal }) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  copy?(source: string, destination: string, options?: { overwrite?: boolean; signal?: AbortSignal }): Promise<void> {
     throw new Error("Method not implemented.");
   }
 }

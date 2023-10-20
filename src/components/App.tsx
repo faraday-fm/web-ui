@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from "@store";
 import { PanelsLayout } from "@types";
 import FocusTrap from "focus-trap-react";
 import JSON5 from "json5";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 // const Terminal = lazy(() => import("@components/Terminal/Terminal"));
@@ -62,15 +62,15 @@ function App() {
   const dispatch = useAppDispatch();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [panelsOpen, setPanelsOpen] = useState(true);
-  const [executing, setExecuting] = useState(false);
+  const [executing] = useState(false);
   const panelsLayout = useAppSelector((state) => state.panels.layout);
   const host = useFaradayHost();
 
-  const { content: layoutContent } = useFileContent("faraday:/layout.json");
+  const { content: layoutContent } = useFileContent("faraday:/layout.json5");
   useEffect(() => {
     if (layoutContent) {
       try {
-        const layout = JSON5.parse(decoder.decode(layoutContent)) as PanelsLayout;
+        const layout: PanelsLayout = JSON5.parse(decoder.decode(layoutContent));
         dispatch(setPanelsLayout(layout));
       } catch {
         dispatch(setPanelsLayout(JSON5.parse(defaultLayout)));
@@ -102,8 +102,8 @@ function App() {
   // const leftItems = useMemo(() => Array.from(Array(300).keys()).map((i) => ({ name: i.toString(), size: Math.round(Math.random() * 100000000) })), []);
   const { height: glyphHeight } = useGlyphSize();
 
-  const onRunStart = useCallback(() => setExecuting(true), []);
-  const onRunEnd = useCallback(() => setExecuting(false), []);
+  // const onRunStart = useCallback(() => setExecuting(true), []);
+  // const onRunEnd = useCallback(() => setExecuting(false), []);
 
   if (!panelsLayout) {
     return null;

@@ -12,24 +12,25 @@ export function useFileContent(path: string) {
   useEffect(() => {
     const abortController = new AbortController();
     let isReady = false;
-    (async () => {
+    (() => {
       counter.current += 1;
       const pendingOp = counter.current;
       try {
         setResult({ done: false, path });
-        fs.watch(
+        void fs.watch(
           path,
-          async (events) => {
-            try {
-              events.forEach((e) => {
-                if (e.type === "ready") isReady = true;
-              });
-              if (isReady) {
-                const content = await fs.readFile(path, { signal: abortController.signal });
-                setResult({ done: true, content, path });
-              }
-            } catch {
-              // console.error("File deleted");
+          (events) => {
+            events.forEach((e) => {
+              if (e.type === "ready") isReady = true;
+            });
+            if (isReady) {
+              fs.readFile(path, { signal: abortController.signal })
+                .then((content) => {
+                  setResult({ done: true, content, path });
+                })
+                .catch(() => {
+                  /* todo */
+                });
             }
           },
           { signal: abortController.signal }
@@ -81,7 +82,7 @@ export function useFileJsonContent<TSchema extends ZodType>(path: string, schema
       return {};
     }
     try {
-      return { content: content ? schema.parse(JSON5.parse(content)) : undefined };
+      return { content: content ? (schema.parse(JSON5.parse(content)) as TSchema) : undefined };
     } catch (error) {
       return { error };
     }

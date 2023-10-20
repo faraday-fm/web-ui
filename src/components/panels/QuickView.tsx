@@ -28,20 +28,20 @@ const Root = styled.div`
   }
 `;
 
-const HeaderText = styled.div<{ isActive: boolean }>`
-  /* position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, 0);
-  padding: 0 0.5ch;
-  white-space: nowrap; */
-  overflow: hidden;
-  /* text-overflow: ellipsis;
-  max-width: calc(100% - 2rem);
-  text-align: left; */
-  color: ${(p) => p.theme.colors[p.isActive ? "panel.header.foreground:focus" : "panel.header.foreground"]};
-  background-color: ${(p) => p.theme.colors[p.isActive ? "panel.header.background:focus" : "panel.header.background"]};
-`;
+// const HeaderText = styled.div<{ isActive: boolean }>`
+//   /* position: absolute;
+//   top: 0;
+//   left: 50%;
+//   transform: translate(-50%, 0);
+//   padding: 0 0.5ch;
+//   white-space: nowrap; */
+//   overflow: hidden;
+//   /* text-overflow: ellipsis;
+//   max-width: calc(100% - 2rem);
+//   text-align: left; */
+//   color: ${(p) => p.theme.colors[p.isActive ? "panel.header.foreground:focus" : "panel.header.foreground"]};
+//   background-color: ${(p) => p.theme.colors[p.isActive ? "panel.header.background:focus" : "panel.header.background"]};
+// `;
 
 const Content = styled.div`
   display: grid;
@@ -49,7 +49,9 @@ const Content = styled.div`
   overflow: hidden;
 `;
 
-type QuickViewPanelProps = { layout: QuickViewLayout & { id: string } };
+interface QuickViewPanelProps {
+  layout: QuickViewLayout & { id: string };
+}
 
 export function QuickView({ layout }: QuickViewPanelProps) {
   const dispatch = useAppDispatch();
@@ -77,7 +79,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
     }
   }, [dispatch, isActive]);
 
-  const { content, path: contentPath, error } = useFileContent(activePath ?? "");
+  const { content, path: contentPath } = useFileContent(activePath ?? "");
 
   return (
     <Root ref={panelRootRef} tabIndex={0}>

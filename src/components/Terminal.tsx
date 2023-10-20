@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 // import { changeDir } from "@features/panels/panelsSlice";
 import { useCommandBinding } from "@hooks/useCommandBinding";
@@ -14,11 +15,11 @@ import { Unicode11Addon } from "xterm-addon-unicode11";
 import { WebLinksAddon } from "xterm-addon-web-links";
 import { WebglAddon } from "xterm-addon-webgl";
 
-type TerminalProps = {
+interface TerminalProps {
   fullScreen?: boolean;
   onRunStart?: () => void;
   onRunEnd?: () => void;
-};
+}
 
 export default function Terminal({ fullScreen, onRunStart, onRunEnd }: TerminalProps) {
   // const shell = useShell();

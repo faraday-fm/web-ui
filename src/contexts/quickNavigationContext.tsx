@@ -8,11 +8,11 @@ export function useQuickNavigation(ref: RefObject<HTMLElement>, text: string) {
 
   useEffect(() => {
     let key: string | undefined;
-    for (let i = 0; i < text.length; i += 1) {
-      const c = text[i].toLowerCase();
-      if (!context.has(c)) {
-        context.set(c, ref);
-        key = c;
+    for (const c of text) {
+      const l = c.toLowerCase();
+      if (!context.has(l)) {
+        context.set(l, ref);
+        key = l;
         break;
       }
     }

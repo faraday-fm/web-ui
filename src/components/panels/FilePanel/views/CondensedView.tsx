@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unstable-nested-components */
 import { ColumnsScroller } from "@components/panels/FilePanel/ColumnsScroller";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { FsEntry } from "@features/fs/types";
@@ -9,7 +8,7 @@ import { Cell } from "../Cell";
 import { FullFileName } from "../FullFileName";
 import { CursorStyle } from "../types";
 
-type CondensedViewProps = {
+interface CondensedViewProps {
   items: List<FsEntry>;
   cursor: Required<CursorPosition>;
   cursorStyle: CursorStyle;
@@ -18,7 +17,7 @@ type CondensedViewProps = {
   onSelect: (topmost: number, selected: number) => void;
   onItemClicked?: (pos: number) => void;
   onItemActivated?: (pos: number) => void;
-};
+}
 
 export function CondensedView({
   cursorStyle,

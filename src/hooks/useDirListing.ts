@@ -11,7 +11,7 @@ export function useDirListing(path: string | undefined, onListUpdated: (path: st
     if (!path) return undefined;
 
     const abortController = new AbortController();
-    (async () => {
+    void (async () => {
       let items = empty<FsEntry>();
       let isReady = false;
       try {
@@ -55,7 +55,7 @@ export function useDirListing(path: string | undefined, onListUpdated: (path: st
                 }
                 if (isReady) {
                   clearTimeout(timeoutId);
-                  timeoutId = setTimeout(updateItems, 0);
+                  timeoutId = window.setTimeout(updateItems, 0);
                 }
               }
             });

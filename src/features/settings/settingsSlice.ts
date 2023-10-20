@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type SliceState = {
+interface SliceState {
   wheelSensitivity: number;
   iconThemeId: string;
-};
+}
 
 /** @internal */
 export const settingsSlice = createSlice({

@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
-type ActionButtonProps = {
+interface ActionButtonProps {
   fnKey: string;
   header: string;
-};
+}
 
 const Root = styled.span`
   display: flex;

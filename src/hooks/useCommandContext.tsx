@@ -3,14 +3,16 @@ import { useAppDispatch, useAppSelector } from "@store";
 import { Node, parser } from "@utils/whenClauseParser";
 import { useCallback, useEffect, useId, useMemo } from "react";
 
-export function useCommandContext(variables: string | string[] | Record<string, unknown>, isActive?: boolean): void {
+type Variables = string | string[] | Record<string, unknown>;
+
+export function useCommandContext(variables: Variables, isActive?: boolean): void {
   const id = useId();
   const dispatch = useAppDispatch();
   const varsStr = JSON.stringify(variables);
   useEffect(() => {
     if (isActive !== false) {
       let vars: Record<string, unknown>;
-      const variablesCopy = JSON.parse(varsStr);
+      const variablesCopy = JSON.parse(varsStr) as Variables;
       if (typeof variablesCopy === "string") {
         vars = { [variablesCopy]: true };
       } else if (Array.isArray(variablesCopy)) {

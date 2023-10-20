@@ -1,7 +1,3 @@
-import { DefaultTheme } from "styled-components";
-
-import { extend, lightTheme } from "./theme";
-
 // const farTheme = (t: DefaultTheme) => {
 //   return extend(t, {
 //     filePanel: {

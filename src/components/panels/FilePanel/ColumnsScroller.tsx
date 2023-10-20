@@ -3,7 +3,7 @@ import Enumerable from "linq";
 import { ReactNode, useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
 
-type ColumnsScrollerProps = {
+interface ColumnsScrollerProps {
   topmostItem: number;
   selectedItem: number;
   columnCount: number;
@@ -12,7 +12,7 @@ type ColumnsScrollerProps = {
   itemContent(index: number): ReactNode;
   onSelect: (newTopmostItem: number, newSelectedItem: number) => void;
   onMaxItemsPerColumnChanged?: (count: number) => void;
-};
+}
 
 const Root = styled.div`
   position: relative;

@@ -4,8 +4,7 @@ import { PropsWithChildren } from "react";
 
 export function GlobalContextProvider({ children }: PropsWithChildren) {
   const context = useAppSelector((state) => state.globalContext);
-  useCommandContext(context);
+  useCommandContext(context as Record<string, unknown>);
 
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-  return <>{children}</>;
+  return children;
 }

@@ -82,8 +82,8 @@ export function useExecuteCommand() {
       if (!callbacks || callbacks.size !== 1) {
         return false;
       }
-      const cb = callbacks.values().next();
-      const result = cb.value(args);
+      const [cb] = callbacks;
+      const result = cb(args);
       if (typeof result === "undefined") {
         return true;
       }

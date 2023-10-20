@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type SliceState = {
-  ["filePanel.selectedName"]?: string;
-  ["filePanel.selectedPath"]?: string;
-  ["filePanel.isFileSelected"]?: boolean;
-  ["filePanel.isDirectorySelected"]?: boolean;
-};
+interface SliceState {
+  "filePanel.selectedName"?: string;
+  "filePanel.selectedPath"?: string;
+  "filePanel.isFileSelected"?: boolean;
+  "filePanel.isDirectorySelected"?: boolean;
+}
 
 /** @internal */
 export const globalContextSlice = createSlice({
