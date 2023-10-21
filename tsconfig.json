@@ -27,7 +27,6 @@
       "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],
       "@types": ["types"],
-      "@store": ["store"],
       "@styled": ["styled"],
       "@schemas/*": ["schemas/*"],
       "@features/*": ["features/*"],

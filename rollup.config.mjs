@@ -3,12 +3,12 @@ import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import terser from "@rollup/plugin-terser";
+import ts from "@rollup/plugin-typescript";
 import path from "path";
 import { defineConfig } from "rollup";
 import del from "rollup-plugin-delete";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import { string } from "rollup-plugin-string";
-import ts from "rollup-plugin-ts";
 import { fileURLToPath } from "url";
 
 import packageJson from "./package.json" assert { type: "json" };

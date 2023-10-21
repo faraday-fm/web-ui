@@ -1,15 +1,15 @@
 import { Border } from "@components/Border";
 import { PanelHeader } from "@components/PanelHeader";
-import { setActivePanel } from "@features/panels/panelsSlice";
+import { useGlobalContext } from "@features/globalContext/globalContext";
 import { useCommandContext } from "@hooks/useCommandContext";
 import { useFileContent } from "@hooks/useFileContent";
 import { useFocused } from "@hooks/useFocused";
-import { useAppDispatch, useAppSelector } from "@store";
 import { QuickViewLayout } from "@types";
 import { useEffect, useRef } from "react";
 import styled, { useTheme } from "styled-components";
 
 import QuickViewHost from "./QuickViewHost";
+import { usePanels } from "@features/panels/panels";
 
 const Root = styled.div`
   position: relative;
@@ -54,12 +54,11 @@ interface QuickViewPanelProps {
 }
 
 export function QuickView({ layout }: QuickViewPanelProps) {
-  const dispatch = useAppDispatch();
   const theme = useTheme();
   const { id } = layout;
-  const activePanelId = useAppSelector((state) => state.panels.activePanelId);
+  const { activePanelId, setActivePanel } = usePanels();
   const isActive = activePanelId === id;
-  const activePath = useAppSelector((state) => state.globalContext["filePanel.selectedPath"]);
+  const activePath = useGlobalContext()["filePanel.selectedPath"];
 
   const panelRootRef = useRef<HTMLDivElement>(null);
   const focused = useFocused(panelRootRef);
@@ -69,15 +68,15 @@ export function QuickView({ layout }: QuickViewPanelProps) {
 
   useEffect(() => {
     if (focused) {
-      dispatch(setActivePanel(id));
+      setActivePanel(id);
     }
-  }, [dispatch, id, focused]);
+  }, [id, focused, setActivePanel]);
 
   useEffect(() => {
     if (isActive) {
       panelRootRef.current?.focus();
     }
-  }, [dispatch, isActive]);
+  }, [isActive]);
 
   const { content, path: contentPath } = useFileContent(activePath ?? "");
 

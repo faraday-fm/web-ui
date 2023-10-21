@@ -4,11 +4,10 @@ import DialogPlaceholder from "@components/DialogPlaceholder";
 import { LayoutContainer } from "@components/LayoutContainer";
 import { useFaradayHost } from "@contexts/faradayHostContext";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
-import { changeDir, focusNextPanel, setPanelsLayout } from "@features/panels/panelsSlice";
+import { usePanels } from "@features/panels/panels";
 import { useCommandBindings } from "@hooks/useCommandBinding";
 import { useCommandContext } from "@hooks/useCommandContext";
 import { useFileContent } from "@hooks/useFileContent";
-import { useAppDispatch, useAppSelector } from "@store";
 import { PanelsLayout } from "@types";
 import FocusTrap from "focus-trap-react";
 import JSON5 from "json5";
@@ -59,11 +58,10 @@ const PanelsContainer = styled.div`
 
 function App() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const dispatch = useAppDispatch();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [panelsOpen, setPanelsOpen] = useState(true);
   const [executing] = useState(false);
-  const panelsLayout = useAppSelector((state) => state.panels.layout);
+  const { layout: panelsLayout, setPanelsLayout, focusNextPanel, changeDir } = usePanels();
   const host = useFaradayHost();
 
   const { content: layoutContent } = useFileContent("faraday:/layout.json5");
@@ -71,14 +69,14 @@ function App() {
     if (layoutContent) {
       try {
         const layout: PanelsLayout = JSON5.parse(decoder.decode(layoutContent));
-        dispatch(setPanelsLayout(layout));
+        setPanelsLayout(layout);
       } catch {
-        dispatch(setPanelsLayout(JSON5.parse(defaultLayout)));
+        setPanelsLayout(JSON5.parse(defaultLayout));
       }
     }
     // invoke("show_main_window");
     // if (isRunningUnderTauri()) setTimeout(() => invoke("show_main_window"), 50);
-  }, [dispatch, layoutContent]);
+  }, [layoutContent, setPanelsLayout]);
 
   useCommandContext("isDesktop", host.config.isDesktop());
 
@@ -87,14 +85,14 @@ function App() {
       setPanelsOpen((p) => !p);
     },
     focusNextPanel: () => {
-      dispatch(focusNextPanel({ backward: false }));
+      focusNextPanel(false);
     },
     focusPrevPanel: () => {
-      dispatch(focusNextPanel({ backward: true }));
+      focusNextPanel(true);
     },
     // open: () => setDialogOpen(true),
     open: () => {
-      dispatch(changeDir());
+      changeDir();
     },
     openShell: () => console.error("OPEN_SHELL"),
   });

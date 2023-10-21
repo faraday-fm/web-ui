@@ -1,16 +1,17 @@
 import { FilePanel, FilePanelActions } from "@components/panels/FilePanel/FilePanel";
 import { FsEntry } from "@features/fs/types";
-import { updateState } from "@features/globalContext/globalContextSlice";
-import { CursorPosition, initPanelState, popDir, setActivePanel, setPanelCursorPos, setPanelItems } from "@features/panels/panelsSlice";
+import { useGlobalContext } from "@features/globalContext/globalContext";
+import { CursorPosition, usePanelState, usePanels } from "@features/panels/panels";
 import { useDirListing } from "@hooks/useDirListing";
-import { selectPanelState, useAppDispatch, useAppSelector } from "@store";
 import { FilePanelLayout } from "@types";
 import { combine, isRoot } from "@utils/path";
-import { empty, Ordering } from "list";
+import { Ordering, empty } from "list";
 import { useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
 
-interface ReduxFilePanelProps { layout: FilePanelLayout & { id: string } }
+interface ReduxFilePanelProps {
+  layout: FilePanelLayout & { id: string };
+}
 
 const Root = styled.div`
   width: 100%;
@@ -28,10 +29,11 @@ function fsCompare(a: FsEntry, b: FsEntry): Ordering {
 
 export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
   const { id } = layout;
-  const dispatch = useAppDispatch();
   const panelRef = useRef<FilePanelActions>(null);
-  const isActive = useAppSelector((state) => state.panels.activePanelId === id);
-  const state = useAppSelector(selectPanelState(id));
+  const { activePanelId, initPanelState, setPanelItems, setPanelCursorPos, setActivePanel, popDir } = usePanels();
+  const state = usePanelState(id);
+  const globalContext = useGlobalContext();
+  const isActive = activePanelId === id;
 
   const items = state?.items ?? empty();
   const cursor = state?.cursor ?? {};
@@ -39,22 +41,20 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
 
   useEffect(() => {
     if (isActive && state?.path && selectedItem) {
-      dispatch(
-        updateState({
-          "filePanel.selectedPath": combine(state.path, selectedItem.name),
-          "filePanel.selectedName": selectedItem.name,
-          "filePanel.isFileSelected": selectedItem.isFile ?? false,
-          "filePanel.isDirectorySelected": selectedItem.isDir ?? false,
-        })
-      );
+      globalContext.updateState({
+        "filePanel.selectedPath": combine(state.path, selectedItem.name),
+        "filePanel.selectedName": selectedItem.name,
+        "filePanel.isFileSelected": selectedItem.isFile ?? false,
+        "filePanel.isDirectorySelected": selectedItem.isDir ?? false,
+      });
       panelRef.current?.focus();
     }
-  }, [dispatch, isActive, selectedItem, state?.path]);
+  }, [globalContext, isActive, selectedItem, state?.path]);
 
   useEffect(() => {
     const { path, id } = layout;
-    dispatch(initPanelState({ id, state: { cursor: {}, items: empty(), path } }));
-  }, [dispatch, layout]);
+    initPanelState(id, { cursor: {}, items: empty(), path });
+  }, [initPanelState, layout]);
 
   // FIXME: If "ready" event is not fired by the filesystem watcher, we should add ".." directory
   // Below code is invalid because it breaks the cursor position when navigating to parent directory.
@@ -74,17 +74,17 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
         if (!isRoot(dirPath)) {
           files = files.prepend({ name: "..", isDir: true });
         }
-        dispatch(setPanelItems({ id, items: files }));
+        setPanelItems(id, files);
       },
-      [dispatch, id]
+      [id, setPanelItems]
     )
   );
 
   const onCursorPositionChange = useCallback(
     (cursorPos: CursorPosition) => {
-      dispatch(setPanelCursorPos({ id, cursorPos }));
+      setPanelCursorPos(id, cursorPos);
     },
-    [dispatch, id]
+    [id, setPanelCursorPos]
   );
 
   return (
@@ -92,9 +92,9 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
       <FilePanel
         ref={panelRef}
         showCursorWhenBlurred={isActive}
-        onFocus={() => dispatch(setActivePanel(id))}
+        onFocus={() => setActivePanel(id)}
         onCursorPositionChange={onCursorPositionChange}
-        onDirUp={() => dispatch(popDir(id))}
+        onDirUp={() => popDir(id)}
         cursor={cursor}
         items={items}
         path={state ? state.path : "file:/"}

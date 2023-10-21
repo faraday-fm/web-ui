@@ -1,6 +1,5 @@
-import { quickViewSelector } from "@features/extensions/selectors";
+import { useQuickView } from "@features/extensions/quickViews";
 import { QuickView } from "@schemas/manifest";
-import { useAppSelector } from "@store";
 import { DeferredPromise, deferredPromise } from "@utils/promise";
 import { ReactElement, useEffect, useState } from "react";
 import styled from "styled-components";
@@ -24,7 +23,7 @@ interface Frame {
 
 export default function QuickViewHost({ path, content }: { path: string; content?: Uint8Array }) {
   const [frames, setFrames] = useState<Record<string, Frame>>({});
-  const quickView = useAppSelector(quickViewSelector);
+  const quickView = useQuickView(path);
   const key = quickView ? `${quickView.extId}.${quickView.quickView.id}` : undefined;
 
   const activeFrame = key ? frames[key] : undefined;

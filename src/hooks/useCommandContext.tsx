@@ -1,5 +1,4 @@
-import { ContextVariables, setVariables } from "@features/commands/commandsSlice";
-import { useAppDispatch, useAppSelector } from "@store";
+import { ContextVariables, useCommands } from "@features/commands/commands";
 import { Node, parser } from "@utils/whenClauseParser";
 import { useCallback, useEffect, useId, useMemo } from "react";
 
@@ -7,7 +6,7 @@ type Variables = string | string[] | Record<string, unknown>;
 
 export function useCommandContext(variables: Variables, isActive?: boolean): void {
   const id = useId();
-  const dispatch = useAppDispatch();
+  const { setVariables } = useCommands();
   const varsStr = JSON.stringify(variables);
   useEffect(() => {
     if (isActive !== false) {
@@ -20,14 +19,14 @@ export function useCommandContext(variables: Variables, isActive?: boolean): voi
       } else {
         vars = variablesCopy;
       }
-      dispatch(setVariables({ id, variables: vars }));
+      setVariables(id, vars);
     } else {
-      dispatch(setVariables({ id, variables: undefined }));
+      setVariables(id, undefined);
     }
     return () => {
-      dispatch(setVariables({ id, variables: undefined }));
+      setVariables(id, undefined);
     };
-  }, [dispatch, id, isActive, varsStr]);
+  }, [id, isActive, setVariables, varsStr]);
 }
 
 function getContextValue(ctx: ContextVariables, variable: string) {
@@ -82,16 +81,16 @@ function evaluate(ctx: ContextVariables, node: Node) {
 }
 
 export function useIsInCommandContext() {
-  const ctx = useAppSelector((state) => state.commands.variables);
+  const { variables } = useCommands();
   return useCallback(
     (expression: string) => {
       const ast = parser.parse(expression);
       if (ast.status) {
-        return evaluate(ctx, ast.value);
+        return evaluate(variables, ast.value);
       }
       return false;
     },
-    [ctx]
+    [variables]
   );
 }
 
@@ -103,13 +102,9 @@ export function useIsInCommandContextQuery(expression: string) {
     }
     return result;
   }, [expression]);
-  const result = useAppSelector((state) => {
-    const ctx = state.commands.variables;
-    if (ast.status) {
-      return evaluate(ctx, ast.value);
-    }
-    return false;
-  });
-
-  return result;
+  const { variables } = useCommands();
+  if (ast.status) {
+    return evaluate(variables, ast.value);
+  }
+  return false;
 }

@@ -7,7 +7,7 @@ module.exports = {
     "plugin:react-hooks/recommended",
     "plugin:jsx-a11y/recommended",
   ],
-  ignorePatterns: [".eslintrc.cjs"],
+  ignorePatterns: [".eslintrc.cjs", "rollup.config.mjs"],
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint"],
   root: true,
@@ -17,5 +17,6 @@ module.exports = {
   },
   rules: {
     "no-case-declarations": "off",
+    "@typescript-eslint/unbound-method": "off",
   },
 };

@@ -1,5 +1,5 @@
 import { FsEntry } from "@features/fs/types";
-import { CursorPosition } from "@features/panels/panelsSlice";
+import { CursorPosition } from "@features/panels/panels";
 import { List } from "list";
 import styled from "styled-components";
 

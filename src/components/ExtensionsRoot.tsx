@@ -1,8 +1,7 @@
-import { addQuickView, deleteQuickView } from "@features/extensions/extensionsSlice";
+import { useExtensions } from "@features/extensions/extensions";
 import { useFileJsonContent, useFileStringContent } from "@hooks/useFileContent";
 import { ExtensionRepoSchema } from "@schemas/extensionRepo";
 import { ExtensionManifest, ExtensionManifestSchema, QuickView } from "@schemas/manifest";
-import { useAppDispatch } from "@store";
 import { combine } from "@utils/path";
 import { useEffect, useMemo } from "react";
 
@@ -12,17 +11,17 @@ function getExtId(extension: ExtensionManifest) {
 
 export function QuickViewContribution({ path, extension, quickView }: { path: string; extension: ExtensionManifest; quickView: QuickView }) {
   const quickViewScript = useFileStringContent(combine(path, quickView.path));
-  const dispatch = useAppDispatch();
+  const { addQuickView, deleteQuickView } = useExtensions();
 
   useEffect(() => {
     if (!quickViewScript.content) {
       return undefined;
     }
-    dispatch(addQuickView({ extId: getExtId(extension), quickView, script: quickViewScript.content }));
+    addQuickView(getExtId(extension), quickView, quickViewScript.content);
     return () => {
-      dispatch(deleteQuickView({ extId: getExtId(extension), quickViewId: quickView.id }));
+      deleteQuickView(getExtId(extension), quickView.id);
     };
-  }, [dispatch, extension, quickView, quickViewScript.content]);
+  }, [addQuickView, deleteQuickView, extension, quickView, quickViewScript.content]);
 
   return null;
 }
