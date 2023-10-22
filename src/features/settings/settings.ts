@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { StateCreator } from "zustand";
 
 interface State {
   wheelSensitivity: number;
@@ -10,10 +10,12 @@ interface Actions {
   setIconThemeId(iconThemeId: string): void;
 }
 
-export const useSettings = create<State & Actions>((set) => ({
+export type SettingsSlice = State & Actions;
+
+export const createSettingsSlice: StateCreator<SettingsSlice> = (set) => ({
   wheelSensitivity: 64,
   iconThemeId: "",
 
   setWheelSensitivity: (wheelSensitivity) => set({ wheelSensitivity }),
   setIconThemeId: (iconThemeId) => set({ iconThemeId }),
-}));
+});

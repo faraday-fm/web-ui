@@ -1,4 +1,4 @@
-import { useExtensions } from "@features/extensions/extensions";
+import { useExtensions } from "@features/extensions/hooks";
 import { useFileJsonContent, useFileStringContent } from "@hooks/useFileContent";
 import { ExtensionRepoSchema } from "@schemas/extensionRepo";
 import { ExtensionManifest, ExtensionManifestSchema, QuickView } from "@schemas/manifest";

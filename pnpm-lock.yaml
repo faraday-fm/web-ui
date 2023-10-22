@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@dhmk/zustand-lens':
+    specifier: ^3.0.2
+    version: 3.0.2(zustand@4.4.3)
   ansi-colors:
     specifier: ^4.1.3
     version: 4.1.3
@@ -286,6 +289,19 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
     optional: true
+
+  /@dhmk/utils@2.4.2:
+    resolution: {integrity: sha512-xNF77VfjTPocSkgs5LkEvNUHE7fqzKr5B9LllMoCbU8BobRSqwssIwIL/zMM6oiMGZoHyYHOj/XpzLdvULZZ1A==}
+    dev: false
+
+  /@dhmk/zustand-lens@3.0.2(zustand@4.4.3):
+    resolution: {integrity: sha512-4dL7Mad7jyN47MQceLNsCDzkVeaBrDZPBWpx92TrHDrOaH2K9aB2ACQuLclp4yw/2Uko/5XxZJjHIldSlSZEYw==}
+    peerDependencies:
+      zustand: ^4.0.0
+    dependencies:
+      '@dhmk/utils': 2.4.2
+      zustand: 4.4.3(@types/react@18.2.30)(immer@10.0.3)(react@18.2.0)
+    dev: false
 
   /@emotion/is-prop-valid@1.2.1:
     resolution: {integrity: sha512-61Mf7Ufx4aDxx1xlDeOm8aFFigGHE4z+0sKCa+IHCeZKiyP9RLD0Mmx7m8b9/Cf37f7NAvQOOJAbQQGVr5uERw==}

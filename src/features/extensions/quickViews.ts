@@ -1,7 +1,7 @@
 import { QuickView } from "@schemas/manifest";
 import { filename, getAllExtensions } from "@utils/path";
 import { useMemo } from "react";
-import { useExtensions } from "./extensions";
+import { useExtensions } from "./hooks";
 
 type Mimetype = string;
 type FileName = string;

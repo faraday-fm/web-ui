@@ -1,6 +1,5 @@
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
 import { QuickView } from "@schemas/manifest";
+import { ImmerStateCreator } from "@utils/immer";
 
 type ExtId = string;
 type QuickViewId = string;
@@ -19,26 +18,26 @@ interface Actions {
   deleteQuickView(extId: ExtId, quickViewId: QuickViewId): void;
 }
 
+export type ExtensionsSlice = State & Actions;
+
 /** @internal */
-export const useExtensions = create<State & Actions>()(
-  immer((set) => ({
-    quickViews: {},
-    quickViewsByExtension: {},
-    quickViewsByFileName: {},
-    quickViewsByMimetype: {},
-    addQuickView: (extId, quickView, script) =>
-      set((state) => {
-        (state.quickViews[extId] ??= {})[quickView.id] = { quickView, script };
-      }),
-    deleteQuickView: (extId, quickViewId) =>
-      set((state) => {
-        const quickViews = state.quickViews[extId];
-        if (quickViews) {
-          delete state.quickViews[extId]?.[quickViewId];
-          if (Object.keys(quickViews).length === 0) {
-            delete state.quickViews[extId];
-          }
+export const createExtensionsSlice: ImmerStateCreator<ExtensionsSlice> = (set) => ({
+  quickViews: {},
+  quickViewsByExtension: {},
+  quickViewsByFileName: {},
+  quickViewsByMimetype: {},
+  addQuickView: (extId, quickView, script) =>
+    set((state) => {
+      (state.quickViews[extId] ??= {})[quickView.id] = { quickView, script };
+    }),
+  deleteQuickView: (extId, quickViewId) =>
+    set((state) => {
+      const quickViews = state.quickViews[extId];
+      if (quickViews) {
+        delete state.quickViews[extId]?.[quickViewId];
+        if (Object.keys(quickViews).length === 0) {
+          delete state.quickViews[extId];
         }
-      }),
-  }))
-);
+      }
+    }),
+});

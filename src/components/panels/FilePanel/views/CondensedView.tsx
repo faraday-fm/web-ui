@@ -1,7 +1,7 @@
 import { ColumnsScroller } from "@components/panels/FilePanel/ColumnsScroller";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { FsEntry } from "@features/fs/types";
-import { CursorPosition } from "@features/panels/panels";
+import { CursorPosition } from "@features/panels/types";
 import { List } from "list";
 
 import { Cell } from "../Cell";

@@ -1,10 +1,10 @@
 import { FsEntry } from "@features/fs/types";
-import { CursorPosition } from "@features/panels/panels";
 import { List } from "list";
 import styled from "styled-components";
 
 import { Column } from "../Column";
 import { ColumnDef, CursorStyle } from "../types";
+import { CursorPosition } from "@features/panels/types";
 
 interface FullViewProps {
   items: List<FsEntry>;

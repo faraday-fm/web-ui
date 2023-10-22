@@ -2,7 +2,7 @@ import { Border } from "@components/Border";
 import { PanelHeader } from "@components/PanelHeader";
 import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
 import { FsEntry } from "@features/fs/types";
-import { CursorPosition } from "@features/panels/panels";
+import { CursorPosition } from "@features/panels/types";
 import { useCommandBindings, useExecuteBuiltInCommand } from "@hooks/useCommandBinding";
 import { useCommandContext } from "@hooks/useCommandContext";
 import { useElementSize } from "@hooks/useElementSize";

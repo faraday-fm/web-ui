@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { StateCreator } from "zustand";
 
 interface State {
   "filePanel.selectedName"?: string;
@@ -11,6 +11,8 @@ interface Actions {
   updateState(newState: Partial<State>): void;
 }
 
-export const useGlobalContext = create<State & Actions>((set) => ({
+export type GlobalContextSlice = State & Actions;
+
+export const createGlobalContextSlice: StateCreator<GlobalContextSlice> = (set) => ({
   updateState: (newState) => set(newState),
-}));
+});

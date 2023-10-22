@@ -4,7 +4,7 @@ import DialogPlaceholder from "@components/DialogPlaceholder";
 import { LayoutContainer } from "@components/LayoutContainer";
 import { useFaradayHost } from "@contexts/faradayHostContext";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
-import { usePanels } from "@features/panels/panels";
+import { usePanels } from "@features/panels/hooks";
 import { useCommandBindings } from "@hooks/useCommandBinding";
 import { useCommandContext } from "@hooks/useCommandContext";
 import { useFileContent } from "@hooks/useFileContent";

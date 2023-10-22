@@ -1,7 +1,8 @@
 import { FilePanel, FilePanelActions } from "@components/panels/FilePanel/FilePanel";
 import { FsEntry } from "@features/fs/types";
-import { useGlobalContext } from "@features/globalContext/globalContext";
-import { CursorPosition, usePanelState, usePanels } from "@features/panels/panels";
+import { useGlobalContext } from "@features/globalContext/hooks";
+import { usePanelState, usePanels } from "@features/panels/hooks";
+import { CursorPosition } from "@features/panels/types";
 import { useDirListing } from "@hooks/useDirListing";
 import { FilePanelLayout } from "@types";
 import { combine, isRoot } from "@utils/path";
