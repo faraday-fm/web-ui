@@ -1,4 +1,5 @@
-import { ContextVariables, useCommands } from "@features/commands/commands";
+import { ContextVariables } from "@features/contextVariables/contextVariables";
+import { useContextVariables } from "@features/contextVariables/hooks";
 import { Node, parser } from "@utils/whenClauseParser";
 import { useCallback, useEffect, useId, useMemo } from "react";
 
@@ -6,7 +7,7 @@ type Variables = string | string[] | Record<string, unknown>;
 
 export function useCommandContext(variables: Variables, isActive?: boolean): void {
   const id = useId();
-  const { setVariables } = useCommands();
+  const { setVariables } = useContextVariables();
   const varsStr = JSON.stringify(variables);
   useEffect(() => {
     if (isActive !== false) {
@@ -81,7 +82,7 @@ function evaluate(ctx: ContextVariables, node: Node) {
 }
 
 export function useIsInCommandContext() {
-  const { variables } = useCommands();
+  const { variables } = useContextVariables();
   return useCallback(
     (expression: string) => {
       const ast = parser.parse(expression);
@@ -102,7 +103,7 @@ export function useIsInCommandContextQuery(expression: string) {
     }
     return result;
   }, [expression]);
-  const { variables } = useCommands();
+  const { variables } = useContextVariables();
   if (ast.status) {
     return evaluate(variables, ast.value);
   }

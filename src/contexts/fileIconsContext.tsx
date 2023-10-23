@@ -1,5 +1,5 @@
 import { Extension } from "@features/extensions/extension";
-import { useFs } from "@hooks/useFs";
+import { useFs } from "@features/fs/hooks";
 import { IconTheme, isSvgIcon } from "@schemas/iconTheme";
 import isPromise from "is-promise";
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";

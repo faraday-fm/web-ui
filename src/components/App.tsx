@@ -7,7 +7,7 @@ import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { usePanels } from "@features/panels/hooks";
 import { useCommandBindings } from "@hooks/useCommandBinding";
 import { useCommandContext } from "@hooks/useCommandContext";
-import { useFileContent } from "@hooks/useFileContent";
+import { useFileContent } from "@features/fs/hooks";
 import { PanelsLayout } from "@types";
 import FocusTrap from "focus-trap-react";
 import JSON5 from "json5";

@@ -1,6 +1,4 @@
-import JSON5 from "json5";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { ZodType } from "zod";
+import { useEffect, useRef, useState } from "react";
 
 import { useFs } from "./useFs";
 
@@ -48,43 +46,4 @@ export function useFileContent(path: string) {
   }, [fs, path]);
 
   return result;
-}
-
-const decoder = new TextDecoder();
-
-export function useFileStringContent(path: string) {
-  const fileContent = useFileContent(path);
-
-  return useMemo(() => {
-    const { content, error } = fileContent;
-    if (error) {
-      return { error };
-    }
-    if (typeof content === "undefined") {
-      return {};
-    }
-    try {
-      return { content: content ? decoder.decode(content) : undefined };
-    } catch (error) {
-      return { error };
-    }
-  }, [fileContent]);
-}
-
-export function useFileJsonContent<TSchema extends ZodType>(path: string, schema: TSchema): { error?: unknown; content?: Zod.infer<typeof schema> } {
-  const stringContent = useFileStringContent(path);
-  return useMemo(() => {
-    const { error, content } = stringContent;
-    if (error) {
-      return { error };
-    }
-    if (typeof content === "undefined") {
-      return {};
-    }
-    try {
-      return { content: content ? (schema.parse(JSON5.parse(content)) as TSchema) : undefined };
-    } catch (error) {
-      return { error };
-    }
-  }, [schema, stringContent]);
 }

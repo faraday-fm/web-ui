@@ -6,12 +6,14 @@ import { ExtensionsSlice, createExtensionsSlice } from "./extensions/extensions"
 import { GlobalContextSlice, createGlobalContextSlice } from "./globalContext/globalContext";
 import { PanelsSlice, createPanelsSlice } from "./panels/panels";
 import { SettingsSlice, createSettingsSlice } from "./settings/settings";
+import { ContextVariablesSlice, createContextVariablesSlice } from "./contextVariables/contextVariables";
 
 interface Store {
   panels: PanelsSlice;
   extensions: ExtensionsSlice;
   globalContext: GlobalContextSlice;
   settings: SettingsSlice;
+  contextVariables: ContextVariablesSlice;
 }
 
 const createAppStore = createStore<Store>()(
@@ -21,6 +23,7 @@ const createAppStore = createStore<Store>()(
       extensions: lens(createExtensionsSlice),
       globalContext: lens(createGlobalContextSlice),
       settings: lens(createSettingsSlice),
+      contextVariables: lens(createContextVariablesSlice),
     })
   )
 );

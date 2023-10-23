@@ -2,7 +2,7 @@ import { Border } from "@components/Border";
 import { PanelHeader } from "@components/PanelHeader";
 import { useGlobalContext } from "@features/globalContext/hooks";
 import { useCommandContext } from "@hooks/useCommandContext";
-import { useFileContent } from "@hooks/useFileContent";
+import { useFileContent } from "@features/fs/hooks";
 import { useFocused } from "@hooks/useFocused";
 import { QuickViewLayout } from "@types";
 import { useEffect, useRef } from "react";
