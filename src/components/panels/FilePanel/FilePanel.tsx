@@ -236,7 +236,6 @@ export const FilePanel = forwardRef<FilePanelActions, FilePanelProps>(
     if (pathParts.length === 0) {
       pathParts.push("/");
     }
-
     if (!columnCount) {
       return <PanelRoot ref={panelRootRef} tabIndex={0} $focused={focused} onFocus={() => onFocus?.()} />;
     }

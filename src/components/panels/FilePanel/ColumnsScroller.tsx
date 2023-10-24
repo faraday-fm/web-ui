@@ -74,6 +74,9 @@ export function ColumnsScroller({
   onSelect,
   onMaxItemsPerColumnChanged,
 }: ColumnsScrollerProps) {
+  if (!Number.isInteger(itemHeight) || itemHeight <= 0) {
+    throw new Error("itemHeight should be positive");
+  }
   const rootRef = useRef<HTMLDivElement>(null);
   const fixedRef = useRef<HTMLDivElement>(null);
   const scrollableRef = useRef<HTMLDivElement>(null);

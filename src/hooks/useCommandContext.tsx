@@ -26,6 +26,7 @@ export function useCommandContext(variables: Variables, isActive?: boolean): voi
       setVariables(id, vars);
     }
 
+    prevVariables.current = variables;
     return () => {
       setVariables(id, undefined);
     };

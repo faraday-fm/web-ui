@@ -116,9 +116,13 @@ export class InMemoryFsProvider implements FileSystemProvider {
     }
 
     if (entry.isDir) {
-      const entries = await this.readDirectory(path, options);
-      watcher(entries.map((e) => ({ type: "created", entry: e, path: combine(path, e.name) })));
-      watcher([{ type: "ready" }]);
+      try {
+        const entries = await this.readDirectory(path, options);
+        watcher(entries.map((e) => ({ type: "created", entry: e, path: combine(path, e.name) })));
+        watcher([{ type: "ready" }]);
+      } catch {
+        // todo
+      }
     } else {
       watcher([{ type: "created", entry: currEntry, path: combine(path, currEntry.name) }]);
       watcher([{ type: "ready" }]);
