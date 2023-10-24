@@ -10,27 +10,32 @@ export function useCommandContext(variables: Variables, isActive?: boolean): voi
   const id = useId();
   const { setVariables } = useContextVariables();
   const prevVariables = useRef<Variables>();
+  if (prevVariables.current && equal(prevVariables.current, variables)) {
+    variables = prevVariables.current;
+  }
+
   useEffect(() => {
     if (isActive === false) {
+      setVariables(id, undefined);
       return;
     }
     let vars: Record<string, unknown>;
-    if (!equal(prevVariables.current, variables)) {
-      if (typeof variables === "string") {
-        vars = { [variables]: true };
-      } else if (Array.isArray(variables)) {
-        vars = Object.fromEntries(variables.map((v) => [v, true]));
-      } else {
-        vars = variables;
-      }
-      setVariables(id, vars);
+    if (typeof variables === "string") {
+      vars = { [variables]: true };
+    } else if (Array.isArray(variables)) {
+      vars = Object.fromEntries(variables.map((v) => [v, true]));
+    } else {
+      vars = variables;
     }
-
+    setVariables(id, vars);
     prevVariables.current = variables;
+  }, [id, isActive, setVariables, variables]);
+
+  useEffect(() => {
     return () => {
       setVariables(id, undefined);
     };
-  }, [id, isActive, setVariables, variables]);
+  }, [id, setVariables]);
 }
 
 function getContextValue(ctx: ContextVariables, variable: string) {

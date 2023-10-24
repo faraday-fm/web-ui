@@ -95,9 +95,4 @@ export function useExecuteCommand() {
   return executor;
 }
 
-export function useExecuteBuiltInCommand() {
-  const executor = useExecuteCommand();
-  return (command: BuiltInCommand, args?: unknown) => {
-    return executor(command, args);
-  };
-}
+export const useExecuteBuiltInCommand = useExecuteCommand as () => (command: BuiltInCommand, args?: unknown) => Promise<boolean>;
