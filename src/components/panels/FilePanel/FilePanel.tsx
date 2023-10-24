@@ -1,15 +1,14 @@
 import { Border } from "@components/Border";
 import { PanelHeader } from "@components/PanelHeader";
 import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
+import { useCommandBindings, useCommandContext, useExecuteBuiltInCommand } from "@features/commands";
 import { FsEntry } from "@features/fs/types";
-import { CursorPosition } from "@features/panels/types";
-import { useCommandBindings, useExecuteBuiltInCommand } from "@hooks/useCommandBinding";
-import { useCommandContext } from "@hooks/useCommandContext";
+import { CursorPosition } from "@features/panels";
 import { useElementSize } from "@hooks/useElementSize";
 import { useFocused } from "@hooks/useFocused";
 import { FilePanelView } from "@types";
 import { clamp } from "@utils/number";
-import { List } from "list";
+import * as L from "list";
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
 
@@ -20,7 +19,7 @@ import { CondensedView } from "./views/CondensedView";
 import { FullView } from "./views/FullView";
 
 export interface FilePanelProps {
-  items: List<FsEntry>;
+  items: L.List<FsEntry>;
   cursor: CursorPosition;
   view: FilePanelView;
   path: string;
@@ -83,7 +82,7 @@ const FileInfoPanel = styled.div`
   overflow: hidden;
 `;
 
-function adjustCursor(cursor: CursorPosition, items: List<FsEntry>, displayedItems: number): Required<CursorPosition> {
+function adjustCursor(cursor: CursorPosition, items: L.List<FsEntry>, displayedItems: number): Required<CursorPosition> {
   let selectedIndex = cursor.selectedIndex ?? 0;
   let topmostIndex = cursor.topmostIndex ?? 0;
   let selectedName = cursor.selectedName ?? items.nth(selectedIndex)?.name;

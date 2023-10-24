@@ -1,12 +1,12 @@
-import { z } from "zod";
+import { Output, array, object, optional, string } from "valibot";
 
-export const KeyBindingSchema = z.object({
-  key: z.string(),
-  command: z.string(),
-  when: z.ostring(),
-  args: z.ostring(),
+export const KeyBindingSchema = object({
+  key: string(),
+  command: string(),
+  when: optional(string()),
+  args: optional(string()),
 });
 
-export const KeyBindingsSchema = z.array(KeyBindingSchema);
+export const KeyBindingsSchema = array(KeyBindingSchema);
 
-export type KeyBindingsSchema = z.infer<typeof KeyBindingsSchema>;
+export type KeyBindingsSchema = Output<typeof KeyBindingsSchema>;

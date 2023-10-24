@@ -1,13 +1,13 @@
 import keyBindingsContent from "@assets/keybindings.json5";
-import { useContextVariables } from "@features/contextVariables/hooks";
-import { useExecuteCommand } from "@hooks/useCommandBinding";
-import { useIsInCommandContext } from "@hooks/useCommandContext";
+import { useExecuteCommand, useIsInCommandContext } from "@features/commands";
+import { useContextVariables } from "@features/contextVariables";
 import { KeyBindingsSchema } from "@schemas/keyBindings";
 import JSON5 from "json5";
 import { alt, regexp, seq, string } from "parsimmon";
-import { createContext, PropsWithChildren, useEffect } from "react";
+import { PropsWithChildren, createContext, useEffect } from "react";
+import { parse } from "valibot";
 
-const keyBindings = KeyBindingsSchema.parse(JSON5.parse(keyBindingsContent));
+const keyBindings = parse(KeyBindingsSchema, JSON5.parse(keyBindingsContent));
 
 type KeyCombination =
   | { error: true }
@@ -81,7 +81,6 @@ const matchKey = (key: string, event: KeyboardEvent) => {
 export function KeyBindingProvider({ children }: PropsWithChildren) {
   const isInContext = useIsInCommandContext();
   const executeCommand = useExecuteCommand();
-  const { variables } = useContextVariables();
 
   const bindings = keyBindings;
 
@@ -90,7 +89,7 @@ export function KeyBindingProvider({ children }: PropsWithChildren) {
       const keyCodeStr = [e.ctrlKey ? "Ctrl" : "", e.altKey ? "Alt" : "", e.shiftKey ? "Shift" : "", e.metaKey ? "Meta" : "", e.code]
         .filter((m) => m)
         .join("+");
-      console.debug("Key pressed:", e.key, "(", keyCodeStr, ")", variables);
+      console.debug("Key pressed:", e.key, "(", keyCodeStr, ")");
       for (let i = bindings.length - 1; i >= 0; i -= 1) {
         const binding = bindings[i];
         if (matchKey(binding.key, e) && (!binding.when || isInContext(binding.when))) {

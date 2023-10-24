@@ -1,44 +1,44 @@
-import { z } from "zod";
+import { Output, array, enumType, object, optional, string } from "valibot";
 
-const QuickViewSchema = z.object({
-  id: z.string(),
-  extensions: z.optional(z.array(z.string())),
-  filenames: z.optional(z.array(z.string())),
-  mimetypes: z.optional(z.array(z.string())),
-  path: z.string(),
+const QuickViewSchema = object({
+  id: string(),
+  extensions: optional(array(string())),
+  filenames: optional(array(string())),
+  mimetypes: optional(array(string())),
+  path: string(),
 });
 
-const IconThemeSchema = z.object({
-  id: z.string(),
-  label: z.string(),
-  path: z.string(),
+const IconThemeSchema = object({
+  id: string(),
+  label: string(),
+  path: string(),
 });
 
-const ThemeSchema = z.object({
-  label: z.string(),
-  uiTheme: z.enum(["fd", "fd-light", "hc", "hc-light"]),
-  path: z.string(),
+const ThemeSchema = object({
+  label: string(),
+  uiTheme: enumType(["fd", "fd-light", "hc", "hc-light"]),
+  path: string(),
 });
 
-const ContributesSchema = z.object({
-  quickViews: z.optional(z.array(QuickViewSchema)),
-  iconThemes: z.optional(z.array(IconThemeSchema)),
-  themes: z.optional(z.array(ThemeSchema)),
+const ContributesSchema = object({
+  quickViews: optional(array(QuickViewSchema)),
+  iconThemes: optional(array(IconThemeSchema)),
+  themes: optional(array(ThemeSchema)),
 });
 
-export const ExtensionManifestSchema = z.object({
-  name: z.string(),
-  version: z.string(),
-  displayName: z.string(),
-  description: z.string(),
-  publisher: z.string(),
-  main: z.optional(z.string()),
-  browser: z.optional(z.string()),
-  contributes: z.optional(ContributesSchema),
+export const ExtensionManifestSchema = object({
+  name: string(),
+  version: string(),
+  displayName: string(),
+  description: string(),
+  publisher: string(),
+  main: optional(string()),
+  browser: optional(string()),
+  contributes: optional(ContributesSchema),
 });
 
-export type QuickView = z.infer<typeof QuickViewSchema>;
+export type QuickView = Output<typeof QuickViewSchema>;
 
-export type Contributes = z.infer<typeof ContributesSchema>;
+export type Contributes = Output<typeof ContributesSchema>;
 
-export type ExtensionManifest = z.infer<typeof ExtensionManifestSchema>;
+export type ExtensionManifest = Output<typeof ExtensionManifestSchema>;

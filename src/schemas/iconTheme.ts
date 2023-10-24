@@ -1,53 +1,54 @@
-import { z } from "zod";
+import { Output, array, object, optional, record, string, union } from "valibot";
 
-const FontDefinitionSchema = z.object({
-  id: z.string(),
-  src: z.array(z.object({ path: z.string(), format: z.string() })),
-  weight: z.string(),
-  style: z.string(),
-  size: z.string(),
+const FontDefinitionSchema = object({
+  id: string(),
+  src: array(object({ path: string(), format: string() })),
+  weight: string(),
+  style: string(),
+  size: string(),
 });
 
-const SvgIconDefinitionSchema = z.object({ iconPath: z.string() });
+const SvgIconDefinitionSchema = object({ iconPath: string() });
 
-const FontIconDefinitionSchema = z.object({
-  fontId: z.ostring(),
-  fontCharacter: z.string(),
-  fontColor: z.optional(z.union([z.string(), z.record(z.string())])),
+const FontIconDefinitionSchema = object({
+  fontId: optional(string()),
+  fontCharacter: string(),
+  fontColor: optional(union([string(), record(string())])),
 });
 
-const IconDefinitionSchema = z.union([SvgIconDefinitionSchema, FontIconDefinitionSchema]);
+const IconDefinitionSchema = union([SvgIconDefinitionSchema, FontIconDefinitionSchema]);
 
-const IconDefinitionsSchema = z.record(IconDefinitionSchema);
+const IconDefinitionsSchema = record(IconDefinitionSchema);
 
-const ThemeSchema = z.object({
-  folderNames: z.optional(z.record(z.string())),
-  folderNamesExpanded: z.optional(z.record(z.string())),
-  fileExtensions: z.optional(z.record(z.string())),
-  fileNames: z.optional(z.record(z.string())),
-  languageIds: z.optional(z.record(z.string())),
+const ThemeSchema = object({
+  folderNames: optional(record(string())),
+  folderNamesExpanded: optional(record(string())),
+  fileExtensions: optional(record(string())),
+  fileNames: optional(record(string())),
+  languageIds: optional(record(string())),
 });
 
-export const IconThemeSchema = ThemeSchema.extend({
-  fonts: z.optional(z.array(FontDefinitionSchema)),
+export const IconThemeSchema = object({
+  ...ThemeSchema.object,
+  fonts: optional(array(FontDefinitionSchema)),
   iconDefinitions: IconDefinitionsSchema,
-  file: z.string(),
-  folder: z.string(),
-  folderExpanded: z.ostring(),
-  rootFolder: z.ostring(),
-  rootFolderExpanded: z.ostring(),
-  light: z.optional(ThemeSchema),
-  highContrast: z.optional(ThemeSchema),
-  highContrastLight: z.optional(ThemeSchema),
+  file: string(),
+  folder: string(),
+  folderExpanded: optional(string()),
+  rootFolder: optional(string()),
+  rootFolderExpanded: optional(string()),
+  light: optional(ThemeSchema),
+  highContrast: optional(ThemeSchema),
+  highContrastLight: optional(ThemeSchema),
 });
 
-export type SvgIconDefinition = z.infer<typeof SvgIconDefinitionSchema>;
+export type SvgIconDefinition = Output<typeof SvgIconDefinitionSchema>;
 
-export type FontIconDefinition = z.infer<typeof FontIconDefinitionSchema>;
+export type FontIconDefinition = Output<typeof FontIconDefinitionSchema>;
 
-export type IconDefinition = z.infer<typeof IconDefinitionSchema>;
+export type IconDefinition = Output<typeof IconDefinitionSchema>;
 
-export type IconTheme = z.infer<typeof IconThemeSchema>;
+export type IconTheme = Output<typeof IconThemeSchema>;
 
 export function isSvgIcon(def?: IconDefinition): def is SvgIconDefinition {
   return !!def && Object.hasOwn(def, "iconPath");

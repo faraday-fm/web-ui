@@ -1,12 +1,11 @@
 import { FilePanel, FilePanelActions } from "@components/panels/FilePanel/FilePanel";
-import { FsEntry } from "@features/fs/types";
-import { useGlobalContext } from "@features/globalContext/hooks";
-import { usePanelState, usePanels } from "@features/panels/hooks";
-import { CursorPosition } from "@features/panels/types";
 import { useDirListing } from "@features/fs/hooks";
+import { FsEntry } from "@features/fs/types";
+import { useGlobalContext } from "@features/globalContext";
+import { CursorPosition, usePanelState, usePanels } from "@features/panels";
 import { FilePanelLayout } from "@types";
 import { combine, isRoot } from "@utils/path";
-import { Ordering, empty } from "list";
+import * as L from "list";
 import { useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
 
@@ -22,10 +21,10 @@ const Root = styled.div`
 
 const collator = new Intl.Collator(undefined, { numeric: true, usage: "sort", sensitivity: "case" });
 
-function fsCompare(a: FsEntry, b: FsEntry): Ordering {
+function fsCompare(a: FsEntry, b: FsEntry): L.Ordering {
   if (a.isDir && !b.isDir) return -1;
   if (!a.isDir && b.isDir) return 1;
-  return collator.compare(a.name, b.name) as Ordering;
+  return collator.compare(a.name, b.name) as L.Ordering;
 }
 
 export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
@@ -36,7 +35,7 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
   const globalContext = useGlobalContext();
   const isActive = activePanelId === id;
 
-  const items = state?.items ?? empty();
+  const items = state?.items ?? L.empty();
   const cursor = state?.cursor ?? {};
   const selectedItem = state?.items ? state.items.nth(cursor.selectedIndex ?? 0) : undefined;
 
@@ -54,7 +53,7 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
 
   useEffect(() => {
     const { path, id } = layout;
-    initPanelState(id, { cursor: {}, items: empty(), path });
+    initPanelState(id, { cursor: {}, items: L.empty(), path });
   }, [initPanelState, layout]);
 
   // FIXME: If "ready" event is not fired by the filesystem watcher, we should add ".." directory

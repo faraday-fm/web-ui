@@ -1,4 +1,4 @@
-import { useQuickView } from "@features/extensions/quickViews";
+import { useQuickView } from "@features/quickViews";
 import { QuickView } from "@schemas/manifest";
 import { DeferredPromise, deferredPromise } from "@utils/promise";
 import { ReactElement, useEffect, useState } from "react";

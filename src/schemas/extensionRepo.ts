@@ -1,10 +1,10 @@
-import { z } from "zod";
+import { array, object, string } from "valibot";
 
-const ExtensionRefSchema = z.object({
-  identifier: z.object({
-    uuid: z.string(),
+const ExtensionRefSchema = object({
+  identifier: object({
+    uuid: string(),
   }),
-  relativeLocation: z.string(),
+  relativeLocation: string(),
 });
 
-export const ExtensionRepoSchema = z.array(ExtensionRefSchema);
+export const ExtensionRepoSchema = array(ExtensionRefSchema);

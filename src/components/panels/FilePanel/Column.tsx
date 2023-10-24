@@ -3,7 +3,7 @@ import { Border } from "@components/Border";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { useElementSize } from "@hooks/useElementSize";
 import { clamp } from "@utils/number";
-import { List } from "list";
+import * as L from "list";
 import { useEffect, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
 
@@ -13,7 +13,7 @@ import { FullFileName } from "./FullFileName";
 import { ColumnDef, CursorStyle } from "./types";
 
 interface ColumnProps {
-  items: List<Record<string, unknown> & { name: string }>;
+  items: L.List<Record<string, unknown> & { name: string }>;
   cursorStyle: CursorStyle;
   topmostIndex: number;
   selectedIndex: number;

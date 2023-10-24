@@ -2,7 +2,7 @@ import { PanelsLayout } from "@types";
 import { ImmerStateCreator } from "@utils/immer";
 import { traverseLayout } from "@utils/layout";
 import { combine, truncateLastDir } from "@utils/path";
-import { List, empty } from "list";
+import * as L from "list";
 import { CursorPosition, PanelState } from "./types";
 import { FsEntry } from "@features/fs/types";
 
@@ -16,7 +16,7 @@ interface Actions {
   setPanelsLayout(layout: PanelsLayout): void;
   setActivePanel(activePanelId: string): void;
   initPanelState(id: string, state: PanelState): void;
-  setPanelItems(id: string, items: List<FsEntry>): void;
+  setPanelItems(id: string, items: L.List<FsEntry>): void;
   setPanelCursorPos(id: string, cursorPos: CursorPosition): void;
   focusNextPanel(backward: boolean): void;
   focusPrevPanel(): void;
@@ -119,7 +119,7 @@ export const createPanelsSlice: ImmerStateCreator<PanelsSlice> = (set) => ({
                 panelsStack.push({
                   path: combine(s.path, selectedItem.name),
                   cursor: {},
-                  items: empty(),
+                  items: L.empty(),
                 });
               }
             }

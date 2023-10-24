@@ -1,8 +1,8 @@
-import { z } from "zod";
+import { Output, object, optional, record, string } from "valibot";
 
-export const ColorThemeSchema = z.object({
-  name: z.string(),
-  colors: z.optional(z.record(z.string())),
+export const ColorThemeSchema = object({
+  name: string(),
+  colors: optional(record(string())),
 });
 
-export type ColorTheme = z.infer<typeof ColorThemeSchema>;
+export type ColorTheme = Output<typeof ColorThemeSchema>;

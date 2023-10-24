@@ -1,7 +1,7 @@
 import { AutoHotKeyLabel } from "@components/AutoHotKeyLabel";
 import { Button } from "@components/Button";
 import { QuickNavigationProvider } from "@contexts/quickNavigationContext";
-import { useCommandContext } from "@hooks/useCommandContext";
+import { useCommandContext } from "@features/commands";
 import FocusTrap from "focus-trap-react";
 import { useId } from "react";
 import styled, { keyframes, useTheme } from "styled-components";

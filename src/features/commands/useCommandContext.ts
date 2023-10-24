@@ -1,12 +1,11 @@
-import { ContextVariables } from "@features/contextVariables/contextVariables";
-import { useContextVariables } from "@features/contextVariables/hooks";
+import { ContextVariables, useContextVariables } from "@features/contextVariables";
 import { Node, parser } from "@utils/whenClauseParser";
 import equal from "fast-deep-equal";
 import { useCallback, useEffect, useId, useMemo, useRef } from "react";
 
 type Variables = string | string[] | Record<string, unknown>;
 
-export function useCommandContext(variables: Variables, isActive?: boolean): void {
+export function useCommandContext(variables: Variables, isActive = true): void {
   const id = useId();
   const { setVariables } = useContextVariables();
   const prevVariables = useRef<Variables>();
@@ -15,7 +14,7 @@ export function useCommandContext(variables: Variables, isActive?: boolean): voi
   }
 
   useEffect(() => {
-    if (isActive === false) {
+    if (!isActive) {
       setVariables(id, undefined);
       return;
     }
@@ -23,7 +22,10 @@ export function useCommandContext(variables: Variables, isActive?: boolean): voi
     if (typeof variables === "string") {
       vars = { [variables]: true };
     } else if (Array.isArray(variables)) {
-      vars = Object.fromEntries(variables.map((v) => [v, true]));
+      vars = variables.reduce((r, v) => {
+        r[v] = true;
+        return r;
+      }, {} as Record<string, true>);
     } else {
       vars = variables;
     }

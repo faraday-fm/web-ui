@@ -1,14 +1,14 @@
 import { Border } from "@components/Border";
 import { PanelHeader } from "@components/PanelHeader";
-import { useGlobalContext } from "@features/globalContext/hooks";
-import { useCommandContext } from "@hooks/useCommandContext";
+import { useCommandContext } from "@features/commands";
 import { useFileContent } from "@features/fs/hooks";
+import { useGlobalContext } from "@features/globalContext";
+import { usePanels } from "@features/panels";
 import { useFocused } from "@hooks/useFocused";
 import { QuickViewLayout } from "@types";
 import { useEffect, useRef } from "react";
 import styled, { useTheme } from "styled-components";
 import QuickViewHost from "./QuickViewHost";
-import { usePanels } from "@features/panels/hooks";
 
 const Root = styled.div`
   position: relative;

@@ -1,7 +1,6 @@
 import { ImmerStateCreator } from "@utils/immer";
 import equal from "fast-deep-equal";
-
-export type ContextVariables = Record<string, Record<string, unknown>>;
+import { ContextVariables } from "./types";
 
 interface State {
   variables: ContextVariables;

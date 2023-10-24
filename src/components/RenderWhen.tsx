@@ -1,4 +1,4 @@
-import { useIsInCommandContextQuery } from "@hooks/useCommandContext";
+import { useIsInCommandContextQuery } from "@features/commands";
 import { PropsWithChildren } from "react";
 
 export function RenderWhen({ expression, children }: PropsWithChildren<{ expression: string }>) {

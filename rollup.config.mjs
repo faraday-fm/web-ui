@@ -9,6 +9,7 @@ import { defineConfig } from "rollup";
 import del from "rollup-plugin-delete";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import { string } from "rollup-plugin-string";
+import { visualizer } from "rollup-plugin-visualizer";
 import { fileURLToPath } from "url";
 
 import packageJson from "./package.json" assert { type: "json" };
@@ -48,6 +49,7 @@ export default defineConfig(() => {
         commonjs({ sourceMap: true }),
         ts(),
         string({ include: "**/*.{json5,html}" }),
+        visualizer(),
       ],
     },
   ];

@@ -1,9 +1,9 @@
 import JSON5 from "json5";
 import { useMemo } from "react";
-import { ZodType } from "zod";
+import { BaseSchema, Output, parse } from "valibot";
 import { useFileStringContent } from "./useFileStringContent";
 
-export function useFileJsonContent<TSchema extends ZodType>(path: string, schema: TSchema): { error?: unknown; content?: Zod.infer<typeof schema> } {
+export function useFileJsonContent<TSchema extends BaseSchema>(path: string, schema: TSchema): { error?: unknown; content?: Output<typeof schema> } {
   const stringContent = useFileStringContent(path);
   return useMemo(() => {
     const { error, content } = stringContent;
@@ -14,7 +14,7 @@ export function useFileJsonContent<TSchema extends ZodType>(path: string, schema
       return {};
     }
     try {
-      return { content: content ? (schema.parse(JSON5.parse(content)) as TSchema) : undefined };
+      return { content: content ? (parse(schema, JSON5.parse(content)) as TSchema) : undefined };
     } catch (error) {
       return { error };
     }
