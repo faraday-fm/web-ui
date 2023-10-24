@@ -1,4 +1,5 @@
 import { ImmerStateCreator } from "@utils/immer";
+import equal from "fast-deep-equal";
 
 export type ContextVariables = Record<string, Record<string, unknown>>;
 
@@ -17,10 +18,10 @@ export const createContextVariablesSlice: ImmerStateCreator<ContextVariablesSlic
   setVariables: (id: string, variables?: Record<string, unknown>) =>
     set((s) => {
       if (variables) {
-        if (JSON.stringify(s.variables[id]) !== JSON.stringify(variables)) {
+        if (!equal(s.variables[id], variables)) {
           s.variables[id] = variables;
         }
-      } else if (s.variables[id] !== undefined) {
+      } else {
         delete s.variables[id];
       }
     }),

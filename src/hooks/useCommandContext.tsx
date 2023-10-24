@@ -1,33 +1,35 @@
 import { ContextVariables } from "@features/contextVariables/contextVariables";
 import { useContextVariables } from "@features/contextVariables/hooks";
 import { Node, parser } from "@utils/whenClauseParser";
-import { useCallback, useEffect, useId, useMemo } from "react";
+import equal from "fast-deep-equal";
+import { useCallback, useEffect, useId, useMemo, useRef } from "react";
 
 type Variables = string | string[] | Record<string, unknown>;
 
 export function useCommandContext(variables: Variables, isActive?: boolean): void {
   const id = useId();
   const { setVariables } = useContextVariables();
-  const varsStr = JSON.stringify(variables);
+  const prevVariables = useRef<Variables>();
   useEffect(() => {
-    if (isActive !== false) {
-      let vars: Record<string, unknown>;
-      const variablesCopy = JSON.parse(varsStr) as Variables;
-      if (typeof variablesCopy === "string") {
-        vars = { [variablesCopy]: true };
-      } else if (Array.isArray(variablesCopy)) {
-        vars = Object.fromEntries(variablesCopy.map((v) => [v, true]));
+    if (isActive === false) {
+      return;
+    }
+    let vars: Record<string, unknown>;
+    if (!equal(prevVariables.current, variables)) {
+      if (typeof variables === "string") {
+        vars = { [variables]: true };
+      } else if (Array.isArray(variables)) {
+        vars = Object.fromEntries(variables.map((v) => [v, true]));
       } else {
-        vars = variablesCopy;
+        vars = variables;
       }
       setVariables(id, vars);
-    } else {
-      setVariables(id, undefined);
     }
+
     return () => {
       setVariables(id, undefined);
     };
-  }, [id, isActive, setVariables, varsStr]);
+  }, [id, isActive, setVariables, variables]);
 }
 
 function getContextValue(ctx: ContextVariables, variable: string) {

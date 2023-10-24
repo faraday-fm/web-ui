@@ -8,9 +8,6 @@ export type QuickViews = Record<ExtId, Record<QuickViewId, { quickView: QuickVie
 
 interface State {
   quickViews: QuickViews;
-  quickViewsByExtension: QuickViews;
-  quickViewsByFileName: QuickViews;
-  quickViewsByMimetype: QuickViews;
 }
 
 interface Actions {
@@ -20,12 +17,8 @@ interface Actions {
 
 export type ExtensionsSlice = State & Actions;
 
-/** @internal */
 export const createExtensionsSlice: ImmerStateCreator<ExtensionsSlice> = (set) => ({
   quickViews: {},
-  quickViewsByExtension: {},
-  quickViewsByFileName: {},
-  quickViewsByMimetype: {},
   addQuickView: (extId, quickView, script) =>
     set((state) => {
       (state.quickViews[extId] ??= {})[quickView.id] = { quickView, script };

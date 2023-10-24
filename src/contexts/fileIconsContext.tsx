@@ -1,6 +1,7 @@
 import { Extension } from "@features/extensions/extension";
 import { useFs } from "@features/fs/hooks";
 import { IconTheme, isSvgIcon } from "@schemas/iconTheme";
+import { filename } from "@utils/path";
 import isPromise from "is-promise";
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
@@ -27,23 +28,30 @@ const IconWrapper = styled.div`
   }
 `;
 
-function resolveIconDefinitionName(iconTheme: IconTheme, path: string, isDir: boolean): string {
-  const direntName = path.split("/").at(-1) ?? "";
+function resolveIconDefinitionName(iconTheme: IconTheme, path: string, isDir: boolean, languageId?: string): string {
+  const defaultDef = isDir ? iconTheme.folder : iconTheme.file;
+  const direntName = filename(path);
+  if (!direntName) {
+    return defaultDef;
+  }
   if (isDir) {
-    return iconTheme.folderNames?.[direntName] ?? iconTheme.folder;
+    return iconTheme.folderNames?.[direntName] ?? defaultDef;
   }
   let result = iconTheme.fileNames?.[direntName];
   if (result) {
     return result;
   }
-  const defaultDef = iconTheme.file;
-  const nameParts = path.split(".");
+  const nameParts = direntName.split(".");
   if (nameParts.length < 2) {
     return defaultDef;
   }
   for (let i = nameParts.length - 1; i > 0; i -= 1) {
     const ext = nameParts.slice(i).join(".");
-    result = iconTheme.fileExtensions?.[ext] ?? iconTheme.languageIds?.[ext];
+    result = iconTheme.fileExtensions?.[ext];
+    if (result) {
+      return result;
+    }
+    result = languageId && iconTheme.languageIds?.[languageId];
     if (result) {
       return result;
     }
@@ -76,13 +84,7 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
       const cachedIcon = cache.get(iconDefinitionName);
 
       if (cachedIcon) {
-        return (
-          <IconWrapper
-            ref={(dref) => {
-              if (dref) dref.innerHTML = cachedIcon;
-            }}
-          />
-        );
+        return <IconWrapper dangerouslySetInnerHTML={{ __html: cachedIcon }} />;
       }
       const iconDefinition = iconDefinitionName ? iconTheme.theme.iconDefinitions[iconDefinitionName] : undefined;
       const iconPath = isSvgIcon(iconDefinition) ? iconDefinition.iconPath : undefined;
@@ -95,13 +97,7 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
         const svgContent = decoder.decode(svg);
         cache.set(iconDefinitionName, svgContent);
 
-        return (
-          <IconWrapper
-            ref={(dref) => {
-              if (dref) dref.innerHTML = svgContent;
-            }}
-          />
-        );
+        return <IconWrapper dangerouslySetInnerHTML={{ __html: svgContent }} />;
       };
 
       try {

@@ -2,7 +2,7 @@ import { PropsWithChildren, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
-const Li = styled.div<{ showOverflow: boolean; splitter: string }>`
+const Li = styled.div<{ $showOverflow: boolean; splitter: string }>`
   position: relative;
   overflow: hidden;
   white-space: nowrap;
@@ -44,7 +44,7 @@ const Li = styled.div<{ showOverflow: boolean; splitter: string }>`
     width: 2ch;
     background: var(--background);
     transition: opacity 0.2s;
-    opacity: ${(p) => (p.showOverflow ? 1 : 0)};
+    opacity: ${(p) => (p.$showOverflow ? 1 : 0)};
     pointer-events: none;
   }
 `;
@@ -63,7 +63,7 @@ export function BreadcrumbItem({ children }: PropsWithChildren) {
   useResizeObserver({ ref, onResize: updateOverflowAdornerVisibility });
 
   return (
-    <Li ref={ref} splitter="/" showOverflow={showOverflowAdorner}>
+    <Li ref={ref} splitter="/" $showOverflow={showOverflowAdorner}>
       {children}
     </Li>
   );

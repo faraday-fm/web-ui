@@ -1,10 +1,14 @@
 import { FaradayHost } from "@types";
 import { createContext, PropsWithChildren, useContext } from "react";
 
-const FaradayHostContext = createContext<FaradayHost>({} as FaradayHost);
+const FaradayHostContext = createContext<FaradayHost | undefined>(undefined);
 
 export function useFaradayHost() {
-  return useContext(FaradayHostContext);
+  const result = useContext(FaradayHostContext);
+  if (!result) {
+    throw new Error("FaradayHostProvider is not registered.");
+  }
+  return result;
 }
 
 interface FaradayHostProviderProps extends PropsWithChildren {
