@@ -1,8 +1,9 @@
 import styled from "styled-components";
 
 import { ActionButton } from "./ActionButton";
+import { memo } from "react";
 
-const Root = styled.div`
+const Root = styled.div.withConfig({ displayName: "Root" })`
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
@@ -12,7 +13,7 @@ const Root = styled.div`
   -webkit-user-select: none;
 `;
 
-export function ActionsBar() {
+export const ActionsBar = memo(function ActionsBar() {
   return (
     <Root tabIndex={-1}>
       <ActionButton fnKey="1" header="Help" />
@@ -29,4 +30,4 @@ export function ActionsBar() {
       <ActionButton fnKey="12" header="Screens" />
     </Root>
   );
-}
+});

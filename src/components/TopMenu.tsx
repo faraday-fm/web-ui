@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { TopMenuItem } from "./TopMenuItem";
 
-const Root = styled.div`
+const Root = styled.div.withConfig({ displayName: "Root" })`
   display: flex;
   background-color: var(--color-03);
   color: var(--color-00);

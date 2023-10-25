@@ -10,7 +10,7 @@ import { useEffect, useRef } from "react";
 import styled, { useTheme } from "styled-components";
 import QuickViewHost from "./QuickViewHost";
 
-const Root = styled.div`
+const Root = styled.div.withConfig({ displayName: "Root" })`
   position: relative;
   width: 100%;
   color: ${(p) => p.theme.colors["panel.foreground"]};
@@ -42,7 +42,7 @@ const Root = styled.div`
 //   background-color: ${(p) => p.theme.colors[p.isActive ? "panel.header.background:focus" : "panel.header.background"]};
 // `;
 
-const Content = styled.div`
+const Content = styled.div.withConfig({ displayName: "Content" })`
   display: grid;
   grid-template-rows: auto 1fr;
   overflow: hidden;

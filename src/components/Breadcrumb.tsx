@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { BreadcrumbItem } from "./BreadcrumbItem";
 
-const NavWithBackgroundProp = styled.nav<{ $isActive: boolean }>`
+const NavWithBackgroundProp = styled.nav.withConfig({ displayName: "NavWithBackgroundProp" })<{ $isActive: boolean }>`
   --background: linear-gradient(
     to right,
     transparent,

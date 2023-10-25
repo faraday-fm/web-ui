@@ -8,7 +8,7 @@ type AutoHotKeyLabelProps = {
   htmlFor?: string;
 } & PropsWithChildren<unknown>;
 
-const Label = styled.label`
+const Label = styled.label.withConfig({ displayName: "Label" })`
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;

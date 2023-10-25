@@ -2,6 +2,7 @@ import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { FsEntry } from "@features/fs/types";
 import { formatDateTime } from "@utils/date";
 import { bytesToSize } from "@utils/number";
+import { memo } from "react";
 import styled from "styled-components";
 
 interface FileInfoFooterProps {
@@ -54,7 +55,7 @@ function formatFileSize(e?: FsEntry) {
   return bytesToSize(e.size ?? 0, 999999);
 }
 
-export function FileInfoFooter({ file }: FileInfoFooterProps) {
+export const FileInfoFooter = memo(({ file }: FileInfoFooterProps) => {
   const { height } = useGlyphSize();
   return (
     <FileRoot>
@@ -63,4 +64,4 @@ export function FileInfoFooter({ file }: FileInfoFooterProps) {
       <FileTime>{file?.modified ? formatDateTime(new Date(file.modified)) : undefined}</FileTime>
     </FileRoot>
   );
-}
+});

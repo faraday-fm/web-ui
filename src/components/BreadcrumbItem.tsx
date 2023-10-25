@@ -2,7 +2,7 @@ import { PropsWithChildren, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import useResizeObserver from "use-resize-observer";
 
-const Li = styled.div<{ $showOverflow: boolean; $splitter: string }>`
+const Li = styled.div.withConfig({ displayName: "Li" })<{ $showOverflow: boolean; $splitter: string }>`
   position: relative;
   overflow: hidden;
   white-space: nowrap;

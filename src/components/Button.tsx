@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const Button = styled.button`
+export const Button = styled.button.withConfig({ displayName: "Button" })`
   margin: 0;
   padding: 0;
   border: none;

@@ -1,5 +1,5 @@
 import { useElementSize } from "@hooks/useElementSize";
-import { ReactNode, useCallback, useEffect, useLayoutEffect, useRef } from "react";
+import { ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
 
 interface ColumnsScrollerProps {
@@ -61,113 +61,104 @@ function Borders({ columnCount }: { columnCount: number }) {
   return <ColumnBorders>{borders}</ColumnBorders>;
 }
 
-export function ColumnsScroller({
-  topmostItem,
-  selectedItem,
-  columnCount,
-  totalCount,
-  itemHeight,
-  itemContent,
-  onSelect,
-  onMaxItemsPerColumnChanged,
-}: ColumnsScrollerProps) {
-  if (!Number.isInteger(itemHeight) || itemHeight <= 0) {
-    throw new Error("itemHeight should be positive");
-  }
-  const rootRef = useRef<HTMLDivElement>(null);
-  const fixedRef = useRef<HTMLDivElement>(null);
-  const scrollableRef = useRef<HTMLDivElement>(null);
-  const { height } = useElementSize(rootRef);
-  let itemsPerColumn = Math.floor(height / itemHeight);
-  if (itemsPerColumn < 1) {
-    itemsPerColumn = 1;
-  }
-  useLayoutEffect(() => {
-    onMaxItemsPerColumnChanged?.(itemsPerColumn);
-  }, [itemsPerColumn, onMaxItemsPerColumnChanged]);
-
-  useEffect(() => {
-    if (!scrollableRef.current) {
-      return;
+export const ColumnsScroller = memo(
+  ({ topmostItem, selectedItem, columnCount, totalCount, itemHeight, itemContent, onSelect, onMaxItemsPerColumnChanged }: ColumnsScrollerProps) => {
+    if (!Number.isInteger(itemHeight) || itemHeight <= 0) {
+      throw new Error("itemHeight should be positive");
     }
-    if (Math.abs(scrollableRef.current.scrollTop - selectedItem * itemHeight) >= itemHeight) {
-      scrollableRef.current.scrollTop = selectedItem * itemHeight;
+
+    const rootRef = useRef<HTMLDivElement>(null);
+    const fixedRef = useRef<HTMLDivElement>(null);
+    const scrollableRef = useRef<HTMLDivElement>(null);
+    const { height } = useElementSize(rootRef);
+    let itemsPerColumn = Math.floor(height / itemHeight);
+    if (itemsPerColumn < 1) {
+      itemsPerColumn = 1;
     }
-  }, [itemHeight, selectedItem]);
+    useLayoutEffect(() => {
+      onMaxItemsPerColumnChanged?.(itemsPerColumn);
+    }, [itemsPerColumn, onMaxItemsPerColumnChanged]);
 
-  if (selectedItem < topmostItem) {
-    topmostItem = selectedItem;
-  } else if (selectedItem > topmostItem + columnCount * itemsPerColumn - 1) {
-    topmostItem = selectedItem - columnCount * itemsPerColumn + 1;
-  } else if (topmostItem > totalCount - columnCount * itemsPerColumn) {
-    topmostItem = Math.max(0, totalCount - columnCount * itemsPerColumn);
-  }
-
-  const handleMouseEvent = useCallback((e: React.MouseEvent) => {
-    let targetEl: Element | undefined;
-    for (const el of document.elementsFromPoint(e.clientX, e.clientY)) {
-      if (fixedRef.current?.contains(el)) {
-        targetEl = el;
-        break;
+    useEffect(() => {
+      if (!scrollableRef.current) {
+        return;
       }
-    }
-    if (targetEl) {
-      targetEl.dispatchEvent(new PointerEvent(e.type, e.nativeEvent));
-    }
-  }, []);
+      if (Math.abs(scrollableRef.current.scrollTop - selectedItem * itemHeight) >= itemHeight) {
+        scrollableRef.current.scrollTop = selectedItem * itemHeight;
+      }
+    }, [itemHeight, selectedItem]);
 
-  const items = [];
-  for (let i = topmostItem; i < topmostItem + Math.min(totalCount, itemsPerColumn * columnCount); i++) {
-    items.push(
-      <div key={i} style={{ height: itemHeight }}>
-        {itemContent(i)}
-      </div>
+    if (selectedItem < topmostItem) {
+      topmostItem = selectedItem;
+    } else if (selectedItem > topmostItem + columnCount * itemsPerColumn - 1) {
+      topmostItem = selectedItem - columnCount * itemsPerColumn + 1;
+    } else if (topmostItem > totalCount - columnCount * itemsPerColumn) {
+      topmostItem = Math.max(0, totalCount - columnCount * itemsPerColumn);
+    }
+
+    const handleMouseEvent = useCallback((e: React.MouseEvent) => {
+      let targetEl: Element | undefined;
+      for (const el of document.elementsFromPoint(e.clientX, e.clientY)) {
+        if (fixedRef.current?.contains(el)) {
+          targetEl = el;
+          break;
+        }
+      }
+      if (targetEl) {
+        targetEl.dispatchEvent(new PointerEvent(e.type, e.nativeEvent));
+      }
+    }, []);
+
+    const items = useMemo(() => {
+      const res = [];
+      for (let i = topmostItem; i < topmostItem + Math.min(totalCount, itemsPerColumn * columnCount); i++) {
+        res.push(
+          <div key={i} style={{ height: itemHeight }}>
+            {itemContent(i)}
+          </div>
+        );
+      }
+      return res;
+    }, [columnCount, itemContent, itemHeight, itemsPerColumn, topmostItem, totalCount]);
+
+    return (
+      <Root ref={rootRef}>
+        <Borders columnCount={columnCount} />
+        <Fixed ref={fixedRef} style={{ columnCount }}>
+          {/* BUG in Chrome (macOS)? When we use `e` as a key, the column layout works incorrectly without this hidden div */}
+          {/* To reproduce: comment out the next line, navigate to a directory with big amount of files and use left-right keyboard arrows. */}
+          <div style={{ height: 0.1, overflow: "hidden" }} />
+          {items}
+        </Fixed>
+        <ScrollableRoot
+          ref={scrollableRef}
+          style={{ height: itemsPerColumn * itemHeight }}
+          onScroll={() => {
+            if (!scrollableRef.current) {
+              return;
+            }
+            const newSelectedItem = Math.round(scrollableRef.current.scrollTop / itemHeight);
+            const delta = newSelectedItem - selectedItem;
+            if (delta) {
+              onSelect?.(topmostItem + delta, newSelectedItem);
+            }
+          }}
+        >
+          <Scrollable
+            style={{ height: `calc(100% + ${(totalCount - 1) * itemHeight}px)` }}
+            onMouseDown={handleMouseEvent}
+            onMouseEnter={handleMouseEvent}
+            onMouseLeave={handleMouseEvent}
+            onMouseMove={handleMouseEvent}
+            onMouseOut={handleMouseEvent}
+            onMouseOver={handleMouseEvent}
+            onMouseUp={handleMouseEvent}
+            onClick={handleMouseEvent}
+            onDoubleClick={handleMouseEvent}
+          />
+        </ScrollableRoot>
+      </Root>
     );
   }
-
-  return (
-    <Root ref={rootRef}>
-      <Borders columnCount={columnCount} />
-      <Fixed ref={fixedRef} style={{ columnCount }}>
-        {/* BUG in Chrome (macOS)? When we use `e` as a key, the column layout works incorrectly without this hidden div */}
-        {/* To reproduce: comment out the next line, navigate to a directory with big amount of files and use left-right keyboard arrows. */}
-        <div style={{ height: 0.1, overflow: "hidden" }} />
-        {items}
-      </Fixed>
-      <ScrollableRoot
-        ref={scrollableRef}
-        style={{ height: itemsPerColumn * itemHeight }}
-        onScroll={() => {
-          if (!scrollableRef.current) {
-            return;
-          }
-          const newSelectedItem = Math.round(scrollableRef.current.scrollTop / itemHeight);
-          const delta = newSelectedItem - selectedItem;
-          if (delta) {
-            onSelect?.(topmostItem + delta, newSelectedItem);
-          }
-        }}
-      >
-        <Scrollable
-          style={{ height: `calc(100% + ${(totalCount - 1) * itemHeight}px)` }}
-          onMouseDown={handleMouseEvent}
-          onMouseEnter={handleMouseEvent}
-          onMouseLeave={handleMouseEvent}
-          onMouseMove={handleMouseEvent}
-          onMouseOut={handleMouseEvent}
-          onMouseOver={handleMouseEvent}
-          onMouseUp={handleMouseEvent}
-          onClick={handleMouseEvent}
-          onDoubleClick={handleMouseEvent}
-          // onMouseDownCapture={handleMouseEvent}
-          // onMouseMoveCapture={handleMouseEvent}
-          // onMouseOutCapture={handleMouseEvent}
-          // onMouseOverCapture={handleMouseEvent}
-          // onMouseUpCapture={handleMouseEvent}
-          // onClickCapture={handleMouseEvent}
-          // onDoubleClickCapture={handleMouseEvent}
-        />
-      </ScrollableRoot>
-    </Root>
-  );
-}
+);
+ColumnsScroller.displayName = "ColumnsScroller";

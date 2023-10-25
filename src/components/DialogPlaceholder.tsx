@@ -17,7 +17,7 @@ const backdropAnimation = keyframes`
  100% { opacity: 1;transform: translate(0%, 0%); }
 `;
 
-const Backdrop = styled.dialog`
+const Backdrop = styled.dialog.attrs({ ["popover" as never]: "manual" }).withConfig({ displayName: "Backdrop" })`
   /* background-color: ${(p) => p.theme.colors["dialog.backdrop"]}; */
   animation-name: ${backdropAnimation};
   animation-duration: 0.2s;
@@ -25,7 +25,7 @@ const Backdrop = styled.dialog`
   border-width: 1px;
 `;
 
-const Content = styled.div`
+const Content = styled.div.withConfig({ displayName: "Content" })`
   background-color: ${(p) => p.theme.colors["dialog.background"]};
   color: ${(p) => p.theme.colors["dialog.foreground"]};
   box-shadow: ${(p) => p.theme.colors["dialog.shadow"]};
@@ -39,7 +39,7 @@ const Content = styled.div`
   }
 `;
 
-const DialogButton = styled(Button)`
+const DialogButton = styled(Button).withConfig({ displayName: "DialogButton" })`
   margin: 0 0.25em;
   background-color: transparent;
   &:before {
@@ -73,10 +73,9 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
     onClose?.();
   };
 
-  const popover = { popover: "manual" };
   return (
     <QuickNavigationProvider>
-      <Backdrop ref={dialogRef} onMouseDown={() => onClose?.()} {...popover} onCancel={handleCancel}>
+      <Backdrop ref={dialogRef} onMouseDown={() => onClose?.()} onCancel={handleCancel}>
         <Content onMouseDown={(e) => e.stopPropagation()}>
           <Border $color={theme.colors["dialog.border"]}>
             <Border $color={theme.colors["dialog.border"]}>
@@ -95,23 +94,23 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
                 <AutoHotKeyLabel text="Process multiple destinations" htmlFor={`${dialogId}processMultDist`} />
               </p>
               <p>
-                <input id={`${dialogId}copyAccessMode`} type="checkbox" />
+                <input id={`${dialogId}copyAccessMode`} type="checkbox" tabIndex={0} />
                 <AutoHotKeyLabel text="Copy files access mode" htmlFor={`${dialogId}copyAccessMode`} />
               </p>
               <p>
-                <input id={`${dialogId}copyAttributes`} type="checkbox" />
+                <input id={`${dialogId}copyAttributes`} type="checkbox" tabIndex={0} />
                 <AutoHotKeyLabel text="Copy extended attributes" htmlFor={`${dialogId}copyAttributes`} />
               </p>
               <p>
-                <input id={`${dialogId}disableCache`} type="checkbox" />
+                <input id={`${dialogId}disableCache`} type="checkbox" tabIndex={0} />
                 <AutoHotKeyLabel text="Disable write cache" htmlFor={`${dialogId}disableCache`} />
               </p>
               <p>
-                <input id={`${dialogId}sparseFiles`} type="checkbox" />
+                <input id={`${dialogId}sparseFiles`} type="checkbox" tabIndex={0} />
                 <AutoHotKeyLabel text="Produce sparse files" htmlFor={`${dialogId}sparseFiles`} />
               </p>
               <p>
-                <input id={`${dialogId}useCopyOnWrite`} type="checkbox" />
+                <input id={`${dialogId}useCopyOnWrite`} type="checkbox" tabIndex={0} />
                 <AutoHotKeyLabel text="Use copy-on-write if possible" htmlFor={`${dialogId}useCopyOnWrite`} />
               </p>
               <p>
@@ -122,13 +121,13 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
               <DialogButton id={`${dialogId}copy`} tabIndex={0}>
                 <AutoHotKeyLabel text="Copy" htmlFor={`${dialogId}copy`} />
               </DialogButton>
-              <DialogButton id={`${dialogId}tree`}>
+              <DialogButton id={`${dialogId}tree`} tabIndex={0}>
                 <AutoHotKeyLabel text="F10-Tree" htmlFor={`${dialogId}tree`} />
               </DialogButton>
-              <DialogButton id={`${dialogId}filter`}>
+              <DialogButton id={`${dialogId}filter`} tabIndex={0}>
                 <AutoHotKeyLabel text="Filter" htmlFor={`${dialogId}filter`} />
               </DialogButton>
-              <DialogButton id={`${dialogId}cancel`}>
+              <DialogButton id={`${dialogId}cancel`} tabIndex={0}>
                 <AutoHotKeyLabel text="Cancel" htmlFor={`${dialogId}cancel`} />
               </DialogButton>
             </Border>

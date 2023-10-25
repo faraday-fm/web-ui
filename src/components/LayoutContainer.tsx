@@ -9,13 +9,13 @@ interface LayoutContainerProps {
   direction: "h" | "v";
 }
 
-const Row = styled.div<{ dir: "h" | "v" }>`
+const Row = styled.div.withConfig({ displayName: "Row" })<{ dir: "h" | "v" }>`
   width: 100%;
   display: flex;
   flex-direction: ${(p) => (p.dir === "h" ? "row" : "column")};
 `;
 
-const FlexPanel = styled.div`
+const FlexPanel = styled.div.withConfig({ displayName: "FlexPanel" })`
   display: flex;
   flex-shrink: 0;
   flex-basis: 1px;

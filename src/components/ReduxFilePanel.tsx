@@ -6,14 +6,14 @@ import { CursorPosition, usePanelState, usePanels } from "@features/panels";
 import { FilePanelLayout } from "@types";
 import { combine, isRoot } from "@utils/path";
 import { empty, type Ordering } from "list";
-import { useCallback, useEffect, useRef } from "react";
+import { memo, useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 interface ReduxFilePanelProps {
   layout: FilePanelLayout & { id: string };
 }
 
-const Root = styled.div`
+const Root = styled.div.withConfig({ displayName: "Root" })`
   width: 100%;
   height: 100%;
   display: flex;
@@ -27,7 +27,7 @@ function fsCompare(a: FsEntry, b: FsEntry): Ordering {
   return collator.compare(a.name, b.name) as Ordering;
 }
 
-export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
+export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
   const { id } = layout;
   const panelRef = useRef<FilePanelActions>(null);
   const { activePanelId, initPanelState, setPanelItems, setPanelCursorPos, setActivePanel, popDir } = usePanels();
@@ -80,6 +80,9 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
     )
   );
 
+  const onFocus = useCallback(() => setActivePanel(id), [id, setActivePanel]);
+  const onDirUp = useCallback(() => popDir(id), [id, popDir]);
+
   const onCursorPositionChange = useCallback(
     (cursorPos: CursorPosition) => {
       setPanelCursorPos(id, cursorPos);
@@ -92,9 +95,9 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
       <FilePanel
         ref={panelRef}
         showCursorWhenBlurred={isActive}
-        onFocus={() => setActivePanel(id)}
+        onFocus={onFocus}
         onCursorPositionChange={onCursorPositionChange}
-        onDirUp={() => popDir(id)}
+        onDirUp={onDirUp}
         cursor={cursor}
         items={items}
         path={state ? state.path : "file:/"}
@@ -102,4 +105,4 @@ export function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
       />
     </Root>
   );
-}
+});

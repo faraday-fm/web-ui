@@ -5,12 +5,12 @@ interface TopMenuItemProps {
   header: string;
 }
 
-const Item = styled.div`
+const Item = styled.div.withConfig({ displayName: "Item" })`
   position: relative;
   padding: 0 1em;
 `;
 
-const Label = styled.div`
+const Label = styled.div.withConfig({ displayName: "Label" })`
   position: absolute;
   top: 100%;
   background-color: red;

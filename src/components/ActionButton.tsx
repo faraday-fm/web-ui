@@ -1,3 +1,4 @@
+import { memo } from "react";
 import styled from "styled-components";
 
 interface ActionButtonProps {
@@ -5,7 +6,7 @@ interface ActionButtonProps {
   header: string;
 }
 
-const Root = styled.span`
+const Root = styled.span.withConfig({ displayName: "Root" })`
   display: flex;
   flex-wrap: nowrap;
   align-items: baseline;
@@ -15,12 +16,12 @@ const Root = styled.span`
   }
 `;
 
-const FnKey = styled.span`
+const FnKey = styled.span.withConfig({ displayName: "FnKey" })`
   color: ${(p) => p.theme.colors["actionBar.keyForeground"]};
   background-color: ${(p) => p.theme.colors["actionBar.keyBackground"]};
 `;
 
-const HeaderButton = styled.div`
+const HeaderButton = styled.div.withConfig({ displayName: "HeaderButton" })`
   text-align: left;
   width: 100%;
   background-color: ${(p) => p.theme.colors["actionBar.buttonBackground"]};
@@ -29,12 +30,12 @@ const HeaderButton = styled.div`
   cursor: pointer;
 `;
 
-export function ActionButton({ fnKey, header }: ActionButtonProps) {
+export const ActionButton = memo(function ActionButton({ fnKey, header }: ActionButtonProps) {
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events
-    <Root onMouseDown={(e) => e.preventDefault()}>
+    <Root onMouseDown={(e: React.MouseEvent) => e.preventDefault()}>
       <FnKey>{fnKey}</FnKey>
       <HeaderButton>{header}</HeaderButton>
     </Root>
   );
-}
+});

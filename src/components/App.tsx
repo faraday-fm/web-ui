@@ -17,7 +17,7 @@ import styled from "styled-components";
 
 const decoder = new TextDecoder();
 
-const AppDiv = styled.div`
+const AppDiv = styled.div.withConfig({ displayName: "AppDiv" })`
   font-size: 14px;
   button,
   input {
@@ -35,7 +35,18 @@ const AppDiv = styled.div`
   direction: ltr;
 `;
 
-const TerminalContainer = styled.div`
+const MainDiv = styled.div.withConfig({ displayName: "MainDiv" })`
+  grid-row: 1;
+  position: relative;
+  overflow: hidden;
+`;
+
+const FooterDiv = styled.div.withConfig({ displayName: "FooterDiv" })`
+  grid-row: 2;
+  overflow: hidden;
+`;
+
+const TerminalContainer = styled.div.withConfig({ displayName: "TerminalContainer" })`
   position: absolute;
   top: 0;
   bottom: 0;
@@ -44,7 +55,7 @@ const TerminalContainer = styled.div`
   z-index: 0;
 `;
 
-const PanelsContainer = styled.div`
+const PanelsContainer = styled.div.withConfig({ displayName: "PanelsContainer" })`
   position: absolute;
   left: 0;
   right: 0;
@@ -55,7 +66,7 @@ const PanelsContainer = styled.div`
   z-index: 0;
 `;
 
-function App() {
+export function App() {
   const rootRef = useRef<HTMLDivElement>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [panelsOpen, setPanelsOpen] = useState(true);
@@ -108,7 +119,7 @@ function App() {
 
   return (
     <AppDiv ref={rootRef}>
-      <div style={{ gridRow: 1, position: "relative", overflow: "hidden" }}>
+      <MainDiv>
         <TerminalContainer>
           {/* <Suspense fallback={<div />}>
               <Terminal fullScreen={!panelsOpen} onRunStart={onRunStart} onRunEnd={onRunEnd} />
@@ -124,14 +135,12 @@ function App() {
         >
           {panelsLayout && <LayoutContainer layout={panelsLayout} direction="h" />}
         </PanelsContainer>
-      </div>
-      <div style={{ gridRow: 2, overflow: "hidden" }}>
+      </MainDiv>
+      <FooterDiv>
         <ActionsBar />
-      </div>
+      </FooterDiv>
       <DialogPlaceholder open={dialogOpen} onClose={() => setDialogOpen(false)} />
       {/* <TopMenu /> */}
     </AppDiv>
   );
 }
-
-export default App;

@@ -1,17 +1,14 @@
 import { ContextVariables, useContextVariables } from "@features/contextVariables";
+import { usePrevValueIfDeepEqual } from "@hooks/usePrevValueIfDeepEqual";
 import { Node, parser } from "@utils/whenClauseParser";
-import equal from "fast-deep-equal";
-import { useCallback, useEffect, useId, useMemo, useRef } from "react";
+import { useCallback, useEffect, useId, useMemo } from "react";
 
 type Variables = string | string[] | Record<string, unknown>;
 
 export function useCommandContext(variables: Variables, isActive = true): void {
   const id = useId();
   const { setVariables } = useContextVariables();
-  const prevVariables = useRef<Variables>();
-  if (prevVariables.current && equal(prevVariables.current, variables)) {
-    variables = prevVariables.current;
-  }
+  variables = usePrevValueIfDeepEqual(variables);
 
   useEffect(() => {
     if (!isActive) {
@@ -30,7 +27,6 @@ export function useCommandContext(variables: Variables, isActive = true): void {
       vars = variables;
     }
     setVariables(id, vars);
-    prevVariables.current = variables;
   }, [id, isActive, setVariables, variables]);
 
   useEffect(() => {

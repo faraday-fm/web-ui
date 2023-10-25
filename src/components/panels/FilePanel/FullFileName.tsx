@@ -1,7 +1,7 @@
 import { useFileIconResolver } from "@contexts/fileIconsContext";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 import isPromise from "is-promise";
-import { ReactElement, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import styled, { DefaultTheme } from "styled-components";
 
 import { CellText } from "./CellText";
@@ -36,18 +36,18 @@ const FileName = styled.span`
 `;
 const FileExt = styled.span``;
 
-export function FullFileName({ cursorStyle, data }: CellProps) {
+export const FullFileName = memo(function FullFileName({ cursorStyle, data }: CellProps) {
   const iconResolver = useFileIconResolver();
   const { height } = useGlyphSize();
 
-  const resolvedIcon = useMemo(() => iconResolver(data?.name ?? "", data?.isDir ?? false), [data, iconResolver]);
+  const resolvedIcon = useMemo(() => iconResolver(data?.name ?? "", data?.isDir ?? false) ?? null, [data, iconResolver]);
 
   const emptyIcon = <div style={{ width: 17 }} />;
-  const [icon, setIcon] = useState<ReactElement | undefined>(!isPromise(resolvedIcon) ? resolvedIcon ?? emptyIcon : emptyIcon);
+  const [icon, setIcon] = useState(!isPromise(resolvedIcon) ? resolvedIcon ?? emptyIcon : emptyIcon);
 
   useEffect(() => {
     void (async () => {
-      const iconElement = await resolvedIcon;
+      const iconElement = isPromise(resolvedIcon) ? await resolvedIcon : resolvedIcon;
       if (iconElement) {
         setIcon(iconElement);
       }
@@ -82,4 +82,4 @@ export function FullFileName({ cursorStyle, data }: CellProps) {
       </LineItem>
     </>
   );
-}
+});

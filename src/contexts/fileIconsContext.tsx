@@ -3,12 +3,12 @@ import { useFs } from "@features/fs/hooks";
 import { IconTheme, isSvgIcon } from "@schemas/iconTheme";
 import { filename } from "@utils/path";
 import isPromise from "is-promise";
-import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, PropsWithChildren, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
-export type IconResolver = (path: string, isDir: boolean) => Promise<React.ReactElement | undefined>;
+export type IconResolver = (path: string, isDir: boolean) => ReactNode | PromiseLike<ReactNode>;
 
-const FileIconsContext = createContext<IconResolver>(() => Promise.reject());
+const FileIconsContext = createContext<IconResolver>(() => undefined);
 
 const themeRoot = "faraday:/extensions/PKief.material-icon-theme-4.25.0";
 
@@ -76,7 +76,7 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
   const cache = useMemo(() => new Map<string, string>(), [iconTheme]);
 
   const resolver: IconResolver = useCallback(
-    async (path, isDir) => {
+    (path, isDir) => {
       if (!iconTheme) {
         return undefined;
       }
