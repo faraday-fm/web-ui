@@ -1,6 +1,5 @@
 import keyBindingsContent from "@assets/keybindings.json5";
 import { useExecuteCommand, useIsInCommandContext } from "@features/commands";
-import { useContextVariables } from "@features/contextVariables";
 import { KeyBindingsSchema } from "@schemas/keyBindings";
 import JSON5 from "json5";
 import { alt, regexp, seq, string } from "parsimmon";

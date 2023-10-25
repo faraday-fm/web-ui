@@ -9,7 +9,6 @@ import { useCommandBindings } from "@features/commands";
 import { useCommandContext } from "@features/commands";
 import { useFileContent } from "@features/fs/hooks";
 import { PanelsLayout } from "@types";
-import FocusTrap from "focus-trap-react";
 import JSON5 from "json5";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
@@ -94,7 +93,7 @@ function App() {
     open: () => {
       changeDir();
     },
-    openShell: () => console.error("OPEN_SHELL"),
+    openShell: () => setDialogOpen(true),
   });
 
   // const leftItems = useMemo(() => Array.from(Array(300).keys()).map((i) => ({ name: i.toString(), size: Math.round(Math.random() * 100000000) })), []);
@@ -108,32 +107,30 @@ function App() {
   }
 
   return (
-    <FocusTrap>
-      <AppDiv ref={rootRef}>
-        <div style={{ gridRow: 1, position: "relative", overflow: "hidden" }}>
-          <TerminalContainer>
-            {/* <Suspense fallback={<div />}>
+    <AppDiv ref={rootRef}>
+      <div style={{ gridRow: 1, position: "relative", overflow: "hidden" }}>
+        <TerminalContainer>
+          {/* <Suspense fallback={<div />}>
               <Terminal fullScreen={!panelsOpen} onRunStart={onRunStart} onRunEnd={onRunEnd} />
             </Suspense> */}
-          </TerminalContainer>
-          <PanelsContainer
-            style={{
-              display: "grid",
-              opacity: !executing && panelsOpen ? 1 : 0,
-              pointerEvents: !executing && panelsOpen ? "all" : "none",
-              bottom: glyphHeight,
-            }}
-          >
-            {panelsLayout && <LayoutContainer layout={panelsLayout} direction="h" />}
-          </PanelsContainer>
-        </div>
-        <div style={{ gridRow: 2, overflow: "hidden" }}>
-          <ActionsBar />
-        </div>
-        <DialogPlaceholder open={dialogOpen} onClose={() => setDialogOpen(false)} />
-        {/* <TopMenu /> */}
-      </AppDiv>
-    </FocusTrap>
+        </TerminalContainer>
+        <PanelsContainer
+          style={{
+            display: "grid",
+            opacity: !executing && panelsOpen ? 1 : 0,
+            pointerEvents: !executing && panelsOpen ? "all" : "none",
+            bottom: glyphHeight,
+          }}
+        >
+          {panelsLayout && <LayoutContainer layout={panelsLayout} direction="h" />}
+        </PanelsContainer>
+      </div>
+      <div style={{ gridRow: 2, overflow: "hidden" }}>
+        <ActionsBar />
+      </div>
+      <DialogPlaceholder open={dialogOpen} onClose={() => setDialogOpen(false)} />
+      {/* <TopMenu /> */}
+    </AppDiv>
   );
 }
 

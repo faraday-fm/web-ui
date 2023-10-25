@@ -117,7 +117,7 @@ export function ColumnsScroller({
   }, []);
 
   const items = [];
-  for (let i = topmostItem; i < Math.min(totalCount, itemsPerColumn * columnCount); i++) {
+  for (let i = topmostItem; i < topmostItem + Math.min(totalCount, itemsPerColumn * columnCount); i++) {
     items.push(
       <div key={i} style={{ height: itemHeight }}>
         {itemContent(i)}

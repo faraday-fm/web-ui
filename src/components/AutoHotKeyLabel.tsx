@@ -10,6 +10,8 @@ type AutoHotKeyLabelProps = {
 
 const Label = styled.label`
   cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
   em {
     font-style: normal;
     color: ${(p) => p.theme.colors["textAcceleratorKey.foreground"]};

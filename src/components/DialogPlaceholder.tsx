@@ -2,8 +2,7 @@ import { AutoHotKeyLabel } from "@components/AutoHotKeyLabel";
 import { Button } from "@components/Button";
 import { QuickNavigationProvider } from "@contexts/quickNavigationContext";
 import { useCommandContext } from "@features/commands";
-import FocusTrap from "focus-trap-react";
-import { useId } from "react";
+import { SyntheticEvent, useEffect, useId, useRef } from "react";
 import styled, { keyframes, useTheme } from "styled-components";
 
 import { Border } from "./Border";
@@ -14,33 +13,16 @@ interface DialogPlaceholderProps {
 }
 
 const backdropAnimation = keyframes`
- 0% { opacity: 0 }
- 100% { opacity: 1 }
+ 0% { opacity: 0;transform: translate(-0%, -5%); }
+ 100% { opacity: 1;transform: translate(0%, 0%); }
 `;
 
-const centeredAnimation = keyframes`
- 0% { transform: translate(-50%, -55%);}
- 100% { transform: translate(-50%, -50%); }
-`;
-
-const Backdrop = styled.div`
-  background-color: ${(p) => p.theme.colors["dialog.backdrop"]};
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
+const Backdrop = styled.dialog`
+  /* background-color: ${(p) => p.theme.colors["dialog.backdrop"]}; */
   animation-name: ${backdropAnimation};
   animation-duration: 0.2s;
-`;
-
-const Centered = styled.div`
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  animation-name: ${centeredAnimation};
-  animation-duration: 0.2s;
+  padding: 0;
+  border-width: 1px;
 `;
 
 const Content = styled.div`
@@ -68,7 +50,7 @@ const DialogButton = styled(Button)`
   }
   &:focus {
     background-color: var(--color-11);
-    outline: none;
+    /* outline: none; */
   }
 `;
 
@@ -76,74 +58,83 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
   useCommandContext("copyDialog", open);
   const theme = useTheme();
   const dialogId = useId();
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
-  if (!open) return null;
+  useEffect(() => {
+    if (open) {
+      dialogRef.current?.showModal();
+    } else {
+      dialogRef.current?.close();
+    }
+  }, [open]);
 
+  const handleCancel = (e: SyntheticEvent<HTMLDialogElement>) => {
+    e.stopPropagation();
+    onClose?.();
+  };
+
+  const popover = { popover: "manual" };
   return (
     <QuickNavigationProvider>
-      <FocusTrap focusTrapOptions={{ onDeactivate: () => onClose?.() }}>
-        <Backdrop role="dialog" aria-modal="true" onMouseDown={() => onClose?.()}>
-          <Centered onMouseDown={(e) => e.stopPropagation()}>
-            <Content>
-              <Border $color={theme.colors["dialog.border"]}>
-                <Border $color={theme.colors["dialog.border"]}>
-                  <p style={{ display: "flex", flexDirection: "column" }}>
-                    <AutoHotKeyLabel text="Copy to:" htmlFor={`${dialogId}copyTo`} />
-                    <input id={`${dialogId}copyTo`} />
-                  </p>
-                </Border>
-                <Border $color={theme.colors["dialog.border"]}>
-                  <p>
-                    <AutoHotKeyLabel text="Already existing files:" htmlFor={`${dialogId}alreadyExisting`} />
-                    <input id={`${dialogId}alreadyExisting`} />
-                  </p>
-                  <p>
-                    <input id={`${dialogId}processMultDist`} type="checkbox" />
-                    <AutoHotKeyLabel text="Process multiple destinations" htmlFor={`${dialogId}processMultDist`} />
-                  </p>
-                  <p>
-                    <input id={`${dialogId}copyAccessMode`} type="checkbox" />
-                    <AutoHotKeyLabel text="Copy files access mode" htmlFor={`${dialogId}copyAccessMode`} />
-                  </p>
-                  <p>
-                    <input id={`${dialogId}copyAttributes`} type="checkbox" />
-                    <AutoHotKeyLabel text="Copy extended attributes" htmlFor={`${dialogId}copyAttributes`} />
-                  </p>
-                  <p>
-                    <input id={`${dialogId}disableCache`} type="checkbox" />
-                    <AutoHotKeyLabel text="Disable write cache" htmlFor={`${dialogId}disableCache`} />
-                  </p>
-                  <p>
-                    <input id={`${dialogId}sparseFiles`} type="checkbox" />
-                    <AutoHotKeyLabel text="Produce sparse files" htmlFor={`${dialogId}sparseFiles`} />
-                  </p>
-                  <p>
-                    <input id={`${dialogId}useCopyOnWrite`} type="checkbox" />
-                    <AutoHotKeyLabel text="Use copy-on-write if possible" htmlFor={`${dialogId}useCopyOnWrite`} />
-                  </p>
-                  <p>
-                    <AutoHotKeyLabel text="With symlinks:" />
-                  </p>
-                </Border>
-                <Border $color={theme.colors["dialog.border"]}>
-                  <DialogButton id={`${dialogId}copy`}>
-                    <AutoHotKeyLabel text="Copy" htmlFor={`${dialogId}copy`} />
-                  </DialogButton>
-                  <DialogButton id={`${dialogId}tree`}>
-                    <AutoHotKeyLabel text="F10-Tree" htmlFor={`${dialogId}tree`} />
-                  </DialogButton>
-                  <DialogButton id={`${dialogId}filter`}>
-                    <AutoHotKeyLabel text="Filter" htmlFor={`${dialogId}filter`} />
-                  </DialogButton>
-                  <DialogButton id={`${dialogId}cancel`}>
-                    <AutoHotKeyLabel text="Cancel" htmlFor={`${dialogId}cancel`} />
-                  </DialogButton>
-                </Border>
-              </Border>
-            </Content>
-          </Centered>
-        </Backdrop>
-      </FocusTrap>
+      <Backdrop ref={dialogRef} onMouseDown={() => onClose?.()} {...popover} onCancel={handleCancel}>
+        <Content onMouseDown={(e) => e.stopPropagation()}>
+          <Border $color={theme.colors["dialog.border"]}>
+            <Border $color={theme.colors["dialog.border"]}>
+              <p style={{ display: "flex", flexDirection: "column" }}>
+                <AutoHotKeyLabel text="Copy to:" htmlFor={`${dialogId}copyTo`} />
+                <input id={`${dialogId}copyTo`} />
+              </p>
+            </Border>
+            <Border $color={theme.colors["dialog.border"]}>
+              <p>
+                <AutoHotKeyLabel text="Already existing files:" htmlFor={`${dialogId}alreadyExisting`} />
+                <input id={`${dialogId}alreadyExisting`} />
+              </p>
+              <p>
+                <input id={`${dialogId}processMultDist`} type="checkbox" tabIndex={0} />
+                <AutoHotKeyLabel text="Process multiple destinations" htmlFor={`${dialogId}processMultDist`} />
+              </p>
+              <p>
+                <input id={`${dialogId}copyAccessMode`} type="checkbox" />
+                <AutoHotKeyLabel text="Copy files access mode" htmlFor={`${dialogId}copyAccessMode`} />
+              </p>
+              <p>
+                <input id={`${dialogId}copyAttributes`} type="checkbox" />
+                <AutoHotKeyLabel text="Copy extended attributes" htmlFor={`${dialogId}copyAttributes`} />
+              </p>
+              <p>
+                <input id={`${dialogId}disableCache`} type="checkbox" />
+                <AutoHotKeyLabel text="Disable write cache" htmlFor={`${dialogId}disableCache`} />
+              </p>
+              <p>
+                <input id={`${dialogId}sparseFiles`} type="checkbox" />
+                <AutoHotKeyLabel text="Produce sparse files" htmlFor={`${dialogId}sparseFiles`} />
+              </p>
+              <p>
+                <input id={`${dialogId}useCopyOnWrite`} type="checkbox" />
+                <AutoHotKeyLabel text="Use copy-on-write if possible" htmlFor={`${dialogId}useCopyOnWrite`} />
+              </p>
+              <p>
+                <AutoHotKeyLabel text="With symlinks:" />
+              </p>
+            </Border>
+            <Border $color={theme.colors["dialog.border"]}>
+              <DialogButton id={`${dialogId}copy`} tabIndex={0}>
+                <AutoHotKeyLabel text="Copy" htmlFor={`${dialogId}copy`} />
+              </DialogButton>
+              <DialogButton id={`${dialogId}tree`}>
+                <AutoHotKeyLabel text="F10-Tree" htmlFor={`${dialogId}tree`} />
+              </DialogButton>
+              <DialogButton id={`${dialogId}filter`}>
+                <AutoHotKeyLabel text="Filter" htmlFor={`${dialogId}filter`} />
+              </DialogButton>
+              <DialogButton id={`${dialogId}cancel`}>
+                <AutoHotKeyLabel text="Cancel" htmlFor={`${dialogId}cancel`} />
+              </DialogButton>
+            </Border>
+          </Border>
+        </Content>
+      </Backdrop>
     </QuickNavigationProvider>
   );
 }

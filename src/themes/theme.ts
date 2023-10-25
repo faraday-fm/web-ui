@@ -96,7 +96,7 @@ const baseTheme = (): DefaultTheme => ({
     "actionBar.buttonForeground": "#dcffe4",
     "actionBar.keyBackground": "#0000",
     "actionBar.keyForeground": "#d1d5da",
-    "dialog.backdrop": "#ff0000",
+    "dialog.backdrop": "#8884",
     "dialog.background": "#203447",
     "dialog.foreground": "#d1d5da",
     "dialog.border": "#405262",
