@@ -1,9 +1,8 @@
-import styled from "styled-components";
-
-import { ActionButton } from "./ActionButton";
+import styled from "@emotion/styled";
 import { memo } from "react";
+import { ActionButton } from "./ActionButton";
 
-const Root = styled.div.withConfig({ displayName: "Root" })`
+const Root = styled.div`
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;

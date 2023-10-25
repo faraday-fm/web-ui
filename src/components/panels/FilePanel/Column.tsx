@@ -1,12 +1,13 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { Border } from "@components/Border";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
+import styled from "@emotion/styled";
 import { useElementSize } from "@hooks/useElementSize";
 import { clamp } from "@utils/number";
 import type { List } from "list";
 import { useEffect, useRef, useState } from "react";
-import styled, { useTheme } from "styled-components";
 
+import { useTheme } from "@emotion/react";
 import { Cell } from "./Cell";
 import { CellText } from "./CellText";
 import { FullFileName } from "./FullFileName";

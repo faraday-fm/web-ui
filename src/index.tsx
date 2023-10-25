@@ -11,7 +11,7 @@ import { useMediaQuery } from "@hooks/useMediaQuery";
 import { AppStoreProvider } from "@features/store";
 import { darkTheme } from "@themes/theme";
 import { FaradayProps } from "@types";
-import { ThemeProvider } from "styled-components";
+import { ThemeProvider } from "@emotion/react";
 
 export { InMemoryFsProvider } from "@features/fs/inMemoryFs";
 export type { FileChangeEvent, FileChangeType, FileSystemProvider, FileSystemWatcher, FsEntry } from "@features/fs/types";

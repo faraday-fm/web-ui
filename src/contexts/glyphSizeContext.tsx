@@ -1,6 +1,6 @@
+import styled from "@emotion/styled";
 import { useElementSize } from "@hooks/useElementSize";
 import { createContext, PropsWithChildren, useContext, useRef } from "react";
-import styled from "styled-components";
 
 const GlyphSizeContext = createContext({ width: 8, height: 16 });
 

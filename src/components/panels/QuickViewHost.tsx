@@ -1,8 +1,8 @@
+import styled from "@emotion/styled";
 import { useQuickView } from "@features/quickViews";
 import { QuickView } from "@schemas/manifest";
 import { DeferredPromise, deferredPromise } from "@utils/promise";
 import { ReactElement, useEffect, useState } from "react";
-import styled from "styled-components";
 
 import { QuickViewFrame, QuickViewFrameActions } from "./QuickViewFrame";
 

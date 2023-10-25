@@ -1,14 +1,14 @@
 import { Highlight } from "@components/Highlight";
 import { useQuickNavigation } from "@contexts/quickNavigationContext";
+import styled from "@emotion/styled";
 import { PropsWithChildren, ReactElement, useRef } from "react";
-import styled from "styled-components";
 
 type AutoHotKeyLabelProps = {
   text: string;
   htmlFor?: string;
 } & PropsWithChildren<unknown>;
 
-const Label = styled.label.withConfig({ displayName: "Label" })`
+const Label = styled.label`
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;

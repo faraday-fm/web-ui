@@ -1,10 +1,10 @@
 import { AutoHotKeyLabel } from "@components/AutoHotKeyLabel";
 import { Button } from "@components/Button";
 import { QuickNavigationProvider } from "@contexts/quickNavigationContext";
+import { keyframes, useTheme } from "@emotion/react";
+import styled from "@emotion/styled";
 import { useCommandContext } from "@features/commands";
 import { SyntheticEvent, useEffect, useId, useRef } from "react";
-import styled, { keyframes, useTheme } from "styled-components";
-
 import { Border } from "./Border";
 
 interface DialogPlaceholderProps {
@@ -17,15 +17,16 @@ const backdropAnimation = keyframes`
  100% { opacity: 1;transform: translate(0%, 0%); }
 `;
 
-const Backdrop = styled.dialog.attrs({ ["popover" as never]: "manual" }).withConfig({ displayName: "Backdrop" })`
+const Backdrop = styled.dialog`
   /* background-color: ${(p) => p.theme.colors["dialog.backdrop"]}; */
   animation-name: ${backdropAnimation};
   animation-duration: 0.2s;
   padding: 0;
   border-width: 1px;
 `;
+Backdrop.defaultProps = { ["popover" as never]: "manual" };
 
-const Content = styled.div.withConfig({ displayName: "Content" })`
+const Content = styled.div`
   background-color: ${(p) => p.theme.colors["dialog.background"]};
   color: ${(p) => p.theme.colors["dialog.foreground"]};
   box-shadow: ${(p) => p.theme.colors["dialog.shadow"]};
@@ -39,7 +40,7 @@ const Content = styled.div.withConfig({ displayName: "Content" })`
   }
 `;
 
-const DialogButton = styled(Button).withConfig({ displayName: "DialogButton" })`
+const DialogButton = styled(Button)`
   margin: 0 0.25em;
   background-color: transparent;
   &:before {

@@ -1,21 +1,21 @@
-import { QuickView } from "@components/panels/QuickView";
 import { ReduxFilePanel } from "@components/ReduxFilePanel";
 import { RenderWhen } from "@components/RenderWhen";
+import { QuickView } from "@components/panels/QuickView";
+import styled from "@emotion/styled";
 import { PanelsLayout } from "@types";
-import styled from "styled-components";
 
 interface LayoutContainerProps {
   layout: PanelsLayout;
   direction: "h" | "v";
 }
 
-const Row = styled.div.withConfig({ displayName: "Row" })<{ dir: "h" | "v" }>`
+const Row = styled.div<{ dir: "h" | "v" }>`
   width: 100%;
   display: flex;
   flex-direction: ${(p) => (p.dir === "h" ? "row" : "column")};
 `;
 
-const FlexPanel = styled.div.withConfig({ displayName: "FlexPanel" })`
+const FlexPanel = styled.div`
   display: flex;
   flex-shrink: 0;
   flex-basis: 1px;

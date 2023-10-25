@@ -1,12 +1,12 @@
+import styled from "@emotion/styled";
 import { memo } from "react";
-import styled from "styled-components";
 
 interface ActionButtonProps {
   fnKey: string;
   header: string;
 }
 
-const Root = styled.span.withConfig({ displayName: "Root" })`
+const Root = styled.span`
   display: flex;
   flex-wrap: nowrap;
   align-items: baseline;
@@ -16,12 +16,12 @@ const Root = styled.span.withConfig({ displayName: "Root" })`
   }
 `;
 
-const FnKey = styled.span.withConfig({ displayName: "FnKey" })`
+const FnKey = styled.span`
   color: ${(p) => p.theme.colors["actionBar.keyForeground"]};
   background-color: ${(p) => p.theme.colors["actionBar.keyBackground"]};
 `;
 
-const HeaderButton = styled.div.withConfig({ displayName: "HeaderButton" })`
+const HeaderButton = styled.div`
   text-align: left;
   width: 100%;
   background-color: ${(p) => p.theme.colors["actionBar.buttonBackground"]};

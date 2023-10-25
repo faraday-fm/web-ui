@@ -1,9 +1,9 @@
-import "styled-components";
+import "@emotion/react";
 
 type Color = CSSProperties["color"];
 type BoxShadow = CSSProperties["boxShadow"];
 
-declare module "styled-components" {
+declare module "@emotion/react" {
   export interface Palette {
     bgColor0: Color;
     bgColor1: Color;
@@ -23,7 +23,7 @@ declare module "styled-components" {
     fgColor7: Color;
   }
 
-  export interface DefaultTheme {
+  export interface Theme {
     fontFamily: string;
     colors: {
       /* Base colors */

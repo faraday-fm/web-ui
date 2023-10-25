@@ -4,20 +4,19 @@ import DialogPlaceholder from "@components/DialogPlaceholder";
 import { LayoutContainer } from "@components/LayoutContainer";
 import { useFaradayHost } from "@contexts/faradayHostContext";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
-import { usePanels } from "@features/panels";
-import { useCommandBindings } from "@features/commands";
-import { useCommandContext } from "@features/commands";
+import styled from "@emotion/styled";
+import { useCommandBindings, useCommandContext } from "@features/commands";
 import { useFileContent } from "@features/fs/hooks";
+import { usePanels } from "@features/panels";
 import { PanelsLayout } from "@types";
 import JSON5 from "json5";
 import { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
 
 // const Terminal = lazy(() => import("@components/Terminal/Terminal"));
 
 const decoder = new TextDecoder();
 
-const AppDiv = styled.div.withConfig({ displayName: "AppDiv" })`
+const AppDiv = styled.div`
   font-size: 14px;
   button,
   input {
@@ -35,18 +34,18 @@ const AppDiv = styled.div.withConfig({ displayName: "AppDiv" })`
   direction: ltr;
 `;
 
-const MainDiv = styled.div.withConfig({ displayName: "MainDiv" })`
+const MainDiv = styled.div`
   grid-row: 1;
   position: relative;
   overflow: hidden;
 `;
 
-const FooterDiv = styled.div.withConfig({ displayName: "FooterDiv" })`
+const FooterDiv = styled.div`
   grid-row: 2;
   overflow: hidden;
 `;
 
-const TerminalContainer = styled.div.withConfig({ displayName: "TerminalContainer" })`
+const TerminalContainer = styled.div`
   position: absolute;
   top: 0;
   bottom: 0;
@@ -55,7 +54,7 @@ const TerminalContainer = styled.div.withConfig({ displayName: "TerminalContaine
   z-index: 0;
 `;
 
-const PanelsContainer = styled.div.withConfig({ displayName: "PanelsContainer" })`
+const PanelsContainer = styled.div`
   position: absolute;
   left: 0;
   right: 0;

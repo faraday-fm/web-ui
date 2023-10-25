@@ -1,5 +1,7 @@
 import { Border } from "@components/Border";
 import { PanelHeader } from "@components/PanelHeader";
+import { useTheme } from "@emotion/react";
+import styled from "@emotion/styled";
 import { useCommandContext } from "@features/commands";
 import { useFileContent } from "@features/fs/hooks";
 import { useGlobalContext } from "@features/globalContext";
@@ -7,10 +9,9 @@ import { usePanels } from "@features/panels";
 import { useFocused } from "@hooks/useFocused";
 import { QuickViewLayout } from "@types";
 import { useEffect, useRef } from "react";
-import styled, { useTheme } from "styled-components";
 import QuickViewHost from "./QuickViewHost";
 
-const Root = styled.div.withConfig({ displayName: "Root" })`
+const Root = styled.div`
   position: relative;
   width: 100%;
   color: ${(p) => p.theme.colors["panel.foreground"]};
@@ -42,7 +43,7 @@ const Root = styled.div.withConfig({ displayName: "Root" })`
 //   background-color: ${(p) => p.theme.colors[p.isActive ? "panel.header.background:focus" : "panel.header.background"]};
 // `;
 
-const Content = styled.div.withConfig({ displayName: "Content" })`
+const Content = styled.div`
   display: grid;
   grid-template-rows: auto 1fr;
   overflow: hidden;

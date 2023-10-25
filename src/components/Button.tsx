@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
-export const Button = styled.button.withConfig({ displayName: "Button" })`
+export const Button = styled.button`
   margin: 0;
   padding: 0;
   border: none;

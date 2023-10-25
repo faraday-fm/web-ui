@@ -1,7 +1,8 @@
 import quickViewHtml from "@assets/quick-view.html";
+import { useTheme } from "@emotion/react";
+import styled from "@emotion/styled";
 import { deferredPromise } from "@utils/promise";
 import { ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import styled, { useTheme } from "styled-components";
 
 export interface QuickViewFrameActions {
   setContent({ content, path }: { content?: Uint8Array; path: string }): Promise<void>;

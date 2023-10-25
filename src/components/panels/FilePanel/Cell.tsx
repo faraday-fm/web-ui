@@ -1,5 +1,5 @@
+import styled from "@emotion/styled";
 import { MouseEventHandler, PropsWithChildren } from "react";
-import styled from "styled-components";
 
 import { CursorStyle } from "./types";
 

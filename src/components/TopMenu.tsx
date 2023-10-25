@@ -1,9 +1,9 @@
 import { QuickNavigationProvider } from "@contexts/quickNavigationContext";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 import { TopMenuItem } from "./TopMenuItem";
 
-const Root = styled.div.withConfig({ displayName: "Root" })`
+const Root = styled.div`
   display: flex;
   background-color: var(--color-03);
   color: var(--color-00);

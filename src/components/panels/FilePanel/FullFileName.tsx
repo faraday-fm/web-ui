@@ -1,8 +1,9 @@
 import { useFileIconResolver } from "@contexts/fileIconsContext";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
+import { Theme } from "@emotion/react";
+import styled from "@emotion/styled";
 import isPromise from "is-promise";
 import { memo, useEffect, useMemo, useState } from "react";
-import styled, { DefaultTheme } from "styled-components";
 
 import { CellText } from "./CellText";
 import { CursorStyle } from "./types";
@@ -12,7 +13,7 @@ interface CellProps {
   data?: { name: string; isDir?: boolean | undefined };
 }
 
-function getColor(theme: DefaultTheme, name: string, dir: boolean | undefined, selected: boolean) {
+function getColor(theme: Theme, name: string, dir: boolean | undefined, selected: boolean) {
   if (dir) return selected ? theme.colors["files.directory.foreground:focus"] : theme.colors["files.directory.foreground"];
   // if (name.startsWith(".")) return selected ? "var(--color-01)" : "var(--color-02)";
   // if (name.endsWith(".toml") || name.endsWith(".json")) return selected ? "var(--color-01)" : "var(--color-10)";

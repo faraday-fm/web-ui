@@ -1,16 +1,16 @@
 import { AutoHotKeyLabel } from "@components/AutoHotKeyLabel";
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 interface TopMenuItemProps {
   header: string;
 }
 
-const Item = styled.div.withConfig({ displayName: "Item" })`
+const Item = styled.div`
   position: relative;
   padding: 0 1em;
 `;
 
-const Label = styled.div.withConfig({ displayName: "Label" })`
+const Label = styled.div`
   position: absolute;
   top: 100%;
   background-color: red;

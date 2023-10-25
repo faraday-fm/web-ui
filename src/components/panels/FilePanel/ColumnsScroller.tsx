@@ -1,6 +1,6 @@
+import styled from "@emotion/styled";
 import { useElementSize } from "@hooks/useElementSize";
 import { ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import styled from "styled-components";
 
 interface ColumnsScrollerProps {
   topmostItem: number;

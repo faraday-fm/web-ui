@@ -1,23 +1,24 @@
 import { Border } from "@components/Border";
 import { PanelHeader } from "@components/PanelHeader";
 import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
+import { useTheme } from "@emotion/react";
+import styled from "@emotion/styled";
 import { useCommandBindings, useCommandContext, useExecuteBuiltInCommand } from "@features/commands";
 import { FsEntry } from "@features/fs/types";
 import { CursorPosition } from "@features/panels";
-import { usePrevValueIfDeepEqual } from "@hooks/usePrevValueIfDeepEqual";
 import { useElementSize } from "@hooks/useElementSize";
 import { useFocused } from "@hooks/useFocused";
+import { usePrevValueIfDeepEqual } from "@hooks/usePrevValueIfDeepEqual";
 import { FilePanelView } from "@types";
 import { clamp } from "@utils/number";
+import equal from "fast-deep-equal";
 import type { List } from "list";
 import { forwardRef, memo, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
-import styled, { useTheme } from "styled-components";
 import { Breadcrumb } from "../../Breadcrumb";
 import { FileInfoFooter } from "./FileInfoFooter";
 import { CursorStyle } from "./types";
 import { CondensedView } from "./views/CondensedView";
 import { FullView } from "./views/FullView";
-import equal from "fast-deep-equal";
 
 export interface FilePanelProps {
   items: List<FsEntry>;
