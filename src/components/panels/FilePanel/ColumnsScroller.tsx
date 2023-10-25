@@ -1,5 +1,4 @@
 import { useElementSize } from "@hooks/useElementSize";
-import Enumerable from "linq";
 import { ReactNode, useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
 
@@ -55,13 +54,11 @@ const ColumnBorder = styled.div`
 const Scrollable = styled.div``;
 
 function Borders({ columnCount }: { columnCount: number }) {
-  return (
-    <ColumnBorders>
-      {Enumerable.repeat(0, columnCount).select((_, i) => (
-        <ColumnBorder key={i} />
-      ))}
-    </ColumnBorders>
-  );
+  const borders = [];
+  for (let i = 0; i < columnCount; i++) {
+    borders.push(<ColumnBorder key={i} />);
+  }
+  return <ColumnBorders>{borders}</ColumnBorders>;
 }
 
 export function ColumnsScroller({
@@ -119,6 +116,15 @@ export function ColumnsScroller({
     }
   }, []);
 
+  const items = [];
+  for (let i = topmostItem; i < Math.min(totalCount, itemsPerColumn * columnCount); i++) {
+    items.push(
+      <div key={i} style={{ height: itemHeight }}>
+        {itemContent(i)}
+      </div>
+    );
+  }
+
   return (
     <Root ref={rootRef}>
       <Borders columnCount={columnCount} />
@@ -126,11 +132,7 @@ export function ColumnsScroller({
         {/* BUG in Chrome (macOS)? When we use `e` as a key, the column layout works incorrectly without this hidden div */}
         {/* To reproduce: comment out the next line, navigate to a directory with big amount of files and use left-right keyboard arrows. */}
         <div style={{ height: 0.1, overflow: "hidden" }} />
-        {Enumerable.range(topmostItem, Math.min(totalCount, itemsPerColumn * columnCount)).select((e) => (
-          <div key={e} style={{ height: itemHeight }}>
-            {itemContent(e)}
-          </div>
-        ))}
+        {items}
       </Fixed>
       <ScrollableRoot
         ref={scrollableRef}

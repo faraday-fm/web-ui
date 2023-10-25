@@ -1,5 +1,5 @@
 import { FsEntry } from "@features/fs/types";
-import * as L from "list";
+import type { List } from "list";
 
 export interface CursorPosition {
   selectedName?: string;
@@ -10,6 +10,6 @@ export interface CursorPosition {
 
 export interface PanelState {
   path: string;
-  items: L.List<FsEntry>;
+  items: List<FsEntry>;
   cursor: CursorPosition;
 }

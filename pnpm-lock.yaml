@@ -29,9 +29,6 @@ dependencies:
   json5:
     specifier: ^2.2.3
     version: 2.2.3
-  linq:
-    specifier: ^4.0.2
-    version: 4.0.2
   list:
     specifier: ^2.0.19
     version: 2.0.19
@@ -130,9 +127,6 @@ devDependencies:
   react-dom:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
-  react-is:
-    specifier: ^18.2.0
-    version: 18.2.0
   rollup:
     specifier: ^4.1.4
     version: 4.1.4
@@ -3135,10 +3129,6 @@ packages:
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     dev: true
 
-  /linq@4.0.2:
-    resolution: {integrity: sha512-aC2gfJgXgq97QVFuBRfD8pW1L21NYeC9sSomvX37ROSnqDFH98od96CfH61V28SN/OGjTCvxTCnHqW8ti02WDQ==}
-    dev: false
-
   /list@2.0.19:
     resolution: {integrity: sha512-nnVaRp4RaMAQkCpypTThsdxKqgPMiSwJq93eAm2/IbpUa8sd04XKBhkKu+bMk63HmdjK8b8Cuh4xARHWX2ye/Q==}
     dev: false
@@ -3858,10 +3848,6 @@ packages:
 
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
-
-  /react-is@18.2.0:
-    resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
-    dev: true
 
   /react-resize-observer@1.1.1(react@18.2.0):
     resolution: {integrity: sha512-3R+90Hou90Mr3wJYc+unsySC8Pn91V4nmjO32NKvUvjphRUbq9HisyLg7bDyGBE7xlMrrM6Fax7iNQaFdc/FYA==}

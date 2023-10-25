@@ -8,7 +8,7 @@ import { useElementSize } from "@hooks/useElementSize";
 import { useFocused } from "@hooks/useFocused";
 import { FilePanelView } from "@types";
 import { clamp } from "@utils/number";
-import * as L from "list";
+import type { List } from "list";
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
 
@@ -19,7 +19,7 @@ import { CondensedView } from "./views/CondensedView";
 import { FullView } from "./views/FullView";
 
 export interface FilePanelProps {
-  items: L.List<FsEntry>;
+  items: List<FsEntry>;
   cursor: CursorPosition;
   view: FilePanelView;
   path: string;
@@ -82,7 +82,7 @@ const FileInfoPanel = styled.div`
   overflow: hidden;
 `;
 
-function adjustCursor(cursor: CursorPosition, items: L.List<FsEntry>, displayedItems: number): Required<CursorPosition> {
+function adjustCursor(cursor: CursorPosition, items: List<FsEntry>, displayedItems: number): Required<CursorPosition> {
   let selectedIndex = cursor.selectedIndex ?? 0;
   let topmostIndex = cursor.topmostIndex ?? 0;
   let selectedName = cursor.selectedName ?? items.nth(selectedIndex)?.name;

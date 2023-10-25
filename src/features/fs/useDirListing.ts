@@ -1,10 +1,10 @@
 import { FsEntry } from "@features/fs/types";
-import * as L from "list";
+import { empty, type List } from "list";
 import { useEffect } from "react";
 
 import { useFs } from "./useFs";
 
-export function useDirListing(path: string | undefined, onListUpdated: (path: string, files: L.List<FsEntry>) => void) {
+export function useDirListing(path: string | undefined, onListUpdated: (path: string, files: List<FsEntry>) => void) {
   const fs = useFs();
 
   useEffect(() => {
@@ -12,7 +12,7 @@ export function useDirListing(path: string | undefined, onListUpdated: (path: st
 
     const abortController = new AbortController();
     void (async () => {
-      let items = L.empty<FsEntry>();
+      let items = empty<FsEntry>();
       let isReady = false;
       try {
         let timeoutId: number;

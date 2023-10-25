@@ -2,14 +2,14 @@ import { ColumnsScroller } from "@components/panels/FilePanel/ColumnsScroller";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { FsEntry } from "@features/fs/types";
 import { CursorPosition } from "@features/panels";
-import * as L from "list";
+import type { List } from "list";
 
 import { Cell } from "../Cell";
 import { FullFileName } from "../FullFileName";
 import { CursorStyle } from "../types";
 
 interface CondensedViewProps {
-  items: L.List<FsEntry>;
+  items: List<FsEntry>;
   cursor: Required<CursorPosition>;
   cursorStyle: CursorStyle;
   columnCount: number;
