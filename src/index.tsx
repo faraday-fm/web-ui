@@ -12,6 +12,7 @@ import { AppStoreProvider } from "@features/store";
 import { darkTheme, lightTheme } from "@features/themes/themes";
 import { FaradayProps } from "@types";
 import { useStyles } from "@features/styles";
+import { ThemeProvider } from "@features/themes";
 
 export { InMemoryFsProvider } from "@features/fs/inMemoryFs";
 export type { FileChangeEvent, FileChangeType, FileSystemProvider, FileSystemWatcher, FsEntry } from "@features/fs/types";
@@ -23,16 +24,18 @@ export function Faraday({ host }: FaradayProps) {
   useStyles(theme);
   return (
     <AppStoreProvider>
-      <FaradayHostProvider host={host}>
-        <KeyBindingProvider>
-          <GlyphSizeProvider>
-            <FileIconsProvider>
-              <App />
-              <ExtensionsRoot root="faraday:/extensions" />
-            </FileIconsProvider>
-          </GlyphSizeProvider>
-        </KeyBindingProvider>
-      </FaradayHostProvider>
+      <ThemeProvider theme={theme}>
+        <FaradayHostProvider host={host}>
+          <KeyBindingProvider>
+            <GlyphSizeProvider>
+              <FileIconsProvider>
+                <App />
+                <ExtensionsRoot root="faraday:/extensions" />
+              </FileIconsProvider>
+            </GlyphSizeProvider>
+          </KeyBindingProvider>
+        </FaradayHostProvider>
+      </ThemeProvider>
     </AppStoreProvider>
   );
 }
