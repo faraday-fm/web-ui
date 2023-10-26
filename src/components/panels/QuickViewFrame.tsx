@@ -1,6 +1,6 @@
 import quickViewHtml from "@assets/quick-view.html";
-import { useTheme } from "@emotion/react";
-import styled from "@emotion/styled";
+import { css } from "@features/styles";
+import { useTheme } from "@features/themes";
 import { deferredPromise } from "@utils/promise";
 import { ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 
@@ -8,11 +8,6 @@ export interface QuickViewFrameActions {
   setContent({ content, path }: { content?: Uint8Array; path: string }): Promise<void>;
   setVisibility(show: boolean): Promise<void>;
 }
-
-const WebView = styled.iframe`
-  border: none;
-  min-width: 0;
-`;
 
 const quickViewHtmlBase64 = btoa(quickViewHtml);
 
@@ -84,5 +79,6 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
     })();
   }, [theme]);
 
-  return <WebView ref={iframeRef} tabIndex={0} title="" src={`data:text/html;base64,${quickViewHtmlBase64}`} />;
+  // eslint-disable-next-line jsx-a11y/iframe-has-title, jsx-a11y/no-noninteractive-tabindex
+  return <iframe className={css("QuickViewWebView")} ref={iframeRef} tabIndex={0} title="" src={`data:text/html;base64,${quickViewHtmlBase64}`} />;
 });

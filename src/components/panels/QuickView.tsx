@@ -1,60 +1,21 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 import { Border } from "@components/Border";
 import { PanelHeader } from "@components/PanelHeader";
-import { useTheme } from "@emotion/react";
-import styled from "@emotion/styled";
 import { useCommandContext } from "@features/commands";
 import { useFileContent } from "@features/fs/hooks";
 import { useGlobalContext } from "@features/globalContext";
 import { usePanels } from "@features/panels";
+import { css } from "@features/styles";
 import { useFocused } from "@hooks/useFocused";
 import { QuickViewLayout } from "@types";
 import { useEffect, useRef } from "react";
 import QuickViewHost from "./QuickViewHost";
-
-const Root = styled.div`
-  position: relative;
-  width: 100%;
-  color: ${(p) => p.theme.colors["panel.foreground"]};
-  background-color: ${(p) => p.theme.colors["panel.background"]};
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  overflow: hidden;
-  user-select: initial;
-  & div {
-    cursor: initial;
-  }
-  &:focus {
-    outline: none;
-  }
-`;
-
-// const HeaderText = styled.div<{ isActive: boolean }>`
-//   /* position: absolute;
-//   top: 0;
-//   left: 50%;
-//   transform: translate(-50%, 0);
-//   padding: 0 0.5ch;
-//   white-space: nowrap; */
-//   overflow: hidden;
-//   /* text-overflow: ellipsis;
-//   max-width: calc(100% - 2rem);
-//   text-align: left; */
-//   color: ${(p) => p.theme.colors[p.isActive ? "panel.header.foreground:focus" : "panel.header.foreground"]};
-//   background-color: ${(p) => p.theme.colors[p.isActive ? "panel.header.background:focus" : "panel.header.background"]};
-// `;
-
-const Content = styled.div`
-  display: grid;
-  grid-template-rows: auto 1fr;
-  overflow: hidden;
-`;
 
 interface QuickViewPanelProps {
   layout: QuickViewLayout & { id: string };
 }
 
 export function QuickView({ layout }: QuickViewPanelProps) {
-  const theme = useTheme();
   const { id } = layout;
   const { activePanelId, setActivePanel } = usePanels();
   const isActive = activePanelId === id;
@@ -81,13 +42,13 @@ export function QuickView({ layout }: QuickViewPanelProps) {
   const { content, path: contentPath } = useFileContent(activePath ?? "");
 
   return (
-    <Root ref={panelRootRef} tabIndex={0}>
-      <Border $color={focused ? theme.colors["panel.border:focus"] : theme.colors["panel.border"]}>
-        <Content>
-          <PanelHeader $active={isActive}>Quick View</PanelHeader>
+    <div className={css("QuickView")} ref={panelRootRef} tabIndex={0}>
+      <Border color={focused ? "panel-border-focus" : "panel-border"}>
+        <div className={css("QuickViewContent")}>
+          <PanelHeader active={isActive}>Quick View</PanelHeader>
           <QuickViewHost content={content} path={contentPath} />
-        </Content>
+        </div>
       </Border>
-    </Root>
+    </div>
   );
 }

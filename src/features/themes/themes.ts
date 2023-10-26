@@ -1,5 +1,5 @@
-import { Theme } from "@emotion/react";
 import deepmerge from "deepmerge";
+import { Theme } from "./types";
 
 type RecursivePartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends object ? RecursivePartial<T[P]> : T[P];
@@ -62,7 +62,7 @@ type RecursivePartial<T> = {
 //   fgColor7: "#ffffff",
 // };
 
-const baseTheme = (): Theme => ({
+export const baseTheme = (): Theme => ({
   // palette: colors,
   fontFamily: "Verdana, Geneva, sans-serif",
   // fontFamily: "ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace",

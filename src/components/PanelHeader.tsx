@@ -1,7 +1,6 @@
-import styled from "@emotion/styled";
+import { css } from "@features/styles";
+import { PropsWithChildren } from "react";
 
-export const PanelHeader = styled.div<{ $active: boolean }>`
-  color: ${(p) => p.theme.colors[p.$active ? "panel.header.foreground:focus" : "panel.header.foreground"]};
-  background-color: ${(p) => p.theme.colors[p.$active ? "panel.header.background:focus" : "panel.header.background"]};
-  overflow: hidden;
-`;
+export const PanelHeader = ({ active, children }: PropsWithChildren<{ active: boolean }>) => {
+  return <div className={css("PanelHeader", active ? "-active" : "")}>{children}</div>;
+};

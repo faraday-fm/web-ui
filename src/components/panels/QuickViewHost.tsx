@@ -1,19 +1,10 @@
-import styled from "@emotion/styled";
 import { useQuickView } from "@features/quickViews";
 import { QuickView } from "@schemas/manifest";
 import { DeferredPromise, deferredPromise } from "@utils/promise";
 import { ReactElement, useEffect, useState } from "react";
 
 import { QuickViewFrame, QuickViewFrameActions } from "./QuickViewFrame";
-
-const Root = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: grid;
-  align-items: stretch;
-  justify-items: stretch;
-`;
+import { css } from "@features/styles";
 
 interface Frame {
   quickView: QuickView;
@@ -56,9 +47,8 @@ export default function QuickViewHost({ path, content }: { path: string; content
   }, [key, quickView]);
 
   useEffect(() => {
-    // console.info("***", path, content?.length);
     void activeFrame?.actions.promise.then((a) => a.setContent({ content, path }));
   }, [content, path, activeFrame]);
 
-  return <Root>{Object.values(frames).map((f) => f.element)}</Root>;
+  return <div className={css("QuickViewHost")}>{Object.values(frames).map((f) => f.element)}</div>;
 }

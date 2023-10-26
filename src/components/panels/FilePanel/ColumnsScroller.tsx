@@ -1,4 +1,7 @@
-import styled from "@emotion/styled";
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/mouse-events-have-key-events */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import { css } from "@features/styles";
 import { useElementSize } from "@hooks/useElementSize";
 import { ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 
@@ -13,52 +16,12 @@ interface ColumnsScrollerProps {
   onMaxItemsPerColumnChanged?: (count: number) => void;
 }
 
-const Root = styled.div`
-  position: relative;
-  overflow: hidden;
-`;
-
-const Fixed = styled.div`
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  column-gap: 0;
-  column-fill: auto;
-`;
-
-const ScrollableRoot = styled.div`
-  position: absolute;
-  inset: 0;
-  overflow-y: scroll;
-  overscroll-behavior: none;
-  ::-webkit-scrollbar {
-    display: none;
-  }
-`;
-
-const ColumnBorders = styled.div`
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-auto-columns: 1fr;
-  grid-auto-flow: column;
-`;
-const ColumnBorder = styled.div`
-  border-right: 1px solid ${(p) => p.theme.colors["panel.border"]};
-  /* border-right-width: 0; */
-  &:last-child {
-    border-right-width: 0px;
-  }
-`;
-
-const Scrollable = styled.div``;
-
 function Borders({ columnCount }: { columnCount: number }) {
   const borders = [];
   for (let i = 0; i < columnCount; i++) {
-    borders.push(<ColumnBorder key={i} />);
+    borders.push(<div className={css("ColumnBorder")} key={i} />);
   }
-  return <ColumnBorders>{borders}</ColumnBorders>;
+  return <div className={css("ColumnBorders")}>{borders}</div>;
 }
 
 export const ColumnsScroller = memo(
@@ -122,15 +85,16 @@ export const ColumnsScroller = memo(
     }, [columnCount, itemContent, itemHeight, itemsPerColumn, topmostItem, totalCount]);
 
     return (
-      <Root ref={rootRef}>
+      <div className={css("ColumnsScrollerRoot")} ref={rootRef}>
         <Borders columnCount={columnCount} />
-        <Fixed ref={fixedRef} style={{ columnCount }}>
+        <div className={css("ColumnsScrollerFixed")} ref={fixedRef} style={{ columnCount }}>
           {/* BUG in Chrome (macOS)? When we use `e` as a key, the column layout works incorrectly without this hidden div */}
           {/* To reproduce: comment out the next line, navigate to a directory with big amount of files and use left-right keyboard arrows. */}
           <div style={{ height: 0.1, overflow: "hidden" }} />
           {items}
-        </Fixed>
-        <ScrollableRoot
+        </div>
+        <div
+          className={css("ScrollableRoot")}
           ref={scrollableRef}
           style={{ height: itemsPerColumn * itemHeight }}
           onScroll={() => {
@@ -144,7 +108,7 @@ export const ColumnsScroller = memo(
             }
           }}
         >
-          <Scrollable
+          <div
             style={{ height: `calc(100% + ${(totalCount - 1) * itemHeight}px)` }}
             onMouseDown={handleMouseEvent}
             onMouseEnter={handleMouseEvent}
@@ -156,8 +120,8 @@ export const ColumnsScroller = memo(
             onClick={handleMouseEvent}
             onDoubleClick={handleMouseEvent}
           />
-        </ScrollableRoot>
-      </Root>
+        </div>
+      </div>
     );
   }
 );

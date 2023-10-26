@@ -1,0 +1,493 @@
+.frdy.App {
+  font-size: 14px;
+  & :is(button, input) {
+    font-family: inherit;
+    text-rendering: inherit;
+    font-size: inherit;
+  }
+  font-family: var(--fontFamily);
+  text-rendering: geometricPrecision;
+  background-color: #172637;
+  height: 100%;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  flex-direction: column;
+  direction: ltr;
+}
+
+.frdy.Border {
+  display: grid;
+  overflow: hidden;
+  margin: 1px;
+}
+
+.frdy.ColumnRoot {
+  position: relative;
+  display: grid;
+  grid-template-rows: min-content 1fr 0.25rem;
+  height: 100%;
+  text-align: left;
+  box-sizing: border-box;
+  padding-top: calc(0.5rem - 1px);
+}
+
+.frdy.ColumnHeader {
+  text-align: center;
+  color: var(--panel-header-foreground);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding: 0 calc(0.25rem - 1px);
+}
+
+.frdy.TopScroller {
+  position: absolute;
+  height: 0.25rem;
+  left: 0;
+  right: 0;
+  top: 0.5rem;
+  cursor: n-resize;
+}
+
+.frdy.BottomScroller {
+  position: absolute;
+  height: 0.25rem;
+  left: 0;
+  right: 0;
+  bottom: 0rem;
+  cursor: s-resize;
+}
+
+.frdy.ActionsBar {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  overflow: hidden;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+.frdy.ActionButton {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  padding-right: 0.5rem;
+  &:last-child {
+    padding-right: 0;
+  }
+}
+
+.frdy.MainDiv {
+  grid-row: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.frdy.FooterDiv {
+  grid-row: 2;
+  overflow: hidden;
+}
+
+.frdy.TerminalContainer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+}
+
+.frdy.PanelsContainer {
+  display: grid;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 17px;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  z-index: 0;
+}
+
+.frdy.LayoutRow {
+  width: 100%;
+  display: flex;
+}
+
+.frdy.FlexPanel {
+  display: flex;
+  flex-shrink: 0;
+  flex-basis: 1px;
+  overflow: hidden;
+}
+
+.frdy.ReduxFilePanelRoot {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.frdy.TopMenuRoot {
+  display: flex;
+  background-color: var(--color-03);
+  color: var(--color-00);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+.frdy.TopMenuItem {
+  position: relative;
+  padding: 0 1em;
+}
+
+.frdy.TopMenuLabel {
+  position: absolute;
+  top: 100%;
+  background-color: red;
+}
+
+.frdy.QuickViewContent {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+}
+
+.frdy.QuickViewWebView {
+  border: none;
+  min-width: 0;
+}
+
+.frdy.QuickViewHost {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  align-items: stretch;
+  justify-items: stretch;
+}
+
+.frdy.QuickView {
+  position: relative;
+  width: 100%;
+  color: var(--panel-foreground);
+  background-color: var(--panel-background);
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  overflow: hidden;
+  user-select: initial;
+  & div {
+    cursor: initial;
+  }
+  &:focus {
+    outline: none;
+  }
+}
+
+.frdy.FileIcon {
+  display: flex;
+  & svg {
+    width: 17px !important;
+    height: 17px !important;
+  }
+}
+
+.frdy.FullViewColumns {
+  display: grid;
+  overflow: hidden;
+}
+
+.frdy.FullFileName {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.frdy.FullFileExt {
+}
+
+.frdy.PanelContent {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  overflow: hidden;
+}
+
+.frdy.PanelColumns {
+  display: grid;
+  flex-shrink: 1;
+  flex-grow: 1;
+  overflow: hidden;
+  &:focus {
+    outline: none;
+  }
+}
+
+.frdy.PanelFooter {
+  /* position: absolute; */
+  /* bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 0); */
+  /* max-width: calc(100% - 2em); */
+  /* z-index: 1; */
+  padding: 0 0.25em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.frdy.FileInfoPanel {
+  /* border: 1px solid var(--color-11);
+  padding: calc(0.5rem - 1px) calc(0.25rem - 1px);
+  color: var(--color-11); */
+  overflow: hidden;
+}
+
+.frdy.FileInfoRoot {
+  display: flex;
+  overflow: hidden;
+  padding: 0.5rem 0;
+}
+
+.frdy.FileInfoName {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.frdy.FileInfoSize {
+  white-space: nowrap;
+  justify-self: flex-end;
+  margin: 0 0.75rem;
+}
+
+.frdy.FileInfoTime {
+  white-space: nowrap;
+  justify-self: flex-end;
+}
+
+.frdy.ColumnsScrollerRoot {
+  position: relative;
+  overflow: hidden;
+}
+
+.frdy.ColumnsScrollerFixed {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  column-gap: 0;
+  column-fill: auto;
+}
+
+.frdy.ScrollableRoot {
+  position: absolute;
+  inset: 0;
+  overflow-y: scroll;
+  overscroll-behavior: none;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.frdy.ColumnBorders {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-auto-columns: 1fr;
+  grid-auto-flow: column;
+}
+
+.frdy.ColumnBorder {
+  border-right: 1px solid var(--panel-border);
+  /* border-right-width: 0; */
+  &:last-child {
+    border-right-width: 0px;
+  }
+}
+
+.frdy.FnKey {
+  color: var(--actionBar-keyForeground);
+  background-color: var(--actionBar-keyBackground);
+}
+
+.frdy.HeaderButton {
+  text-align: left;
+  width: 100%;
+  background-color: var(--actionBar-buttonBackground);
+  color: var(--actionBar-buttonForeground);
+  padding: 0;
+  cursor: pointer;
+}
+
+.frdy.AutoHotKeyLabel {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  & em {
+    font-style: normal;
+    color: var(--textAcceleratorKey-foreground);
+  }
+}
+
+.frdy.LineItem {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 calc(0.25rem - 1px);
+  flex-grow: 1;
+  display: flex;
+}
+
+.frdy.PanelRoot {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  color: var(--panel-foreground);
+  background-color: var(--panel-background);
+  display: grid;
+  overflow: hidden;
+  outline: none;
+  user-select: none;
+  &.-focused {
+    background-color: var(--panel-background-focus);
+  }
+}
+.frdy.Cell {
+  display: flex;
+  margin-right: 1px;
+  cursor: default;
+  overflow: hidden;
+  padding: 0 2px;
+  /* margin: 0 2px; */
+  border-radius: 2px;
+  /* ${(p) => p.$cursorStyle === "firm" && "filter: invert(1);"} */
+  border: 1px solid transparent;
+  &:is(.-firm, .-inactive) {
+    background-color: var(--files-file-background-focus);
+    border: 1px solid var(--files-file-border-focus);
+  }
+}
+
+@keyframes dialogAnimation {
+  0% {
+    opacity: 0;
+    transform: translate(-0%, -5%);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0%, 0%);
+  }
+}
+
+.frdy.DialogBackdrop {
+  animation-name: dialogAnimation;
+  animation-duration: 0.2s;
+  padding: 0;
+  border-width: 1px;
+}
+
+.frdy.DialogContent {
+  background-color: var(--dialog-background);
+  color: var(--dialog-foreground);
+  box-shadow: var(--dialog-shadow);
+  padding: 0.5rem;
+  & p {
+    margin: 0;
+    padding: 1px;
+  }
+  & input:focus {
+    outline: auto;
+  }
+}
+
+.frdy.DialogButton {
+  margin: 0 0.25em;
+  background-color: transparent;
+  border: none;
+  &:before {
+    content: "[ ";
+  }
+  &:after {
+    content: " ]";
+  }
+  &:focus {
+    background-color: var(--color-11);
+    /* outline: none; */
+  }
+}
+
+.frdy.PanelHeader {
+  color: var(--panel-header-foreground);
+  background-color: var(--panel-header-background);
+  overflow: hidden;
+  &.-active {
+    color: var(--panel-header-foreground-focus);
+    background-color: var(--panel-header-background-focus);
+  }
+}
+
+.frdy.Breadcrumb {
+  --background: linear-gradient(to right, transparent, var(--panel-header-background));
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+
+  &:hover > :not(:hover):last-child {
+    /* flex-shrink: 1; */
+  }
+  &.-active {
+    --background: linear-gradient(to right, transparent, var(--panel-header-background-focus));
+  }
+}
+
+.frdy.BreadcrumbItem {
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  flex-shrink: 1;
+  min-width: 2ch;
+  transition: flex-shrink 0.2s;
+  cursor: default;
+  &:hover {
+    flex-shrink: 0;
+    /* text-decoration: underline; */
+    &::after {
+      opacity: 0;
+    }
+  }
+  &:last-child {
+    flex-shrink: 0;
+    /* &::after {
+      transition: 0;
+    } */
+  }
+  &:first-of-type {
+    min-width: 1ch;
+  }
+  &:first-of-type::before {
+    content: "";
+  }
+  &::before {
+    content: "/";
+    /* content: "›";
+    font-size: small;
+    margin: 0 5px; */
+  }
+  &::after {
+    position: absolute;
+    content: "";
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 2ch;
+    background: var(--background);
+    transition: opacity 0.2s;
+    opacity: 0;
+    pointer-events: none;
+  }
+  &.-showOverflow::after {
+    opacity: 1;
+  }
+}

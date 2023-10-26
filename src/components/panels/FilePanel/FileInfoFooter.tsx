@@ -1,6 +1,6 @@
 import { useGlyphSize } from "@contexts/glyphSizeContext";
-import styled from "@emotion/styled";
 import { FsEntry } from "@features/fs/types";
+import { css } from "@features/styles";
 import { formatDateTime } from "@utils/date";
 import { bytesToSize } from "@utils/number";
 import { memo } from "react";
@@ -8,27 +8,6 @@ import { memo } from "react";
 interface FileInfoFooterProps {
   file?: FsEntry;
 }
-
-const FileRoot = styled.div`
-  display: flex;
-  overflow: hidden;
-  padding: 0.5rem 0;
-`;
-const FileName = styled.div`
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  flex: 1;
-`;
-const FileSize = styled.div`
-  white-space: nowrap;
-  justify-self: flex-end;
-  margin: 0 0.75rem;
-`;
-const FileTime = styled.div`
-  white-space: nowrap;
-  justify-self: flex-end;
-`;
 
 function formatFileSize(e?: FsEntry) {
   if (!e) {
@@ -58,10 +37,10 @@ function formatFileSize(e?: FsEntry) {
 export const FileInfoFooter = memo(({ file }: FileInfoFooterProps) => {
   const { height } = useGlyphSize();
   return (
-    <FileRoot>
-      <FileName style={{ height }}>{file?.name}</FileName>
-      <FileSize>{formatFileSize(file)}</FileSize>
-      <FileTime>{file?.modified ? formatDateTime(new Date(file.modified)) : undefined}</FileTime>
-    </FileRoot>
+    <div className={css("FileInfoRoot")} style={{ height }}>
+      <div className={css("FileInfoName")}>{file?.name}</div>
+      <div className={css("FileInfoSize")}>{formatFileSize(file)}</div>
+      <div className={css("FileInfoTime")}>{file?.modified ? formatDateTime(new Date(file.modified)) : undefined}</div>
+    </div>
   );
 });

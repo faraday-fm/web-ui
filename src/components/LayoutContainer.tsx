@@ -1,7 +1,7 @@
 import { ReduxFilePanel } from "@components/ReduxFilePanel";
 import { RenderWhen } from "@components/RenderWhen";
 import { QuickView } from "@components/panels/QuickView";
-import styled from "@emotion/styled";
+import { css } from "@features/styles";
 import { PanelsLayout } from "@types";
 
 interface LayoutContainerProps {
@@ -9,33 +9,20 @@ interface LayoutContainerProps {
   direction: "h" | "v";
 }
 
-const Row = styled.div<{ dir: "h" | "v" }>`
-  width: 100%;
-  display: flex;
-  flex-direction: ${(p) => (p.dir === "h" ? "row" : "column")};
-`;
-
-const FlexPanel = styled.div`
-  display: flex;
-  flex-shrink: 0;
-  flex-basis: 1px;
-  overflow: hidden;
-`;
-
 export function LayoutContainer({ layout, direction }: LayoutContainerProps) {
   switch (layout.type) {
     case "row":
       return (
         <RenderWhen expression={layout.when ?? "true"}>
-          <Row dir={direction}>
+          <div className={css("LayoutRow")} style={{ flexDirection: direction === "h" ? "row" : "column" }}>
             {layout.children.map((l) => (
               <RenderWhen key={l.id} expression={l.when ?? "true"}>
-                <FlexPanel style={{ flexGrow: l.flex ?? 1 }}>
+                <div className={css("FlexPanel")} style={{ flexGrow: l.flex ?? 1 }}>
                   <LayoutContainer layout={l} direction={direction === "h" ? "v" : "h"} />
-                </FlexPanel>
+                </div>
               </RenderWhen>
             ))}
-          </Row>
+          </div>
         </RenderWhen>
       );
     case "file-panel":

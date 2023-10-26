@@ -1,9 +1,9 @@
-import styled from "@emotion/styled";
 import { FsEntry } from "@features/fs/types";
 import { CursorPosition } from "@features/panels";
 import type { List } from "list";
 import { Column } from "../Column";
 import { ColumnDef, CursorStyle } from "../types";
+import { css } from "@features/styles";
 
 interface FullViewProps {
   items: List<FsEntry>;
@@ -14,11 +14,6 @@ interface FullViewProps {
   onItemClicked?: (pos: number) => void;
   onItemActivated?: (pos: number) => void;
 }
-
-const Columns = styled.div`
-  display: grid;
-  overflow: hidden;
-`;
 
 export function FullView({ items, cursor, cursorStyle, columnDefs, onMaxVisibleItemsChanged, onItemClicked, onItemActivated }: FullViewProps) {
   const columns = new Array(columnDefs.length);
@@ -40,5 +35,9 @@ export function FullView({ items, cursor, cursorStyle, columnDefs, onMaxVisibleI
       />
     );
   }
-  return <Columns style={{ gridTemplateColumns }}>{columns}</Columns>;
+  return (
+    <div className={css("FullViewColumns")} style={{ gridTemplateColumns }}>
+      {columns}
+    </div>
+  );
 }

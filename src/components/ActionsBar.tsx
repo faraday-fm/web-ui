@@ -1,20 +1,10 @@
-import styled from "@emotion/styled";
 import { memo } from "react";
 import { ActionButton } from "./ActionButton";
-
-const Root = styled.div`
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 1fr;
-  overflow: hidden;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-`;
+import { css } from "@features/styles";
 
 export const ActionsBar = memo(function ActionsBar() {
   return (
-    <Root tabIndex={-1}>
+    <div className={css("ActionsBar")} tabIndex={-1}>
       <ActionButton fnKey="1" header="Help" />
       <ActionButton fnKey="2" header="Menu" />
       <ActionButton fnKey="3" header="View" />
@@ -27,6 +17,6 @@ export const ActionsBar = memo(function ActionsBar() {
       <ActionButton fnKey="10" header="Quit" />
       <ActionButton fnKey="11" header="Plugins" />
       <ActionButton fnKey="12" header="Screens" />
-    </Root>
+    </div>
   );
 });

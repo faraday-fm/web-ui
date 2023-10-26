@@ -1,41 +1,23 @@
 import { useFileIconResolver } from "@contexts/fileIconsContext";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
-import { Theme } from "@emotion/react";
-import styled from "@emotion/styled";
 import isPromise from "is-promise";
 import { memo, useEffect, useMemo, useState } from "react";
 
 import { CellText } from "./CellText";
 import { CursorStyle } from "./types";
+import { css } from "@features/styles";
 
 interface CellProps {
   cursorStyle: CursorStyle;
   data?: { name: string; isDir?: boolean | undefined };
 }
 
-function getColor(theme: Theme, name: string, dir: boolean | undefined, selected: boolean) {
-  if (dir) return selected ? theme.colors["files.directory.foreground:focus"] : theme.colors["files.directory.foreground"];
+function getColor(name: string, dir: boolean | undefined, selected: boolean) {
+  if (dir) return selected ? "var(--files-directory-foreground-focus)" : "var(--files-directory-foreground";
   // if (name.startsWith(".")) return selected ? "var(--color-01)" : "var(--color-02)";
   // if (name.endsWith(".toml") || name.endsWith(".json")) return selected ? "var(--color-01)" : "var(--color-10)";
-  return selected ? theme.colors["files.file.foreground:focus"] : theme.colors["files.file.foreground"];
+  return selected ? "var(--files-file-foreground-focus)" : "var(--files-file-foreground)";
 }
-
-const LineItem = styled.span<{ $data: { name: string; isDir?: boolean | undefined }; $cursorStyle: CursorStyle }>`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  padding: 0 calc(0.25rem - 1px);
-  flex-grow: 1;
-  display: flex;
-  color: ${(p) => getColor(p.theme, p.$data?.name, p.$data?.isDir, p.$cursorStyle === "firm")};
-`;
-
-const FileName = styled.span`
-  flex-grow: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-const FileExt = styled.span``;
 
 export const FullFileName = memo(function FullFileName({ cursorStyle, data }: CellProps) {
   const iconResolver = useFileIconResolver();
@@ -73,14 +55,14 @@ export const FullFileName = memo(function FullFileName({ cursorStyle, data }: Ce
   return (
     <>
       <div>{icon}</div>
-      <LineItem $data={data} $cursorStyle={cursorStyle} style={{ lineHeight: `${height}px` }}>
-        <FileName>
+      <span className={css("LineItem")} style={{ lineHeight: `${height}px`, color: getColor(data.name, data?.isDir, cursorStyle === "firm") }}>
+        <span className={css("FullFileName")}>
           <CellText cursorStyle={cursorStyle} text={fileName} />
-        </FileName>
-        <FileExt>
+        </span>
+        <span className={css("FullFileExt")}>
           <CellText cursorStyle={cursorStyle} text={fileExt} />
-        </FileExt>
-      </LineItem>
+        </span>
+      </span>
     </>
   );
 });

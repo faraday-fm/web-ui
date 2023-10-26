@@ -1,13 +1,11 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { Border } from "@components/Border";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
-import styled from "@emotion/styled";
+import { css } from "@features/styles";
 import { useElementSize } from "@hooks/useElementSize";
 import { clamp } from "@utils/number";
 import type { List } from "list";
 import { useEffect, useRef, useState } from "react";
-
-import { useTheme } from "@emotion/react";
 import { Cell } from "./Cell";
 import { CellText } from "./CellText";
 import { FullFileName } from "./FullFileName";
@@ -24,48 +22,12 @@ interface ColumnProps {
   activateItem?: (position: number, shiftModifier: boolean) => void;
 }
 
-const ColumnRoot = styled.div`
-  position: relative;
-  display: grid;
-  grid-template-rows: min-content 1fr 0.25rem;
-  height: 100%;
-  text-align: left;
-  box-sizing: border-box;
-  padding-top: calc(0.5rem - 1px);
-`;
-const ColumnHeader = styled.div`
-  text-align: center;
-  color: ${(p) => p.theme.colors["panel.header.foreground"]};
-  text-overflow: ellipsis;
-  overflow: hidden;
-  padding: 0 calc(0.25rem - 1px);
-`;
-
-const TopScroller = styled.div`
-  position: absolute;
-  height: 0.25rem;
-  left: 0;
-  right: 0;
-  top: 0.5rem;
-  cursor: n-resize;
-`;
-
-const BottomScroller = styled.div`
-  position: absolute;
-  height: 0.25rem;
-  left: 0;
-  right: 0;
-  bottom: 0rem;
-  cursor: s-resize;
-`;
-
 export function Column({ items, topmostIndex, selectedIndex, cursorStyle, columnDef, onMaxItemsCountChange, selectItem, activateItem }: ColumnProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { height: glyphHeight } = useGlyphSize();
   const [autoscroll, setAutoscroll] = useState(0);
   const { height } = useElementSize(ref);
   const lastClickTime = useRef(0);
-  const theme = useTheme();
 
   const maxItemsCount = height ? Math.max(1, Math.trunc(height / glyphHeight)) : undefined;
 
@@ -85,9 +47,9 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
 
   let idx = 0;
   return (
-    <Border $color={theme.colors["panel.border"]}>
-      <ColumnRoot className="ColumnRoot" style={{ overflow: "hidden" }}>
-        <ColumnHeader className="ColumnHeader">{columnDef.name}</ColumnHeader>
+    <Border color="panel-border">
+      <div className={css("ColumnRoot")} style={{ overflow: "hidden" }}>
+        <div className={css("ColumnHeader")}>{columnDef.name}</div>
         <div
           ref={ref}
           style={{ overflow: "hidden" }}
@@ -137,21 +99,23 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
               return result;
             })}
         </div>
-        <TopScroller
+        <div
+          className={css("TopScroller")}
           onMouseDown={(e) => {
             e.stopPropagation();
             window.addEventListener("mouseup", () => setAutoscroll(0), { once: true });
             setAutoscroll(-1);
           }}
         />
-        <BottomScroller
+        <div
+          className={css("BottomScroller")}
           onMouseDown={(e) => {
             e.stopPropagation();
             window.addEventListener("mouseup", () => setAutoscroll(0), { once: true });
             setAutoscroll(1);
           }}
         />
-      </ColumnRoot>
+      </div>
     </Border>
   );
 }

@@ -1,9 +1,9 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { AutoHotKeyLabel } from "@components/AutoHotKeyLabel";
-import { Button } from "@components/Button";
 import { QuickNavigationProvider } from "@contexts/quickNavigationContext";
-import { keyframes, useTheme } from "@emotion/react";
-import styled from "@emotion/styled";
 import { useCommandContext } from "@features/commands";
+import { css } from "@features/styles";
 import { SyntheticEvent, useEffect, useId, useRef } from "react";
 import { Border } from "./Border";
 
@@ -12,52 +12,8 @@ interface DialogPlaceholderProps {
   onClose?: () => void;
 }
 
-const backdropAnimation = keyframes`
- 0% { opacity: 0;transform: translate(-0%, -5%); }
- 100% { opacity: 1;transform: translate(0%, 0%); }
-`;
-
-const Backdrop = styled.dialog`
-  /* background-color: ${(p) => p.theme.colors["dialog.backdrop"]}; */
-  animation-name: ${backdropAnimation};
-  animation-duration: 0.2s;
-  padding: 0;
-  border-width: 1px;
-`;
-Backdrop.defaultProps = { ["popover" as never]: "manual" };
-
-const Content = styled.div`
-  background-color: ${(p) => p.theme.colors["dialog.background"]};
-  color: ${(p) => p.theme.colors["dialog.foreground"]};
-  box-shadow: ${(p) => p.theme.colors["dialog.shadow"]};
-  padding: 0.5rem;
-  p {
-    margin: 0;
-    padding: 1px;
-  }
-  input:focus {
-    outline: auto;
-  }
-`;
-
-const DialogButton = styled(Button)`
-  margin: 0 0.25em;
-  background-color: transparent;
-  &:before {
-    content: "[ ";
-  }
-  &:after {
-    content: " ]";
-  }
-  &:focus {
-    background-color: var(--color-11);
-    /* outline: none; */
-  }
-`;
-
 export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderProps) {
   useCommandContext("copyDialog", open);
-  const theme = useTheme();
   const dialogId = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -76,16 +32,16 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
 
   return (
     <QuickNavigationProvider>
-      <Backdrop ref={dialogRef} onMouseDown={() => onClose?.()} onCancel={handleCancel}>
-        <Content onMouseDown={(e) => e.stopPropagation()}>
-          <Border $color={theme.colors["dialog.border"]}>
-            <Border $color={theme.colors["dialog.border"]}>
+      <dialog className={css("DialogBackdrop")} ref={dialogRef} onMouseDown={() => onClose?.()} onCancel={handleCancel} {...{ popover: "manual" }}>
+        <div className={css("DialogContent")} onMouseDown={(e) => e.stopPropagation()}>
+          <Border color={"dialog-border"}>
+            <Border color={"dialog-border"}>
               <p style={{ display: "flex", flexDirection: "column" }}>
                 <AutoHotKeyLabel text="Copy to:" htmlFor={`${dialogId}copyTo`} />
                 <input id={`${dialogId}copyTo`} />
               </p>
             </Border>
-            <Border $color={theme.colors["dialog.border"]}>
+            <Border color={"dialog-border"}>
               <p>
                 <AutoHotKeyLabel text="Already existing files:" htmlFor={`${dialogId}alreadyExisting`} />
                 <input id={`${dialogId}alreadyExisting`} />
@@ -118,23 +74,23 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
                 <AutoHotKeyLabel text="With symlinks:" />
               </p>
             </Border>
-            <Border $color={theme.colors["dialog.border"]}>
-              <DialogButton id={`${dialogId}copy`} tabIndex={0}>
+            <Border color={"dialog-border"}>
+              <button className={css("DialogButton")} id={`${dialogId}copy`} tabIndex={0}>
                 <AutoHotKeyLabel text="Copy" htmlFor={`${dialogId}copy`} />
-              </DialogButton>
-              <DialogButton id={`${dialogId}tree`} tabIndex={0}>
+              </button>
+              <button className={css("DialogButton")} id={`${dialogId}tree`} tabIndex={0}>
                 <AutoHotKeyLabel text="F10-Tree" htmlFor={`${dialogId}tree`} />
-              </DialogButton>
-              <DialogButton id={`${dialogId}filter`} tabIndex={0}>
+              </button>
+              <button className={css("DialogButton")} id={`${dialogId}filter`} tabIndex={0}>
                 <AutoHotKeyLabel text="Filter" htmlFor={`${dialogId}filter`} />
-              </DialogButton>
-              <DialogButton id={`${dialogId}cancel`} tabIndex={0}>
+              </button>
+              <button className={css("DialogButton")} id={`${dialogId}cancel`} tabIndex={0}>
                 <AutoHotKeyLabel text="Cancel" htmlFor={`${dialogId}cancel`} />
-              </DialogButton>
+              </button>
             </Border>
           </Border>
-        </Content>
-      </Backdrop>
+        </div>
+      </dialog>
     </QuickNavigationProvider>
   );
 }

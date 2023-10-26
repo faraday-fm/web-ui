@@ -1,11 +1,12 @@
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { Border } from "@components/Border";
 import { PanelHeader } from "@components/PanelHeader";
 import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
-import { useTheme } from "@emotion/react";
-import styled from "@emotion/styled";
 import { useCommandBindings, useCommandContext, useExecuteBuiltInCommand } from "@features/commands";
 import { FsEntry } from "@features/fs/types";
 import { CursorPosition } from "@features/panels";
+import { css } from "@features/styles";
 import { useElementSize } from "@hooks/useElementSize";
 import { useFocused } from "@hooks/useFocused";
 import { usePrevValueIfDeepEqual } from "@hooks/usePrevValueIfDeepEqual";
@@ -34,55 +35,6 @@ export interface FilePanelProps {
 export interface FilePanelActions {
   focus(): void;
 }
-
-const PanelRoot = styled.div<{ $focused: boolean }>`
-  width: 100%;
-  height: 100%;
-  position: relative;
-  color: ${(p) => p.theme.colors["panel.foreground"]};
-  background-color: ${(p) => (p.$focused ? p.theme.colors["panel.background:focus"] : p.theme.colors["panel.background"])};
-  display: grid;
-  overflow: hidden;
-  outline: none;
-  user-select: none;
-`;
-
-const PanelContent = styled.div`
-  display: grid;
-  grid-template-rows: auto 1fr auto auto;
-  overflow: hidden;
-`;
-
-const PanelColumns = styled.div`
-  display: grid;
-  flex-shrink: 1;
-  flex-grow: 1;
-  overflow: hidden;
-  &:focus {
-    outline: none;
-  }
-`;
-
-const PanelFooter = styled.div`
-  /* position: absolute; */
-  /* bottom: 0;
-  left: 50%;
-  transform: translate(-50%, 0); */
-  /* max-width: calc(100% - 2em); */
-  /* z-index: 1; */
-  padding: 0 0.25em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: left;
-`;
-
-const FileInfoPanel = styled.div`
-  /* border: 1px solid var(--color-11);
-  padding: calc(0.5rem - 1px) calc(0.25rem - 1px);
-  color: var(--color-11); */
-  overflow: hidden;
-`;
 
 function adjustCursor(cursor: CursorPosition, items: List<FsEntry>, displayedItems: number): Required<CursorPosition> {
   let selectedIndex = cursor.selectedIndex ?? 0;
@@ -247,8 +199,6 @@ export const FilePanel = memo(
       cursorStyle = "hidden";
     }
 
-    const theme = useTheme();
-
     const bytesCount = useMemo(() => items.reduce((acc, item) => acc + (item.size ?? 0), 0), [items]);
     const filesCount = useMemo(() => items.reduce((acc, item) => acc + (item.isFile ? 1 : 0), 0), [items]);
 
@@ -257,22 +207,23 @@ export const FilePanel = memo(
       pathParts.push("/");
     }
     if (!columnCount) {
-      return <PanelRoot ref={panelRootRef} tabIndex={0} $focused={focused} onFocus={handleFocus} />;
+      return <div className={css("PanelRoot", focused ? "-focused" : "")} ref={panelRootRef} tabIndex={0} onFocus={handleFocus} />;
     }
 
     return (
-      <PanelRoot ref={panelRootRef} tabIndex={0} $focused={focused} onFocus={handleFocus}>
+      <div className={css("PanelRoot", focused ? "-focused" : "")} ref={panelRootRef} tabIndex={0} onFocus={handleFocus}>
         <GlyphSizeProvider>
-          <Border $color={focused ? theme.colors["panel.border:focus"] : theme.colors["panel.border"]}>
-            <PanelContent>
-              <PanelHeader $active={focused}>
+          <Border color={focused ? "panel-border-focus" : "panel-border"}>
+            <div className={css("PanelContent")}>
+              <PanelHeader active={focused}>
                 <Breadcrumb isActive={focused}>
                   {pathParts.map((x, i) => (
                     <Breadcrumb.Item key={i}>{x}</Breadcrumb.Item>
                   ))}
                 </Breadcrumb>
               </PanelHeader>
-              <PanelColumns
+              <div
+                className={css("PanelColumns")}
                 // onWheel={(e) => scroll(Math.sign(e.deltaY), true)}
                 onKeyDown={(e) => {
                   // dispatch({ type: "findFirst", char: e.key });
@@ -302,19 +253,19 @@ export const FilePanel = memo(
                     onSelect={handleSelect}
                   />
                 )}
-              </PanelColumns>
-              <FileInfoPanel>
-                <Border $color={theme.colors["panel.border"]}>
+              </div>
+              <div className={css("FileInfoPanel")}>
+                <Border color={"panel-border"}>
                   <FileInfoFooter file={items.nth(adjustedCursor.selectedIndex)} />
                 </Border>
-              </FileInfoPanel>
-              <PanelFooter>
+              </div>
+              <div className={css("PanelFooter")}>
                 {bytesCount.toLocaleString()} bytes in {filesCount.toLocaleString()} files
-              </PanelFooter>
-            </PanelContent>
+              </div>
+            </div>
           </Border>
         </GlyphSizeProvider>
-      </PanelRoot>
+      </div>
     );
   })
 );

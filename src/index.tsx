@@ -9,9 +9,9 @@ import { KeyBindingProvider } from "@contexts/keyBindingContext";
 import { useMediaQuery } from "@hooks/useMediaQuery";
 // import { theme as farTheme } from "@themes/theme";
 import { AppStoreProvider } from "@features/store";
-import { darkTheme } from "@themes/theme";
+import { darkTheme, lightTheme } from "@features/themes/themes";
 import { FaradayProps } from "@types";
-import { ThemeProvider } from "@emotion/react";
+import { useStyles } from "@features/styles";
 
 export { InMemoryFsProvider } from "@features/fs/inMemoryFs";
 export type { FileChangeEvent, FileChangeType, FileSystemProvider, FileSystemWatcher, FsEntry } from "@features/fs/types";
@@ -19,19 +19,19 @@ export type { FaradayConfig, FaradayHost, FaradayProps, Terminal, TerminalSessio
 
 export function Faraday({ host }: FaradayProps) {
   const dark = useMediaQuery("(prefers-color-scheme: dark)");
+  const theme = dark ? darkTheme : lightTheme;
+  useStyles(theme);
   return (
     <AppStoreProvider>
       <FaradayHostProvider host={host}>
-        <ThemeProvider theme={dark ? darkTheme : darkTheme}>
-          <KeyBindingProvider>
-            <GlyphSizeProvider>
-              <FileIconsProvider>
-                <App />
-                <ExtensionsRoot root="faraday:/extensions" />
-              </FileIconsProvider>
-            </GlyphSizeProvider>
-          </KeyBindingProvider>
-        </ThemeProvider>
+        <KeyBindingProvider>
+          <GlyphSizeProvider>
+            <FileIconsProvider>
+              <App />
+              <ExtensionsRoot root="faraday:/extensions" />
+            </FileIconsProvider>
+          </GlyphSizeProvider>
+        </KeyBindingProvider>
       </FaradayHostProvider>
     </AppStoreProvider>
   );

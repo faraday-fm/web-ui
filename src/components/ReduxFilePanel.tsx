@@ -1,9 +1,9 @@
 import { FilePanel, FilePanelActions } from "@components/panels/FilePanel/FilePanel";
-import styled from "@emotion/styled";
 import { useDirListing } from "@features/fs/hooks";
 import { FsEntry } from "@features/fs/types";
 import { useGlobalContext } from "@features/globalContext";
 import { CursorPosition, usePanelState, usePanels } from "@features/panels";
+import { css } from "@features/styles";
 import { FilePanelLayout } from "@types";
 import { combine, isRoot } from "@utils/path";
 import { empty, type Ordering } from "list";
@@ -12,12 +12,6 @@ import { memo, useCallback, useEffect, useRef } from "react";
 interface ReduxFilePanelProps {
   layout: FilePanelLayout & { id: string };
 }
-
-const Root = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-`;
 
 const collator = new Intl.Collator(undefined, { numeric: true, usage: "sort", sensitivity: "case" });
 
@@ -91,7 +85,7 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
   );
 
   return (
-    <Root>
+    <div className={css("ReduxFilePanelRoot")}>
       <FilePanel
         ref={panelRef}
         showCursorWhenBlurred={isActive}
@@ -103,6 +97,6 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
         path={state ? state.path : "file:/"}
         view={layout.view}
       />
-    </Root>
+    </div>
   );
 });

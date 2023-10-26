@@ -1,8 +1,10 @@
-import styled from "@emotion/styled";
+import { css } from "@features/styles";
+import { PropsWithChildren } from "react";
 
-export const Border = styled.div<{ $color: string }>`
-  display: grid;
-  overflow: hidden;
-  border: ${(p) => `1px solid ${p.$color}`};
-  margin: 1px;
-`;
+export const Border = ({ color, children }: PropsWithChildren<{ color: string }>) => {
+  return (
+    <div className={css("Border")} style={{ border: `1px solid var(--${color})` }}>
+      {children}
+    </div>
+  );
+};

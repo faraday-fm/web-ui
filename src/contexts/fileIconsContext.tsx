@@ -1,6 +1,6 @@
-import styled from "@emotion/styled";
 import { Extension } from "@features/extensions/extension";
 import { useFs } from "@features/fs/hooks";
+import { css } from "@features/styles";
 import { IconTheme, isSvgIcon } from "@schemas/iconTheme";
 import { filename } from "@utils/path";
 import isPromise from "is-promise";
@@ -17,16 +17,6 @@ const decoder = new TextDecoder();
 export function useFileIconResolver() {
   return useContext(FileIconsContext);
 }
-
-const IconWrapper = styled.div`
-  width: 17px;
-  height: 17px;
-  display: flex;
-  & svg {
-    width: 17px !important;
-    height: 17px !important;
-  }
-`;
 
 function resolveIconDefinitionName(iconTheme: IconTheme, path: string, isDir: boolean, languageId?: string): string {
   const defaultDef = isDir ? iconTheme.folder : iconTheme.file;
@@ -84,7 +74,7 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
       const cachedIcon = cache.get(iconDefinitionName);
 
       if (cachedIcon) {
-        return <IconWrapper dangerouslySetInnerHTML={{ __html: cachedIcon }} />;
+        return <div className={css("FileIcon")} dangerouslySetInnerHTML={{ __html: cachedIcon }} />;
       }
       const iconDefinition = iconDefinitionName ? iconTheme.theme.iconDefinitions[iconDefinitionName] : undefined;
       const iconPath = isSvgIcon(iconDefinition) ? iconDefinition.iconPath : undefined;
@@ -97,7 +87,7 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
         const svgContent = decoder.decode(svg);
         cache.set(iconDefinitionName, svgContent);
 
-        return <IconWrapper dangerouslySetInnerHTML={{ __html: svgContent }} />;
+        return <div className={css("FileIcon")} dangerouslySetInnerHTML={{ __html: svgContent }} />;
       };
 
       try {

@@ -7,6 +7,7 @@ import { GlobalContextSlice, createGlobalContextSlice } from "./globalContext/gl
 import { PanelsSlice, createPanelsSlice } from "./panels/panels";
 import { SettingsSlice, createSettingsSlice } from "./settings/settings";
 import { ContextVariablesSlice, createContextVariablesSlice } from "./contextVariables/contextVariables";
+import { ThemeSlice, createThemeSlice } from "./themes/theme";
 
 interface Store {
   panels: PanelsSlice;
@@ -14,6 +15,7 @@ interface Store {
   globalContext: GlobalContextSlice;
   settings: SettingsSlice;
   contextVariables: ContextVariablesSlice;
+  theme: ThemeSlice;
 }
 
 const createAppStore = createStore<Store>()(
@@ -24,6 +26,7 @@ const createAppStore = createStore<Store>()(
       globalContext: lens(createGlobalContextSlice),
       settings: lens(createSettingsSlice),
       contextVariables: lens(createContextVariablesSlice),
+      theme: lens(createThemeSlice),
     })
   )
 );
