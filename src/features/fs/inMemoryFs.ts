@@ -1,6 +1,6 @@
 import { combine } from "@utils/path";
 
-import { FileSystemError } from "./FileSystemError";
+import { FileExists, FileIsADirectory, FileNotADirectory, FileNotFound, MountNotSupported } from "./FileSystemError";
 import { FileSystemProvider, FileSystemWatcher, FsEntry } from "./types";
 
 type Dir = FsEntry & { isDir: true; isFile: false; isMoundedFs: false; children: Entry[] };
@@ -43,7 +43,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
   async mount(path: string, fs: FileSystemProvider) {
     const parts = getPathParts(path);
     if (parts.length === 0) {
-      throw FileSystemError.FileNotADirectory();
+      throw FileNotADirectory(path);
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const newDirName = parts.at(-1)!;
@@ -51,18 +51,18 @@ export class InMemoryFsProvider implements FileSystemProvider {
     for (let i = 0; i < parts.length - 1; i += 1) {
       const nextEntry: Entry | undefined = currEntry.children.find((child) => child.name === parts[i]);
       if (!nextEntry) {
-        throw FileSystemError.FileNotFound();
+        throw FileNotFound();
       }
       if (nextEntry.isMoundedFs) {
         if (!nextEntry.fs.mount) {
-          throw FileSystemError.MountNotSupported();
+          throw MountNotSupported();
         }
         // eslint-disable-next-line no-await-in-loop
         await nextEntry.fs.mount(parts.slice(i).join("/"), fs);
         return;
       }
       if (!nextEntry.isDir) {
-        throw FileSystemError.FileNotADirectory();
+        throw FileNotADirectory();
       }
       currEntry = nextEntry;
     }
@@ -70,7 +70,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
     const entry = currEntry.children.find((child) => child.name === parts.at(-1));
 
     if (entry) {
-      throw FileSystemError.MountNotSupported();
+      throw MountNotSupported();
     }
     const newDir: MountedFs = { isDir: true, isMoundedFs: true, isFile: false, fs, name: newDirName };
     currEntry.children.push(newDir);
@@ -86,7 +86,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
     for (let i = 0; i < parts.length - 1; i += 1) {
       const nextEntry: Entry | undefined = currEntry.children.find((child) => child.name === parts[i]);
       if (!nextEntry) {
-        throw FileSystemError.FileNotFound();
+        throw FileNotFound();
       }
       if (nextEntry.isMoundedFs) {
         // eslint-disable-next-line no-await-in-loop
@@ -104,7 +104,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
         return;
       }
       if (!nextEntry.isDir) {
-        throw FileSystemError.FileNotADirectory();
+        throw FileNotADirectory();
       }
       currEntry = nextEntry;
     }
@@ -112,7 +112,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
     const entry = parts.length === 0 ? currEntry : currEntry.children.find((child) => child.name === parts.at(-1));
 
     if (!entry) {
-      throw FileSystemError.FileNotFound();
+      throw FileNotFound();
     }
 
     if (entry.isDir) {
@@ -148,20 +148,20 @@ export class InMemoryFsProvider implements FileSystemProvider {
     for (let i = 0; i < parts.length; i += 1) {
       const nextEntry: Entry | undefined = currEntry.children.find((child) => child.name === parts[i]);
       if (!nextEntry) {
-        throw FileSystemError.FileNotFound();
+        throw FileNotFound();
       }
       if (nextEntry.isMoundedFs) {
         return nextEntry.fs.readDirectory(parts.slice(i + 1).join("/"), options);
       }
       if (!nextEntry.isDir) {
-        throw FileSystemError.FileNotADirectory();
+        throw FileNotADirectory();
       }
       currEntry = nextEntry;
     }
 
     const entry = currEntry;
     if (!entry) {
-      throw FileSystemError.FileNotFound();
+      throw FileNotFound();
     }
 
     return Promise.resolve(currEntry.children);
@@ -174,18 +174,18 @@ export class InMemoryFsProvider implements FileSystemProvider {
     for (let i = 0; i < parts.length - 1; i += 1) {
       const nextEntry: Entry | undefined = currEntry.children.find((child) => child.name === parts[i]);
       if (!nextEntry) {
-        throw FileSystemError.FileNotFound();
+        throw FileNotFound();
       }
       if (nextEntry.isMoundedFs) {
         return nextEntry.fs.createDirectory(parts.slice(i + 1).join("/"), options);
       }
       if (!nextEntry.isDir) {
-        throw FileSystemError.FileNotADirectory();
+        throw FileNotADirectory();
       }
       currEntry = nextEntry;
     }
     if (currEntry.children.find((child) => child.name === newDirName)) {
-      throw FileSystemError.FileExists();
+      throw FileExists();
     }
     const newDir: Dir = { isDir: true, isFile: false, isMoundedFs: false, name: newDirName, children: [] };
     currEntry.children.push(newDir);
@@ -199,29 +199,29 @@ export class InMemoryFsProvider implements FileSystemProvider {
   readFile(path: string, options?: { signal?: AbortSignal }) {
     const parts = getPathParts(path);
     if (parts.length === 0) {
-      throw FileSystemError.FileIsADirectory();
+      throw FileIsADirectory();
     }
     let currEntry: Dir | MountedFs = this.root;
     for (let i = 0; i < parts.length - 1; i += 1) {
       const nextEntry: Entry | undefined = currEntry.children.find((child) => child.name === parts[i]);
       if (!nextEntry) {
-        throw FileSystemError.FileNotFound();
+        throw FileNotFound();
       }
       if (nextEntry.isMoundedFs) {
         return nextEntry.fs.readFile(parts.slice(i + 1).join("/"), options);
       }
       if (!nextEntry.isDir) {
-        throw FileSystemError.FileNotADirectory();
+        throw FileNotADirectory();
       }
       currEntry = nextEntry;
     }
 
     const entry = currEntry.children.find((child) => child.name === parts.at(-1));
     if (!entry) {
-      throw FileSystemError.FileNotFound();
+      throw FileNotFound();
     }
     if (!entry.isFile) {
-      throw FileSystemError.FileIsADirectory();
+      throw FileIsADirectory();
     }
 
     return Promise.resolve(entry.content);
@@ -230,33 +230,33 @@ export class InMemoryFsProvider implements FileSystemProvider {
   writeFile(path: string, content: Uint8Array, options?: { create?: boolean; overwrite?: boolean; signal?: AbortSignal }) {
     const parts = getPathParts(path);
     if (parts.length === 0) {
-      throw FileSystemError.FileIsADirectory();
+      throw FileIsADirectory();
     }
     let currEntry: Dir | MountedFs = this.root;
     const fileName = parts.at(-1) ?? "";
     for (let i = 0; i < parts.length - 1; i += 1) {
       const nextEntry: Entry | undefined = currEntry.children.find((child) => child.name === parts[i]);
       if (!nextEntry) {
-        throw FileSystemError.FileNotFound();
+        throw FileNotFound();
       }
       if (nextEntry.isMoundedFs) {
         return nextEntry.fs.writeFile(parts.slice(i + 1).join("/"), content, options);
       }
       if (!nextEntry.isDir) {
-        throw FileSystemError.FileNotADirectory();
+        throw FileNotADirectory();
       }
       currEntry = nextEntry;
     }
     const entry = currEntry.children.find((child) => child.name === parts.at(-1));
     if (!entry && !options?.create) {
-      throw FileSystemError.FileNotFound();
+      throw FileNotFound();
     }
     if (entry) {
       if (!entry.isFile) {
-        throw FileSystemError.FileIsADirectory();
+        throw FileIsADirectory();
       }
       if (!options?.overwrite) {
-        throw FileSystemError.FileExists();
+        throw FileExists();
       }
       entry.content = content;
     } else {

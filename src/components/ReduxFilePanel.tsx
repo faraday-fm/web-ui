@@ -5,8 +5,8 @@ import { useGlobalContext } from "@features/globalContext";
 import { CursorPosition, usePanelState, usePanels } from "@features/panels";
 import { css } from "@features/styles";
 import { FilePanelLayout } from "@types";
+import { createList } from "@utils/immutableList";
 import { combine, isRoot } from "@utils/path";
-import { empty, type Ordering } from "list";
 import { memo, useCallback, useEffect, useRef } from "react";
 
 interface ReduxFilePanelProps {
@@ -15,10 +15,10 @@ interface ReduxFilePanelProps {
 
 const collator = new Intl.Collator(undefined, { numeric: true, usage: "sort", sensitivity: "case" });
 
-function fsCompare(a: FsEntry, b: FsEntry): Ordering {
+function fsCompare(a: FsEntry, b: FsEntry) {
   if (a.isDir && !b.isDir) return -1;
   if (!a.isDir && b.isDir) return 1;
-  return collator.compare(a.name, b.name) as Ordering;
+  return collator.compare(a.name, b.name);
 }
 
 export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
@@ -29,9 +29,9 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
   const globalContext = useGlobalContext();
   const isActive = activePanelId === id;
 
-  const items = state?.items ?? empty();
+  const items = state?.items ?? createList();
   const cursor = state?.cursor ?? {};
-  const selectedItem = state?.items ? state.items.nth(cursor.selectedIndex ?? 0) : undefined;
+  const selectedItem = state?.items ? state.items.get(cursor.selectedIndex ?? 0) : undefined;
 
   useEffect(() => {
     if (isActive && state?.path && selectedItem) {
@@ -47,7 +47,7 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
 
   useEffect(() => {
     const { path, id } = layout;
-    initPanelState(id, { cursor: {}, items: empty(), path });
+    initPanelState(id, { cursor: {}, items: createList(), path });
   }, [initPanelState, layout]);
 
   // FIXME: If "ready" event is not fired by the filesystem watcher, we should add ".." directory
@@ -64,9 +64,9 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
     state?.path,
     useCallback(
       (dirPath, files) => {
-        files = files.sortWith(fsCompare);
+        files = files.sort(fsCompare);
         if (!isRoot(dirPath)) {
-          files = files.prepend({ name: "..", isDir: true });
+          files = files.unshift({ name: "..", isDir: true });
         }
         setPanelItems(id, files);
       },

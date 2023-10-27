@@ -1,5 +1,3 @@
-import "list/methods";
-
 import { App } from "@components/App";
 import { ExtensionsRoot } from "@components/ExtensionsRoot";
 import { FaradayHostProvider } from "@contexts/faradayHostContext";

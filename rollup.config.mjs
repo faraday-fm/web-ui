@@ -49,7 +49,8 @@ export default defineConfig(() => {
         commonjs({ sourceMap: true }),
         ts(),
         string({ include: "**/*.{json5,html,css}" }),
-        visualizer(),
+        // terser(),
+        visualizer({ gzipSize: true }),
       ],
     },
   ];

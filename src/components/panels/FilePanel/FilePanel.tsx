@@ -11,9 +11,9 @@ import { useElementSize } from "@hooks/useElementSize";
 import { useFocused } from "@hooks/useFocused";
 import { usePrevValueIfDeepEqual } from "@hooks/usePrevValueIfDeepEqual";
 import { FilePanelView } from "@types";
+import { List } from "@utils/immutableList";
 import { clamp } from "@utils/number";
 import equal from "fast-deep-equal";
-import type { List } from "list";
 import { forwardRef, memo, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Breadcrumb } from "../../Breadcrumb";
 import { FileInfoFooter } from "./FileInfoFooter";
@@ -39,30 +39,30 @@ export interface FilePanelActions {
 function adjustCursor(cursor: CursorPosition, items: List<FsEntry>, displayedItems: number): Required<CursorPosition> {
   let selectedIndex = cursor.selectedIndex ?? 0;
   let topmostIndex = cursor.topmostIndex ?? 0;
-  let selectedName = cursor.selectedName ?? items.nth(selectedIndex)?.name;
-  let topmostName = cursor.topmostName ?? items.nth(topmostIndex)?.name;
+  let selectedName = cursor.selectedName ?? items.get(selectedIndex)?.name;
+  let topmostName = cursor.topmostName ?? items.get(topmostIndex)?.name;
 
-  selectedIndex = clamp(0, selectedIndex, items.length - 1);
-  topmostIndex = clamp(0, topmostIndex, items.length - displayedItems);
+  selectedIndex = clamp(0, selectedIndex, items.size() - 1);
+  topmostIndex = clamp(0, topmostIndex, items.size() - displayedItems);
   topmostIndex = clamp(selectedIndex - displayedItems + 1, topmostIndex, selectedIndex);
 
-  if (selectedName !== items.nth(selectedIndex)?.name) {
+  if (selectedName !== items.get(selectedIndex)?.name) {
     const idx = items.findIndex((i) => i.name === selectedName);
     if (idx >= 0) {
       selectedIndex = idx;
     } else {
-      selectedName = items.nth(selectedIndex)?.name;
+      selectedName = items.get(selectedIndex)?.name;
     }
   }
-  if (topmostName !== items.nth(topmostIndex)?.name) {
+  if (topmostName !== items.get(topmostIndex)?.name) {
     const idx = items.findIndex((i) => i.name === topmostName);
     if (idx >= 0) {
       topmostIndex = idx;
     } else {
-      topmostName = items.nth(topmostIndex)?.name;
+      topmostName = items.get(topmostIndex)?.name;
     }
   }
-  topmostIndex = clamp(0, topmostIndex, items.length - displayedItems);
+  topmostIndex = clamp(0, topmostIndex, items.size() - displayedItems);
   topmostIndex = clamp(selectedIndex - displayedItems + 1, topmostIndex, selectedIndex);
   return { selectedIndex, topmostIndex, selectedName: selectedName ?? "", topmostName: topmostName ?? "" };
 }
@@ -80,7 +80,7 @@ export const FilePanel = memo(
       columnCount = Math.ceil(width / 350);
     }
 
-    const displayedItems = columnCount && maxItemsPerColumn ? Math.min(items.length, maxItemsPerColumn * columnCount) : 1;
+    const displayedItems = columnCount && maxItemsPerColumn ? Math.min(items.size(), maxItemsPerColumn * columnCount) : 1;
 
     const adjustedCursor = usePrevValueIfDeepEqual(adjustCursor(cursor, items, displayedItems));
 
@@ -91,7 +91,7 @@ export const FilePanel = memo(
 
     useCommandContext("filePanel.focus", focused);
     useCommandContext({ "filePanel.firstItem": cursor.selectedIndex === 0 }, focused);
-    useCommandContext({ "filePanel.lastItem": cursor.selectedIndex === items.length - 1 }, focused);
+    useCommandContext({ "filePanel.lastItem": cursor.selectedIndex === items.size() - 1 }, focused);
 
     function moveCursorLeftRight(direction: "left" | "right") {
       let c = structuredClone(adjustedCursor);
@@ -106,8 +106,8 @@ export const FilePanel = memo(
           c.topmostIndex -= maxItemsPerColumn ?? 0;
         }
       }
-      c.selectedName = items.nth(c.selectedIndex)?.name ?? "";
-      c.topmostName = items.nth(c.topmostIndex)?.name ?? "";
+      c.selectedName = items.get(c.selectedIndex)?.name ?? "";
+      c.topmostName = items.get(c.topmostIndex)?.name ?? "";
       c = adjustCursor(c, items, displayedItems);
       if (!equal(c, adjustedCursor)) {
         onCursorPositionChange(c);
@@ -121,8 +121,8 @@ export const FilePanel = memo(
         if (followCursor) {
           c.topmostIndex += delta;
         }
-        c.selectedName = items.nth(c.selectedIndex)?.name ?? "";
-        c.topmostName = items.nth(c.topmostIndex)?.name ?? "";
+        c.selectedName = items.get(c.selectedIndex)?.name ?? "";
+        c.topmostName = items.get(c.topmostIndex)?.name ?? "";
         c = adjustCursor(c, items, displayedItems);
         if (!equal(c, adjustedCursor)) {
           onCursorPositionChange(c);
@@ -135,8 +135,8 @@ export const FilePanel = memo(
       (pos: number) => {
         let c = structuredClone(adjustedCursor);
         c.selectedIndex = pos;
-        c.selectedName = items.nth(pos)?.name ?? "";
-        c.topmostName = items.nth(c.topmostIndex)?.name ?? "";
+        c.selectedName = items.get(pos)?.name ?? "";
+        c.topmostName = items.get(c.topmostIndex)?.name ?? "";
         c = adjustCursor(c, items, displayedItems);
         if (!equal(c, adjustedCursor)) {
           onCursorPositionChange(c);
@@ -154,8 +154,8 @@ export const FilePanel = memo(
         c.selectedIndex += displayedItems - 1;
         c.topmostIndex += displayedItems - 1;
       }
-      c.selectedName = items.nth(c.selectedIndex)?.name ?? "";
-      c.topmostName = items.nth(c.topmostIndex)?.name ?? "";
+      c.selectedName = items.get(c.selectedIndex)?.name ?? "";
+      c.topmostName = items.get(c.topmostIndex)?.name ?? "";
       c = adjustCursor(c, items, displayedItems);
       if (!equal(c, adjustedCursor)) {
         onCursorPositionChange(c);
@@ -169,7 +169,7 @@ export const FilePanel = memo(
         cursorUp: () => scroll(-1, false),
         cursorDown: () => scroll(1, false),
         cursorStart: () => moveCursorToPos(0),
-        cursorEnd: () => moveCursorToPos(items.length - 1),
+        cursorEnd: () => moveCursorToPos(items.size() - 1),
         cursorPageUp: () => moveCursorPage("up"),
         cursorPageDown: () => moveCursorPage("down"),
         dirUp: () => onDirUp?.(),
@@ -256,7 +256,7 @@ export const FilePanel = memo(
               </div>
               <div className={css("FileInfoPanel")}>
                 <Border color={"panel-border"}>
-                  <FileInfoFooter file={items.nth(adjustedCursor.selectedIndex)} />
+                  <FileInfoFooter file={items.get(adjustedCursor.selectedIndex)} />
                 </Border>
               </div>
               <div className={css("PanelFooter")}>

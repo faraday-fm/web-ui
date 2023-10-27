@@ -1,11 +1,11 @@
 import { ColumnsScroller } from "@components/panels/FilePanel/ColumnsScroller";
 import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { FsEntry } from "@features/fs/types";
-import type { List } from "list";
 import { memo, useCallback } from "react";
 import { Cell } from "../Cell";
 import { FullFileName } from "../FullFileName";
 import { CursorStyle } from "../types";
+import { List } from "@utils/immutableList";
 
 interface CondensedViewProps {
   items: List<FsEntry>;
@@ -46,7 +46,7 @@ export const CondensedView = memo(function CondensedView({
         }}
         cursorStyle={index === selectedIndex && cursorStyle === "firm" ? "firm" : "hidden"}
       >
-        <FullFileName cursorStyle={index === selectedIndex && cursorStyle === "firm" ? "firm" : "hidden"} data={items.nth(index)} />
+        <FullFileName cursorStyle={index === selectedIndex && cursorStyle === "firm" ? "firm" : "hidden"} data={items.get(index)} />
       </Cell>
     ),
     [cursorStyle, items, onItemActivated, onItemClicked, selectedIndex]
@@ -58,7 +58,7 @@ export const CondensedView = memo(function CondensedView({
       selectedItem={selectedIndex}
       columnCount={columnCount}
       itemContent={itemContent}
-      totalCount={items.length}
+      totalCount={items.size()}
       itemHeight={rowHeight}
       onSelect={handleSelect}
       onMaxItemsPerColumnChanged={onMaxItemsPerColumnChanged}

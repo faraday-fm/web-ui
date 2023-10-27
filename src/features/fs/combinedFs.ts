@@ -1,6 +1,6 @@
 import { truncateProtocol } from "@utils/path";
 
-import { FileSystemError } from "./FileSystemError";
+import { FileNotFound } from "./FileSystemError";
 import { FileChangeEvent, FileSystemProvider } from "./types";
 
 export class CombinedFsProvider implements FileSystemProvider {
@@ -13,7 +13,7 @@ export class CombinedFsProvider implements FileSystemProvider {
   watch(url: string, listener: (events: FileChangeEvent[]) => void, options?: { recursive?: boolean; excludes?: string[]; signal?: AbortSignal }) {
     const provider = this.resolveProvider(url);
     if (!provider) {
-      throw FileSystemError.FileNotFound();
+      throw FileNotFound(url);
     }
     return provider.watch(truncateProtocol(url), listener, options);
   }
@@ -21,7 +21,7 @@ export class CombinedFsProvider implements FileSystemProvider {
   readDirectory(url: string, options?: { signal?: AbortSignal }) {
     const provider = this.resolveProvider(url);
     if (!provider) {
-      throw FileSystemError.FileNotFound();
+      throw FileNotFound(url);
     }
     return provider.readDirectory(truncateProtocol(url), options);
   }
@@ -29,7 +29,7 @@ export class CombinedFsProvider implements FileSystemProvider {
   createDirectory(url: string, options?: { signal?: AbortSignal }) {
     const provider = this.resolveProvider(url);
     if (!provider) {
-      throw FileSystemError.FileNotFound();
+      throw FileNotFound(url);
     }
     return provider.createDirectory(truncateProtocol(url), options);
   }
@@ -37,7 +37,7 @@ export class CombinedFsProvider implements FileSystemProvider {
   readFile(url: string, options?: { signal?: AbortSignal }) {
     const provider = this.resolveProvider(url);
     if (!provider) {
-      throw FileSystemError.FileNotFound();
+      throw FileNotFound(url);
     }
     return provider.readFile(truncateProtocol(url), options);
   }
@@ -45,7 +45,7 @@ export class CombinedFsProvider implements FileSystemProvider {
   writeFile(url: string, content: Uint8Array, options?: { create?: boolean; overwrite?: boolean; signal?: AbortSignal }) {
     const provider = this.resolveProvider(url);
     if (!provider) {
-      throw FileSystemError.FileNotFound();
+      throw FileNotFound(url);
     }
     return provider.writeFile(truncateProtocol(url), content, options);
   }
@@ -63,7 +63,7 @@ export class CombinedFsProvider implements FileSystemProvider {
   copy?(source: string, destination: string, options?: { overwrite?: boolean; signal?: AbortSignal }) {
     const provider = this.resolveProvider(source);
     if (!provider.copy) {
-      throw FileSystemError.FileNotFound(source);
+      throw FileNotFound(source);
     }
     return provider.copy(source, destination, options);
   }
@@ -71,7 +71,7 @@ export class CombinedFsProvider implements FileSystemProvider {
   private resolveProvider(url: string) {
     const provider = this.innerProviders[new URL(url).protocol];
     if (!provider) {
-      throw FileSystemError.FileNotFound(url);
+      throw FileNotFound(url);
     }
     return provider;
   }

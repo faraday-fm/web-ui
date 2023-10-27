@@ -1,8 +1,8 @@
 import { FsEntry } from "@features/fs/types";
-import { empty, type List } from "list";
 import { useEffect } from "react";
 
 import { useFs } from "./useFs";
+import { List, createList } from "@utils/immutableList";
 
 export function useDirListing(path: string | undefined, onListUpdated: (path: string, files: List<FsEntry>) => void) {
   const fs = useFs();
@@ -12,7 +12,7 @@ export function useDirListing(path: string | undefined, onListUpdated: (path: st
 
     const abortController = new AbortController();
     void (async () => {
-      let items = empty<FsEntry>();
+      let items = createList<FsEntry>();
       let isReady = false;
       try {
         let timeoutId: number;
@@ -31,7 +31,7 @@ export function useDirListing(path: string | undefined, onListUpdated: (path: st
                   case "created":
                     const idx = items.findIndex((e) => e.name === name);
                     if (idx >= 0) {
-                      items = items.update(idx, change.entry);
+                      items = items.set(idx, change.entry);
                     } else {
                       items = items.append(change.entry);
                     }
@@ -40,7 +40,7 @@ export function useDirListing(path: string | undefined, onListUpdated: (path: st
                     {
                       const idx = items.findIndex((e) => e.name === name);
                       if (idx >= 0) {
-                        items = items.remove(idx, 1);
+                        items = items.delete(idx);
                       }
                     }
                     break;
@@ -48,7 +48,7 @@ export function useDirListing(path: string | undefined, onListUpdated: (path: st
                     {
                       const idx = items.findIndex((e) => e.name === name);
                       if (idx >= 0) {
-                        items = items.update(idx, change.entry);
+                        items = items.set(idx, change.entry);
                       }
                     }
                     break;

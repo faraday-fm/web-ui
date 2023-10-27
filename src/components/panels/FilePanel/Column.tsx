@@ -4,12 +4,12 @@ import { useGlyphSize } from "@contexts/glyphSizeContext";
 import { css } from "@features/styles";
 import { useElementSize } from "@hooks/useElementSize";
 import { clamp } from "@utils/number";
-import type { List } from "list";
 import { useEffect, useRef, useState } from "react";
 import { Cell } from "./Cell";
 import { CellText } from "./CellText";
 import { FullFileName } from "./FullFileName";
 import { ColumnDef, CursorStyle } from "./types";
+import { List } from "@utils/immutableList";
 
 interface ColumnProps {
   items: List<Record<string, unknown> & { name: string }>;
@@ -39,11 +39,11 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
 
   useEffect(() => {
     if (autoscroll === 0) return undefined;
-    const timer = setInterval(() => selectItem?.(clamp(0, selectedIndex + autoscroll, items.length - 1)), 3);
+    const timer = setInterval(() => selectItem?.(clamp(0, selectedIndex + autoscroll, items.size() - 1)), 3);
     return () => clearInterval(timer);
-  }, [autoscroll, items.length, selectItem, selectedIndex]);
+  }, [autoscroll, items, selectItem, selectedIndex]);
 
-  const displayedItems = items.slice(topmostIndex, Math.min(items.length, topmostIndex + (maxItemsCount ?? 0)));
+  const displayedItems = items.slice(topmostIndex, Math.min(items.size(), topmostIndex + (maxItemsCount ?? 0)));
 
   let idx = 0;
   return (
@@ -56,10 +56,10 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
           onMouseDown={(e) => {
             e.stopPropagation();
             if (Date.now() - lastClickTime.current < 200) {
-              activateItem?.(topmostIndex + displayedItems.length - 1, e.getModifierState("Shift"));
+              activateItem?.(topmostIndex + displayedItems.size() - 1, e.getModifierState("Shift"));
               lastClickTime.current = 0;
             } else {
-              selectItem?.(topmostIndex + displayedItems.length - 1);
+              selectItem?.(topmostIndex + displayedItems.size() - 1);
               lastClickTime.current = Date.now();
             }
           }}

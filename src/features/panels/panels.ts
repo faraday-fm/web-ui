@@ -1,10 +1,10 @@
 import { FsEntry } from "@features/fs/types";
 import { PanelsLayout } from "@types";
-import { ImmerStateCreator } from "@utils/immer";
+import { List, createList } from "@utils/immutableList";
 import { traverseLayout } from "@utils/layout";
 import { combine, truncateLastDir } from "@utils/path";
-import { empty, type List } from "list";
 import { CursorPosition, PanelState } from "./types";
+import { ImmerStateCreator } from "@utils/immer";
 
 interface State {
   activePanelId?: string;
@@ -26,7 +26,6 @@ interface Actions {
 
 export type PanelsSlice = State & Actions;
 
-/** @internal */
 export const createPanelsSlice: ImmerStateCreator<PanelsSlice> = (set) => ({
   activePanelId: undefined as string | undefined,
   layout: undefined as PanelsLayout | undefined,
@@ -46,9 +45,9 @@ export const createPanelsSlice: ImmerStateCreator<PanelsSlice> = (set) => ({
       if (panelsStack && panelsStack.length > 0) {
         const ps = panelsStack[panelsStack.length - 1];
         ps.items = items;
-        if (ps.cursor.selectedIndex && ps.cursor.selectedIndex >= ps.items.length) {
-          ps.cursor.selectedIndex = ps.items.length - 1;
-          ps.cursor.selectedName = ps.items.nth(ps.cursor.selectedIndex)?.name;
+        if (ps.cursor.selectedIndex && ps.cursor.selectedIndex >= ps.items.size()) {
+          ps.cursor.selectedIndex = ps.items.size() - 1;
+          ps.cursor.selectedName = ps.items.get(ps.cursor.selectedIndex)?.name;
         }
       }
     }),
@@ -107,7 +106,7 @@ export const createPanelsSlice: ImmerStateCreator<PanelsSlice> = (set) => ({
           if (panelsStack) {
             const s = panelsStack[panelsStack.length - 1];
             const selectedItemPos = s.cursor.selectedIndex ?? 0;
-            const selectedItem = s.items.nth(selectedItemPos);
+            const selectedItem = s.items.get(selectedItemPos);
             if (selectedItem?.isDir) {
               if (selectedItem.name === "..") {
                 if (panelsStack.length > 1) {
@@ -119,7 +118,7 @@ export const createPanelsSlice: ImmerStateCreator<PanelsSlice> = (set) => ({
                 panelsStack.push({
                   path: combine(s.path, selectedItem.name),
                   cursor: {},
-                  items: empty(),
+                  items: createList(),
                 });
               }
             }
