@@ -5,7 +5,7 @@ import { deferredPromise } from "../../utils/promise";
 import { ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 
 export interface QuickViewFrameActions {
-  setContent({ content, path }: { content?: Uint8Array; path: string }): Promise<void>;
+  setContent({ content, path }: { content?: Uint8Array; path?: string }): Promise<void>;
   setVisibility(show: boolean): Promise<void>;
 }
 

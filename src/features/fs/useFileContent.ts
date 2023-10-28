@@ -2,12 +2,16 @@ import { useEffect, useRef, useState } from "react";
 
 import { useFs } from "./useFs";
 
-export function useFileContent(path: string) {
+export function useFileContent(path?: string, skip?: boolean) {
   const fs = useFs();
-  const [result, setResult] = useState<{ done: boolean; error?: unknown; content?: Uint8Array; path: string }>({ done: false, path });
+  const [result, setResult] = useState<{ done: boolean; error?: unknown; content?: Uint8Array; path?: string }>({ done: false, path });
   const counter = useRef(0);
 
   useEffect(() => {
+    if (!path || skip) {
+      setResult({ done: true, path });
+      return;
+    }
     const abortController = new AbortController();
     (() => {
       counter.current += 1;
@@ -27,6 +31,13 @@ export function useFileContent(path: string) {
           },
           { signal: abortController.signal }
         );
+        fs.readFile(path, { signal: abortController.signal })
+          .then((content) => {
+            setResult({ done: true, content, path });
+          })
+          .catch(() => {
+            /* todo */
+          });
         // if (counter.current === pendingOp) {
         //   setResult({ done: true, content });
         // }
@@ -37,7 +48,7 @@ export function useFileContent(path: string) {
       }
     })();
     return () => abortController.abort();
-  }, [fs, path]);
+  }, [fs, path, skip]);
 
   return result;
 }

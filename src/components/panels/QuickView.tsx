@@ -39,7 +39,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
     }
   }, [isActive]);
 
-  const { content, path: contentPath } = useFileContent(activePath ?? "");
+  const { content, path: contentPath } = useFileContent(activePath, activePath?.endsWith("/.."));
 
   return (
     <div className={css("QuickView")} ref={panelRootRef} tabIndex={0}>

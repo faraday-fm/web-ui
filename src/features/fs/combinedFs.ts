@@ -23,7 +23,7 @@ export class CombinedFsProvider implements FileSystemProvider {
     if (!provider) {
       throw FileNotFound(url);
     }
-    return provider.watchDir(truncateProtocol(url), listener, options);
+    return provider.watchFile(truncateProtocol(url), listener, options);
   }
 
   readDirectory(url: string, options?: { signal?: AbortSignal }) {

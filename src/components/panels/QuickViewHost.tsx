@@ -12,7 +12,7 @@ interface Frame {
   actions: DeferredPromise<QuickViewFrameActions>;
 }
 
-export default function QuickViewHost({ path, content }: { path: string; content?: Uint8Array }) {
+export default function QuickViewHost({ path, content }: { path?: string; content?: Uint8Array }) {
   const [frames, setFrames] = useState<Record<string, Frame>>({});
   const quickView = useQuickView(path);
   const key = quickView ? `${quickView.extId}.${quickView.quickView.id}` : undefined;
