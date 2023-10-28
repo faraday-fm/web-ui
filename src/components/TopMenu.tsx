@@ -1,7 +1,6 @@
-import { QuickNavigationProvider } from "@contexts/quickNavigationContext";
-
+import { QuickNavigationProvider } from "../contexts/quickNavigationContext";
+import { css } from "../features/styles";
 import { TopMenuItem } from "./TopMenuItem";
-import { css } from "@features/styles";
 
 export function TopMenu() {
   return (

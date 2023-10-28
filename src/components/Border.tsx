@@ -1,5 +1,5 @@
-import { css } from "@features/styles";
 import { PropsWithChildren } from "react";
+import { css } from "../features/styles";
 
 export const Border = ({ color, children }: PropsWithChildren<{ color: string }>) => {
   return (

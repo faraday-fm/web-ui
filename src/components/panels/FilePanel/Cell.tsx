@@ -1,9 +1,8 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { MouseEventHandler, PropsWithChildren } from "react";
-
+import { css } from "../../../features/styles";
 import { CursorStyle } from "./types";
-import { css } from "@features/styles";
 
 interface CellProps {
   cursorStyle: CursorStyle;

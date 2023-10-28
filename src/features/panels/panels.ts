@@ -1,10 +1,10 @@
-import { FsEntry } from "@features/fs/types";
-import { PanelsLayout } from "@types";
-import { List, createList } from "@utils/immutableList";
-import { traverseLayout } from "@utils/layout";
-import { combine, truncateLastDir } from "@utils/path";
+import { FsEntry } from "../../features/fs/types";
+import { PanelsLayout } from "../../types";
+import { ImmerStateCreator } from "../../utils/immer";
+import { List, createList } from "../../utils/immutableList";
+import { traverseLayout } from "../../utils/layout";
+import { combine, truncateLastDir } from "../../utils/path";
 import { CursorPosition, PanelState } from "./types";
-import { ImmerStateCreator } from "@utils/immer";
 
 interface State {
   activePanelId?: string;

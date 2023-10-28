@@ -1,11 +1,10 @@
-import { useFileIconResolver } from "@contexts/fileIconsContext";
-import { useGlyphSize } from "@contexts/glyphSizeContext";
 import isPromise from "is-promise";
 import { memo, useEffect, useMemo, useState } from "react";
-
 import { CellText } from "./CellText";
 import { CursorStyle } from "./types";
-import { css } from "@features/styles";
+import { useFileIconResolver } from "../../../contexts/fileIconsContext";
+import { useGlyphSize } from "../../../contexts/glyphSizeContext";
+import { css } from "../../../features/styles";
 
 interface CellProps {
   cursorStyle: CursorStyle;

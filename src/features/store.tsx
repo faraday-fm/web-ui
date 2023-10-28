@@ -2,11 +2,11 @@ import { lens, withLenses } from "@dhmk/zustand-lens";
 import { createContext, useContext, useState } from "react";
 import { createStore } from "zustand";
 import { immer } from "zustand/middleware/immer";
+import { ContextVariablesSlice, createContextVariablesSlice } from "./contextVariables/contextVariables";
 import { ExtensionsSlice, createExtensionsSlice } from "./extensions/extensions";
 import { GlobalContextSlice, createGlobalContextSlice } from "./globalContext/globalContext";
 import { PanelsSlice, createPanelsSlice } from "./panels/panels";
 import { SettingsSlice, createSettingsSlice } from "./settings/settings";
-import { ContextVariablesSlice, createContextVariablesSlice } from "./contextVariables/contextVariables";
 
 interface Store {
   panels: PanelsSlice;

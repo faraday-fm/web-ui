@@ -1,10 +1,10 @@
-import { useQuickView } from "@features/quickViews";
-import { QuickView } from "@schemas/manifest";
-import { DeferredPromise, deferredPromise } from "@utils/promise";
+import { useQuickView } from "../../features/quickViews";
+import { QuickView } from "../../schemas/manifest";
+import { DeferredPromise, deferredPromise } from "../../utils/promise";
 import { ReactElement, useEffect, useState } from "react";
 
 import { QuickViewFrame, QuickViewFrameActions } from "./QuickViewFrame";
-import { css } from "@features/styles";
+import { css } from "../../features/styles";
 
 interface Frame {
   quickView: QuickView;

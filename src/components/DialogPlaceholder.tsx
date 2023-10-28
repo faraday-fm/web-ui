@@ -1,11 +1,11 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import { AutoHotKeyLabel } from "@components/AutoHotKeyLabel";
-import { QuickNavigationProvider } from "@contexts/quickNavigationContext";
-import { useCommandContext } from "@features/commands";
-import { css } from "@features/styles";
 import { SyntheticEvent, useEffect, useId, useRef } from "react";
 import { Border } from "./Border";
+import { useCommandContext } from "../features/commands";
+import { QuickNavigationProvider } from "../contexts/quickNavigationContext";
+import { css } from "../features/styles";
+import { AutoHotKeyLabel } from "./AutoHotKeyLabel";
 
 interface DialogPlaceholderProps {
   open: boolean;

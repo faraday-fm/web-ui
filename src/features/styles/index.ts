@@ -1,6 +1,6 @@
-import styles from "@assets/styles.css";
-import { Theme } from "@features/themes";
 import { useLayoutEffect } from "react";
+import styles from "../../assets/styles.css";
+import { Theme } from "../../features/themes";
 
 const injectCSS = (css: string) => {
   const el = document.createElement("style");

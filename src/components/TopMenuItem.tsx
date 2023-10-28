@@ -1,5 +1,5 @@
-import { AutoHotKeyLabel } from "@components/AutoHotKeyLabel";
-import { css } from "@features/styles";
+import { css } from "../features/styles";
+import { AutoHotKeyLabel } from "./AutoHotKeyLabel";
 
 interface TopMenuItemProps {
   header: string;

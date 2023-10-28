@@ -1,9 +1,9 @@
-import { FsEntry } from "@features/fs/types";
-import { CursorPosition } from "@features/panels";
+import { FsEntry } from "../../../../features/fs/types";
+import { CursorPosition } from "../../../../features/panels";
+import { css } from "../../../../features/styles";
+import { List } from "../../../../utils/immutableList";
 import { Column } from "../Column";
 import { ColumnDef, CursorStyle } from "../types";
-import { css } from "@features/styles";
-import { List } from "@utils/immutableList";
 
 interface FullViewProps {
   items: List<FsEntry>;

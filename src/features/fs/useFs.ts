@@ -1,5 +1,5 @@
-import { useFaradayHost } from "@contexts/faradayHostContext";
-import { CombinedFsProvider } from "@features/fs/combinedFs";
+import { useFaradayHost } from "../../contexts/faradayHostContext";
+import { CombinedFsProvider } from "../../features/fs/combinedFs";
 import { useState } from "react";
 
 export function useFs() {

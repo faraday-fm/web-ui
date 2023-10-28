@@ -1,8 +1,8 @@
-import { ReduxFilePanel } from "@components/ReduxFilePanel";
-import { RenderWhen } from "@components/RenderWhen";
-import { QuickView } from "@components/panels/QuickView";
-import { css } from "@features/styles";
-import { PanelsLayout } from "@types";
+import { css } from "../features/styles";
+import { PanelsLayout } from "../types";
+import { ReduxFilePanel } from "./ReduxFilePanel";
+import { RenderWhen } from "./RenderWhen";
+import { QuickView } from "./panels/QuickView";
 
 interface LayoutContainerProps {
   layout: PanelsLayout;

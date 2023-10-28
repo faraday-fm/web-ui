@@ -1,11 +1,11 @@
-import { ColumnsScroller } from "@components/panels/FilePanel/ColumnsScroller";
-import { useGlyphSize } from "@contexts/glyphSizeContext";
-import { FsEntry } from "@features/fs/types";
 import { memo, useCallback } from "react";
+import { useGlyphSize } from "../../../../contexts/glyphSizeContext";
+import { List } from "../../../../utils/immutableList";
 import { Cell } from "../Cell";
+import { ColumnsScroller } from "../ColumnsScroller";
 import { FullFileName } from "../FullFileName";
 import { CursorStyle } from "../types";
-import { List } from "@utils/immutableList";
+import { FsEntry } from "../../../../features/fs/types";
 
 interface CondensedViewProps {
   items: List<FsEntry>;

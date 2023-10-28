@@ -1,5 +1,5 @@
-import { FaradayHost } from "@types";
 import { createContext, PropsWithChildren, useContext } from "react";
+import { FaradayHost } from "../types";
 
 const FaradayHostContext = createContext<FaradayHost | undefined>(undefined);
 

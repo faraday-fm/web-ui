@@ -1,9 +1,9 @@
-import { FileSystemProvider } from "@features/fs/types";
-import { IconTheme, IconThemeSchema } from "@schemas/iconTheme";
-import { ExtensionManifest, ExtensionManifestSchema } from "@schemas/manifest";
-import { combine } from "@utils/path";
 import JSON5 from "json5";
 import { parse } from "valibot";
+import { FileSystemProvider } from "../../features/fs/types";
+import { IconTheme, IconThemeSchema } from "../../schemas/iconTheme";
+import { ExtensionManifest, ExtensionManifestSchema } from "../../schemas/manifest";
+import { combine } from "../../utils/path";
 
 export class Extension {
   id = "";

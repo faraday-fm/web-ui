@@ -1,4 +1,4 @@
-import { ImmerStateCreator } from "@utils/immer";
+import { ImmerStateCreator } from "../../utils/immer";
 import equal from "fast-deep-equal";
 import { ContextVariables } from "./types";
 

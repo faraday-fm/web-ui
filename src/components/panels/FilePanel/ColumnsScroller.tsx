@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { css } from "@features/styles";
-import { useElementSize } from "@hooks/useElementSize";
 import { ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { css } from "../../../features/styles";
+import { useElementSize } from "../../../hooks/useElementSize";
 
 interface ColumnsScrollerProps {
   topmostItem: number;

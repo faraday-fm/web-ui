@@ -1,6 +1,6 @@
-import { css } from "@features/styles";
 import { PropsWithChildren, useLayoutEffect, useRef, useState } from "react";
 import useResizeObserver from "use-resize-observer";
+import { css } from "../features/styles";
 
 export function BreadcrumbItem({ children }: PropsWithChildren) {
   const ref = useRef<HTMLDivElement>(null);

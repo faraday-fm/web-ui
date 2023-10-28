@@ -1,7 +1,7 @@
-import quickViewHtml from "@assets/quick-view.html";
-import { css } from "@features/styles";
-import { useTheme } from "@features/themes";
-import { deferredPromise } from "@utils/promise";
+import quickViewHtml from "../../assets/quick-view.html";
+import { css } from "../../features/styles";
+import { useTheme } from "../../features/themes";
+import { deferredPromise } from "../../utils/promise";
 import { ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 
 export interface QuickViewFrameActions {

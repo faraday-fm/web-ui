@@ -1,5 +1,5 @@
-import { QuickView } from "@schemas/manifest";
-import { ImmerStateCreator } from "@utils/immer";
+import { QuickView } from "../../schemas/manifest";
+import { ImmerStateCreator } from "../../utils/immer";
 
 type ExtId = string;
 type QuickViewId = string;

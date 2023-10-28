@@ -1,16 +1,16 @@
-import defaultLayout from "@assets/layout.json5";
-import { ActionsBar } from "@components/ActionsBar";
-import DialogPlaceholder from "@components/DialogPlaceholder";
-import { LayoutContainer } from "@components/LayoutContainer";
-import { useFaradayHost } from "@contexts/faradayHostContext";
-import { useGlyphSize } from "@contexts/glyphSizeContext";
-import { useCommandBindings, useCommandContext } from "@features/commands";
-import { useFileContent } from "@features/fs/hooks";
-import { usePanels } from "@features/panels";
-import { css } from "@features/styles";
-import { PanelsLayout } from "@types";
 import JSON5 from "json5";
 import { useEffect, useRef, useState } from "react";
+import defaultLayout from "../assets/layout.json5";
+import { ActionsBar } from "../components/ActionsBar";
+import DialogPlaceholder from "../components/DialogPlaceholder";
+import { LayoutContainer } from "../components/LayoutContainer";
+import { useFaradayHost } from "../contexts/faradayHostContext";
+import { useGlyphSize } from "../contexts/glyphSizeContext";
+import { useCommandBindings, useCommandContext } from "../features/commands";
+import { useFileContent } from "../features/fs/hooks";
+import { usePanels } from "../features/panels";
+import { css } from "../features/styles";
+import { PanelsLayout } from "../types";
 
 // const Terminal = lazy(() => import("@components/Terminal/Terminal"));
 

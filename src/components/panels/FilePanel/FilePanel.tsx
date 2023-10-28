@@ -1,18 +1,5 @@
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import { Border } from "@components/Border";
-import { PanelHeader } from "@components/PanelHeader";
-import { GlyphSizeProvider } from "@contexts/glyphSizeContext";
-import { useCommandBindings, useCommandContext, useExecuteBuiltInCommand } from "@features/commands";
-import { FsEntry } from "@features/fs/types";
-import { CursorPosition } from "@features/panels";
-import { css } from "@features/styles";
-import { useElementSize } from "@hooks/useElementSize";
-import { useFocused } from "@hooks/useFocused";
-import { usePrevValueIfDeepEqual } from "@hooks/usePrevValueIfDeepEqual";
-import { FilePanelView } from "@types";
-import { List } from "@utils/immutableList";
-import { clamp } from "@utils/number";
 import equal from "fast-deep-equal";
 import { forwardRef, memo, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Breadcrumb } from "../../Breadcrumb";
@@ -20,6 +7,19 @@ import { FileInfoFooter } from "./FileInfoFooter";
 import { CursorStyle } from "./types";
 import { CondensedView } from "./views/CondensedView";
 import { FullView } from "./views/FullView";
+import { FsEntry } from "../../../features/fs/types";
+import { List } from "../../../utils/immutableList";
+import { CursorPosition } from "../../../features/panels";
+import { FilePanelView } from "../../../types";
+import { clamp } from "../../../utils/number";
+import { useElementSize } from "../../../hooks/useElementSize";
+import { usePrevValueIfDeepEqual } from "../../../hooks/usePrevValueIfDeepEqual";
+import { useFocused } from "../../../hooks/useFocused";
+import { useCommandBindings, useCommandContext, useExecuteBuiltInCommand } from "../../../features/commands";
+import { GlyphSizeProvider } from "../../../contexts/glyphSizeContext";
+import { css } from "../../../features/styles";
+import { Border } from "../../Border";
+import { PanelHeader } from "../../PanelHeader";
 
 export interface FilePanelProps {
   items: List<FsEntry>;

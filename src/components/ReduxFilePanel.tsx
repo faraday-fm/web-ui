@@ -1,13 +1,13 @@
-import { FilePanel, FilePanelActions } from "@components/panels/FilePanel/FilePanel";
-import { useDirListing } from "@features/fs/hooks";
-import { FsEntry } from "@features/fs/types";
-import { useGlobalContext } from "@features/globalContext";
-import { CursorPosition, usePanelState, usePanels } from "@features/panels";
-import { css } from "@features/styles";
-import { FilePanelLayout } from "@types";
-import { createList } from "@utils/immutableList";
-import { combine, isRoot } from "@utils/path";
 import { memo, useCallback, useEffect, useRef } from "react";
+import { FilePanel, FilePanelActions } from "../components/panels/FilePanel/FilePanel";
+import { useDirListing } from "../features/fs/hooks";
+import { FsEntry } from "../features/fs/types";
+import { useGlobalContext } from "../features/globalContext";
+import { CursorPosition, usePanelState, usePanels } from "../features/panels";
+import { css } from "../features/styles";
+import { FilePanelLayout } from "../types";
+import { createList } from "../utils/immutableList";
+import { combine, isRoot } from "../utils/path";
 
 interface ReduxFilePanelProps {
   layout: FilePanelLayout & { id: string };

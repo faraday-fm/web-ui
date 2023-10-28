@@ -1,14 +1,14 @@
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
-import { Border } from "@components/Border";
-import { PanelHeader } from "@components/PanelHeader";
-import { useCommandContext } from "@features/commands";
-import { useFileContent } from "@features/fs/hooks";
-import { useGlobalContext } from "@features/globalContext";
-import { usePanels } from "@features/panels";
-import { css } from "@features/styles";
-import { useFocused } from "@hooks/useFocused";
-import { QuickViewLayout } from "@types";
 import { useEffect, useRef } from "react";
+import { Border } from "../../components/Border";
+import { PanelHeader } from "../../components/PanelHeader";
+import { useCommandContext } from "../../features/commands";
+import { useFileContent } from "../../features/fs/hooks";
+import { useGlobalContext } from "../../features/globalContext";
+import { usePanels } from "../../features/panels";
+import { css } from "../../features/styles";
+import { useFocused } from "../../hooks/useFocused";
+import { QuickViewLayout } from "../../types";
 import QuickViewHost from "./QuickViewHost";
 
 interface QuickViewPanelProps {

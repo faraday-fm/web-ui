@@ -1,4 +1,4 @@
-import { filename, getAllExtensions } from "@utils/path";
+import { filename, getAllExtensions } from "../../utils/path";
 import { useQuickViewsByFileExtension } from "./useQuickViewsByFileExtension";
 import { useQuickViewsByFileName } from "./useQuickViewsByFileName";
 import { useQuickViewsByMimetype } from "./useQuickViewsByMimetype";

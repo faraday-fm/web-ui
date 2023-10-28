@@ -1,6 +1,6 @@
 import { memo } from "react";
+import { css } from "../features/styles";
 import { ActionButton } from "./ActionButton";
-import { css } from "@features/styles";
 
 export const ActionsBar = memo(function ActionsBar() {
   return (

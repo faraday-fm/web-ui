@@ -1,7 +1,7 @@
-import { ContextVariables, useContextVariables } from "@features/contextVariables";
-import { usePrevValueIfDeepEqual } from "@hooks/usePrevValueIfDeepEqual";
-import { Node, parser } from "@utils/whenClauseParser";
 import { useCallback, useEffect, useId, useMemo } from "react";
+import { usePrevValueIfDeepEqual } from "../../hooks/usePrevValueIfDeepEqual";
+import { Node, parser } from "../../utils/whenClauseParser";
+import { ContextVariables, useContextVariables } from "../contextVariables";
 
 type Variables = string | string[] | Record<string, unknown>;
 

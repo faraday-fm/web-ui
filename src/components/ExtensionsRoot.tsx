@@ -1,9 +1,9 @@
-import { useExtensions } from "@features/extensions/hooks";
-import { useFileJsonContent, useFileStringContent } from "@features/fs/hooks";
-import { ExtensionRepoSchema } from "@schemas/extensionRepo";
-import { ExtensionManifest, ExtensionManifestSchema, QuickView } from "@schemas/manifest";
-import { combine } from "@utils/path";
 import { useEffect, useMemo } from "react";
+import { useExtensions } from "../features/extensions/hooks";
+import { useFileJsonContent, useFileStringContent } from "../features/fs/hooks";
+import { ExtensionRepoSchema } from "../schemas/extensionRepo";
+import { ExtensionManifest, ExtensionManifestSchema, QuickView } from "../schemas/manifest";
+import { combine } from "../utils/path";
 
 function getExtId(extension: ExtensionManifest) {
   return `${extension.publisher}.${extension.name}`;

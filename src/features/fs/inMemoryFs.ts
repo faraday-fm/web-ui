@@ -1,4 +1,4 @@
-import { combine } from "@utils/path";
+import { combine } from "../../utils/path";
 
 import { FileExists, FileIsADirectory, FileNotADirectory, FileNotFound, MountNotSupported } from "./FileSystemError";
 import { FileSystemProvider, FileSystemWatcher, FsEntry } from "./types";

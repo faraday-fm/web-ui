@@ -1,4 +1,4 @@
-import { PanelLayout, PanelsLayout } from "@types";
+import { PanelLayout, PanelsLayout } from "../types";
 
 export function traverseLayout(layout: PanelsLayout, callback: (panel: PanelLayout & { id: string; flex?: number }) => void, reverse = false) {
   switch (layout.type) {

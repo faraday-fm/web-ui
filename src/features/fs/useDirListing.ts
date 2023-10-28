@@ -1,8 +1,7 @@
-import { FsEntry } from "@features/fs/types";
 import { useEffect } from "react";
-
+import { List, createList } from "../../utils/immutableList";
+import { FsEntry } from "./types";
 import { useFs } from "./useFs";
-import { List, createList } from "@utils/immutableList";
 
 export function useDirListing(path: string | undefined, onListUpdated: (path: string, files: List<FsEntry>) => void) {
   const fs = useFs();

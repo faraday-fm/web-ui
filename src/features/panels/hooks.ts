@@ -1,6 +1,6 @@
-import { useAppStore } from "@features/store";
 import { useStore } from "zustand";
 import { PanelsSlice } from "./panels";
+import { useAppStore } from "../store";
 
 export function usePanels(): PanelsSlice {
   return useStore(useAppStore(), (s) => s.panels);

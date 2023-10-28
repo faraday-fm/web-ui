@@ -1,15 +1,15 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import { Border } from "@components/Border";
-import { useGlyphSize } from "@contexts/glyphSizeContext";
-import { css } from "@features/styles";
-import { useElementSize } from "@hooks/useElementSize";
-import { clamp } from "@utils/number";
 import { useEffect, useRef, useState } from "react";
+import { useGlyphSize } from "../../../contexts/glyphSizeContext";
+import { css } from "../../../features/styles";
+import { useElementSize } from "../../../hooks/useElementSize";
+import { List } from "../../../utils/immutableList";
+import { clamp } from "../../../utils/number";
+import { Border } from "../../Border";
 import { Cell } from "./Cell";
 import { CellText } from "./CellText";
 import { FullFileName } from "./FullFileName";
 import { ColumnDef, CursorStyle } from "./types";
-import { List } from "@utils/immutableList";
 
 interface ColumnProps {
   items: List<Record<string, unknown> & { name: string }>;

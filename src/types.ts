@@ -1,4 +1,4 @@
-import { FileSystemProvider } from "@features/fs/types";
+import { FileSystemProvider } from "./features/fs/types";
 
 export interface RowLayout {
   type: "row";

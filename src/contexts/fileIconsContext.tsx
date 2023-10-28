@@ -1,10 +1,10 @@
-import { Extension } from "@features/extensions/extension";
-import { useFs } from "@features/fs/hooks";
-import { css } from "@features/styles";
-import { IconTheme, isSvgIcon } from "@schemas/iconTheme";
-import { filename } from "@utils/path";
 import isPromise from "is-promise";
 import { PropsWithChildren, ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { IconTheme, isSvgIcon } from "../schemas/iconTheme";
+import { filename } from "../utils/path";
+import { useFs } from "../features/fs/hooks";
+import { Extension } from "../features/extensions/extension";
+import { css } from "../features/styles";
 
 export type IconResolver = (path: string, isDir: boolean) => ReactNode | PromiseLike<ReactNode>;
 

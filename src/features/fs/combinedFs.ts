@@ -1,4 +1,4 @@
-import { truncateProtocol } from "@utils/path";
+import { truncateProtocol } from "../../utils/path";
 
 import { FileNotFound } from "./FileSystemError";
 import { FileChangeEvent, FileSystemProvider } from "./types";
