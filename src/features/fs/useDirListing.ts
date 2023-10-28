@@ -16,7 +16,7 @@ export function useDirListing(path: string | undefined, onListUpdated: (path: st
       try {
         let timeoutId: number;
         const updateItems = () => onListUpdated(path, items);
-        await fs.watch(
+        await fs.watchDir(
           path,
           (changes) => {
             changes.forEach((change) => {
@@ -59,7 +59,7 @@ export function useDirListing(path: string | undefined, onListUpdated: (path: st
               }
             });
           },
-          { recursive: false, excludes: [], signal: abortController.signal }
+          { signal: abortController.signal }
         );
       } catch (err) {
         console.error(err);

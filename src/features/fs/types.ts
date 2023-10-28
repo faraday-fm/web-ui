@@ -23,7 +23,8 @@ export type FileSystemWatcher = (events: FileChangeEvent[]) => void;
 type Result<T> = Promise<T>;
 
 export interface FileSystemProvider {
-  watch(path: string, watcher: FileSystemWatcher, options?: { signal?: AbortSignal }): Result<void>;
+  watchDir(path: string, watcher: FileSystemWatcher, options?: { signal?: AbortSignal }): Result<void>;
+  watchFile(path: string, watcher: FileSystemWatcher, options?: { signal?: AbortSignal }): Result<void>;
   readDirectory(path: string, options?: { signal?: AbortSignal }): Result<FsEntry[]>;
   createDirectory(path: string, options?: { signal?: AbortSignal }): Result<void>;
   readFile(path: string, options?: { signal?: AbortSignal }): Result<Uint8Array>;

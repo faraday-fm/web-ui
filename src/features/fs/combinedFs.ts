@@ -10,12 +10,20 @@ export class CombinedFsProvider implements FileSystemProvider {
     this.innerProviders = innerProviders;
   }
 
-  watch(url: string, listener: (events: FileChangeEvent[]) => void, options?: { recursive?: boolean; excludes?: string[]; signal?: AbortSignal }) {
+  watchDir(url: string, listener: (events: FileChangeEvent[]) => void, options?: { signal?: AbortSignal }) {
     const provider = this.resolveProvider(url);
     if (!provider) {
       throw FileNotFound(url);
     }
-    return provider.watch(truncateProtocol(url), listener, options);
+    return provider.watchDir(truncateProtocol(url), listener, options);
+  }
+
+  watchFile(url: string, listener: (events: FileChangeEvent[]) => void, options?: { signal?: AbortSignal }) {
+    const provider = this.resolveProvider(url);
+    if (!provider) {
+      throw FileNotFound(url);
+    }
+    return provider.watchDir(truncateProtocol(url), listener, options);
   }
 
   readDirectory(url: string, options?: { signal?: AbortSignal }) {

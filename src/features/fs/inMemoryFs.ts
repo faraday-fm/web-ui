@@ -80,7 +80,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
     }
   }
 
-  async watch(path: string, watcher: FileSystemWatcher, options?: { signal?: AbortSignal }) {
+  async watchDir(path: string, watcher: FileSystemWatcher, options?: { signal?: AbortSignal }) {
     const parts = getPathParts(path);
     let currEntry: Dir | MountedFs = this.root;
     for (let i = 0; i < parts.length - 1; i += 1) {
@@ -90,7 +90,69 @@ export class InMemoryFsProvider implements FileSystemProvider {
       }
       if (nextEntry.isMoundedFs) {
         // eslint-disable-next-line no-await-in-loop
-        await nextEntry.fs.watch(
+        await nextEntry.fs.watchDir(
+          parts.slice(i + 1).join("/"),
+          (events) =>
+            watcher(
+              events.map((e) => {
+                if (e.type === "ready") return e;
+                return { ...e, path: combine(parts.slice(0, i).join("/"), e.path) };
+              })
+            ),
+          options
+        );
+        return;
+      }
+      if (!nextEntry.isDir) {
+        throw FileNotADirectory();
+      }
+      currEntry = nextEntry;
+    }
+
+    const entry = parts.length === 0 ? currEntry : currEntry.children.find((child) => child.name === parts.at(-1));
+
+    if (!entry) {
+      throw FileNotFound();
+    }
+
+    if (entry.isDir) {
+      try {
+        const entries = await this.readDirectory(path, options);
+        watcher(entries.map((e) => ({ type: "created", entry: e, path: combine(path, e.name) })));
+        watcher([{ type: "ready" }]);
+      } catch {
+        // todo
+      }
+    } else {
+      watcher([{ type: "created", entry: currEntry, path: combine(path, currEntry.name) }]);
+      watcher([{ type: "ready" }]);
+    }
+
+    let watchers = this.watchers.get(path);
+    if (!watchers) {
+      watchers = new Set();
+      this.watchers.set(path, watchers);
+    }
+    watchers.add(watcher);
+    options?.signal?.addEventListener("abort", () => {
+      watchers?.delete(watcher);
+      if (watchers?.size === 0) {
+        this.watchers.delete(path);
+      }
+    });
+  }
+
+  async watchFile(path: string, watcher: FileSystemWatcher, options?: { signal?: AbortSignal }) {
+    const parts = getPathParts(path);
+    let currEntry: Dir | MountedFs = this.root;
+    for (let i = 0; i < parts.length - 1; i += 1) {
+      const nextEntry: Entry | undefined = currEntry.children.find((child) => child.name === parts[i]);
+      if (!nextEntry) {
+        throw FileNotFound();
+      }
+      if (nextEntry.isMoundedFs) {
+        // eslint-disable-next-line no-await-in-loop
+        await nextEntry.fs.watchFile(
           parts.slice(i + 1).join("/"),
           (events) =>
             watcher(

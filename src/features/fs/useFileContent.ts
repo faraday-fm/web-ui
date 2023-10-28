@@ -9,27 +9,21 @@ export function useFileContent(path: string) {
 
   useEffect(() => {
     const abortController = new AbortController();
-    let isReady = false;
     (() => {
       counter.current += 1;
       const pendingOp = counter.current;
       try {
         setResult({ done: false, path });
-        void fs.watch(
+        void fs.watchFile(
           path,
-          (events) => {
-            events.forEach((e) => {
-              if (e.type === "ready") isReady = true;
-            });
-            if (isReady) {
-              fs.readFile(path, { signal: abortController.signal })
-                .then((content) => {
-                  setResult({ done: true, content, path });
-                })
-                .catch(() => {
-                  /* todo */
-                });
-            }
+          () => {
+            fs.readFile(path, { signal: abortController.signal })
+              .then((content) => {
+                setResult({ done: true, content, path });
+              })
+              .catch(() => {
+                /* todo */
+              });
           },
           { signal: abortController.signal }
         );
