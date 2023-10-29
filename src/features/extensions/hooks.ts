@@ -1,1 +1,1 @@
-export * from "./useExtensions";
+export * from "./useExtensionStates";

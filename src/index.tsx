@@ -1,5 +1,6 @@
 import { App } from "./components/App";
-import { ExtensionsRoot } from "./components/ExtensionsRoot";
+import { SettingsTracker } from "./components/SettingsTracker/SettingsTracker";
+import { Extensions } from "./components/extensions/Extensions";
 import { FaradayHostProvider } from "./contexts/faradayHostContext";
 import { FileIconsProvider } from "./contexts/fileIconsContext";
 import { GlyphSizeProvider } from "./contexts/glyphSizeContext";
@@ -27,7 +28,8 @@ export function Faraday({ host }: FaradayProps) {
             <GlyphSizeProvider>
               <FileIconsProvider>
                 <App />
-                <ExtensionsRoot root="faraday:/extensions" />
+                <Extensions root="file:/Users/mike/.faraday/extensions" />
+                <SettingsTracker path="file:/Users/mike/.faraday/settings.json5" />
               </FileIconsProvider>
             </GlyphSizeProvider>
           </KeyBindingProvider>

@@ -46,9 +46,7 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
       async setVisibility(show) {
         if (iframeRef.current) {
           if (show) {
-            if (iframeRef.current.style.display === "none") {
-              iframeRef.current.style.removeProperty("display");
-            }
+            iframeRef.current.style.removeProperty("display");
           } else if (iframeRef.current.style.display !== "none") {
             iframeRef.current.style.display = "none";
             const iframeWindow = await themeSetPromise.current.promise;

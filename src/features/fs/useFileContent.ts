@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { useFs } from "./useFs";
 
-export function useFileContent(path?: string, skip?: boolean) {
+export function useFileContent(path?: string, skip = false) {
   const fs = useFs();
   const [result, setResult] = useState<{ done: boolean; error?: unknown; content?: Uint8Array; path?: string }>({ done: false, path });
   const counter = useRef(0);

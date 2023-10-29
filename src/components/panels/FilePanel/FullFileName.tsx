@@ -36,16 +36,7 @@ export const FullFileName = memo(function FullFileName({ cursorStyle, data }: Ce
     })();
   }, [resolvedIcon]);
 
-  const fullName: string = data?.name ?? "";
-  let fileName = fullName;
-  let fileExt = "";
-  if (!data?.isDir) {
-    const dotIdx = fullName.lastIndexOf(".");
-    if (dotIdx > 0) {
-      fileName = fullName.substring(0, dotIdx);
-      fileExt = fullName.substring(dotIdx + 1);
-    }
-  }
+  const name: string = data?.name ?? "";
 
   if (!data) {
     return null;
@@ -55,11 +46,8 @@ export const FullFileName = memo(function FullFileName({ cursorStyle, data }: Ce
     <>
       <div>{icon}</div>
       <span className={css("LineItem")} style={{ lineHeight: `${height}px`, color: getColor(data.name, data?.isDir, cursorStyle === "firm") }}>
-        <span className={css("FullFileName")}>
-          <CellText cursorStyle={cursorStyle} text={fileName} />
-        </span>
-        <span className={css("FullFileExt")}>
-          <CellText cursorStyle={cursorStyle} text={fileExt} />
+        <span className={css("FileName")}>
+          <CellText cursorStyle={cursorStyle} text={name} />
         </span>
       </span>
     </>

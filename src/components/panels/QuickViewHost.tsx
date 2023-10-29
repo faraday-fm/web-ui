@@ -1,13 +1,12 @@
-import { useQuickView } from "../../features/quickViews";
-import { QuickView } from "../../schemas/manifest";
-import { DeferredPromise, deferredPromise } from "../../utils/promise";
 import { ReactElement, useEffect, useState } from "react";
-
-import { QuickViewFrame, QuickViewFrameActions } from "./QuickViewFrame";
+import { useQuickView } from "../../features/quickViews";
 import { css } from "../../features/styles";
+import { QuickViewDefinition } from "../../schemas/manifest";
+import { DeferredPromise, deferredPromise } from "../../utils/promise";
+import { QuickViewFrame, QuickViewFrameActions } from "./QuickViewFrame";
 
 interface Frame {
-  quickView: QuickView;
+  quickView: QuickViewDefinition;
   element: ReactElement;
   actions: DeferredPromise<QuickViewFrameActions>;
 }

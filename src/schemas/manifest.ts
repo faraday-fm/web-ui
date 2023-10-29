@@ -1,6 +1,6 @@
 import { Output, array, enumType, object, optional, string } from "valibot";
 
-const QuickViewSchema = object({
+const QuickViewDefinition = object({
   id: string(),
   extensions: optional(array(string())),
   filenames: optional(array(string())),
@@ -8,25 +8,25 @@ const QuickViewSchema = object({
   path: string(),
 });
 
-const IconThemeSchema = object({
+const IconThemeDefinition = object({
   id: string(),
   label: string(),
   path: string(),
 });
 
-const ThemeSchema = object({
+const ThemeDefinition = object({
   label: string(),
   uiTheme: enumType(["fd", "fd-light", "hc", "hc-light"]),
   path: string(),
 });
 
-const ContributesSchema = object({
-  quickViews: optional(array(QuickViewSchema)),
-  iconThemes: optional(array(IconThemeSchema)),
-  themes: optional(array(ThemeSchema)),
+const Contributes = object({
+  quickViews: optional(array(QuickViewDefinition)),
+  iconThemes: optional(array(IconThemeDefinition)),
+  themes: optional(array(ThemeDefinition)),
 });
 
-export const ExtensionManifestSchema = object({
+export const ExtensionManifest = object({
   name: string(),
   version: string(),
   displayName: string(),
@@ -34,11 +34,13 @@ export const ExtensionManifestSchema = object({
   publisher: string(),
   main: optional(string()),
   browser: optional(string()),
-  contributes: optional(ContributesSchema),
+  contributes: optional(Contributes),
 });
 
-export type QuickView = Output<typeof QuickViewSchema>;
+export type QuickViewDefinition = Output<typeof QuickViewDefinition>;
 
-export type Contributes = Output<typeof ContributesSchema>;
+export type IconThemeDefinition = Output<typeof IconThemeDefinition>;
 
-export type ExtensionManifest = Output<typeof ExtensionManifestSchema>;
+export type Contributes = Output<typeof Contributes>;
+
+export type ExtensionManifest = Output<typeof ExtensionManifest>;

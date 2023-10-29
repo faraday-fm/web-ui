@@ -1,5 +1,5 @@
-import { useExtensions } from "../extensions/useExtensions";
+import { useExtensionStates } from "../extensions/useExtensionStates";
 
 export function useQuickViews() {
-  return useExtensions().quickViews;
+  return useExtensionStates().quickViews;
 }

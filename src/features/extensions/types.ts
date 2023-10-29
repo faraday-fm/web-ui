@@ -1,4 +1,4 @@
-import { QuickView } from "../../schemas/manifest";
+import { QuickViewDefinition } from "../../schemas/manifest";
 
 export type Mimetype = string;
 export type FileName = string;
@@ -6,6 +6,6 @@ export type FileExtension = string;
 
 export interface FullyQualifiedQuickView {
   extId: string;
-  quickView: QuickView;
+  quickView: QuickViewDefinition;
   script: string;
 }

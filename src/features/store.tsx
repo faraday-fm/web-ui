@@ -3,14 +3,14 @@ import { createContext, useContext, useState } from "react";
 import { createStore } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { ContextVariablesSlice, createContextVariablesSlice } from "./contextVariables/contextVariables";
-import { ExtensionsSlice, createExtensionsSlice } from "./extensions/extensions";
+import { ExtensionStatesSlice, createExtensionStatesSlice } from "./extensions/extensionStates";
 import { GlobalContextSlice, createGlobalContextSlice } from "./globalContext/globalContext";
 import { PanelsSlice, createPanelsSlice } from "./panels/panels";
 import { SettingsSlice, createSettingsSlice } from "./settings/settings";
 
 interface Store {
   panels: PanelsSlice;
-  extensions: ExtensionsSlice;
+  extensionStates: ExtensionStatesSlice;
   globalContext: GlobalContextSlice;
   settings: SettingsSlice;
   contextVariables: ContextVariablesSlice;
@@ -20,7 +20,7 @@ const createAppStore = createStore<Store>()(
   immer<Store>(
     withLenses({
       panels: lens(createPanelsSlice),
-      extensions: lens(createExtensionsSlice),
+      extensionStates: lens(createExtensionStatesSlice),
       globalContext: lens(createGlobalContextSlice),
       settings: lens(createSettingsSlice),
       contextVariables: lens(createContextVariablesSlice),
