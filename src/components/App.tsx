@@ -47,6 +47,7 @@ export function App() {
     // open: () => setDialogOpen(true),
     open: () => changeDir(),
     openShell: () => setDialogOpen(true),
+    copyFiles: () => setDialogOpen(true),
   });
 
   // const leftItems = useMemo(() => Array.from(Array(300).keys()).map((i) => ({ name: i.toString(), size: Math.round(Math.random() * 100000000) })), []);

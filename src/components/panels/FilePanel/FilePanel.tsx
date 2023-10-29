@@ -199,7 +199,7 @@ export const FilePanel = memo(
       cursorStyle = "hidden";
     }
 
-    const bytesCount = useMemo(() => items.reduce((acc, item) => acc + (item.size ?? 0), 0), [items]);
+    const bytesCount = useMemo(() => items.reduce((acc, item) => acc + ((item.isFile ? item.size : 0) ?? 0), 0), [items]);
     const filesCount = useMemo(() => items.reduce((acc, item) => acc + (item.isFile ? 1 : 0), 0), [items]);
 
     const pathParts = path.split("/").filter((x) => x);

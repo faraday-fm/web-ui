@@ -19,6 +19,12 @@
   display: grid;
   overflow: hidden;
   margin: 1px;
+  border-style: solid;
+  border-width: 1px;
+  &.-double {
+    border-style: double;
+    border-width: 3px;
+  }
 }
 
 .frdy.ColumnRoot {
@@ -328,6 +334,7 @@
   & em {
     font-style: normal;
     color: var(--textAcceleratorKey-foreground);
+    text-decoration: underline;
   }
 }
 
@@ -373,11 +380,13 @@
 @keyframes dialogAnimation {
   0% {
     opacity: 0;
-    transform: translate(-0%, -5%);
+    /* transform: translate(-0%, -5%); */
+    transform: scale(0.97, 0.97);
   }
   100% {
     opacity: 1;
-    transform: translate(0%, 0%);
+    /* transform: translate(0%, 0%); */
+    transform: scale(1, 1);
   }
 }
 
@@ -386,10 +395,11 @@
   animation-duration: 0.2s;
   padding: 0;
   border-width: 1px;
+  background-color: var(--dialog-background);
+  box-shadow: 0.5rem 0.5rem #0004;
 }
 
 .frdy.DialogContent {
-  background-color: var(--dialog-background);
   color: var(--dialog-foreground);
   box-shadow: var(--dialog-shadow);
   padding: 0.5rem;

@@ -14,5 +14,6 @@ export type BuiltInCommand =
   | "switchView"
   | "open"
   | "openShell"
+  | "copyFiles"
   | "focusTerminal"
   | "togglePanels";

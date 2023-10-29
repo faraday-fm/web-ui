@@ -14,6 +14,8 @@
   { key: "Space", command: "focusTerminal", when: "filePanel.focus" },
   { key: "Shift+Enter", command: "openShell", when: "filePanel.focus" },
   { key: "Ctrl+PageUp", command: "dirUp", when: "filePanel.focus" },
+  { key: "Alt+PageUp", command: "dirUp", when: "filePanel.focus" },
+  { key: "F5", command: "copyFiles", when: "filePanel.focus" },
 
   { key: "ArrowUp", command: "cursorEnd", when: "filePanel.focus && filePanel.firstItem" },
   { key: "ArrowDown", command: "cursorStart", when: "filePanel.focus && filePanel.lastItem" },

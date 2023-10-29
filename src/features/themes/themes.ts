@@ -97,8 +97,8 @@ export const baseTheme = (): Theme => ({
     "actionBar.keyBackground": "#0000",
     "actionBar.keyForeground": "#d1d5da",
     "dialog.backdrop": "#8884",
-    "dialog.background": "#203447",
-    "dialog.foreground": "#d1d5da",
+    "dialog.background": "#c8cfd6",
+    "dialog.foreground": "#000000",
     "dialog.border": "#405262",
     "dialog.shadow": "#ff0000",
     "panel.background": "#1c2f40",
@@ -122,94 +122,12 @@ export const baseTheme = (): Theme => ({
     "files.file.foreground:focus": "#ffffff",
     "files.file.border:focus": "#3272bd",
 
-    "textAcceleratorKey.foreground": "#808000",
+    "textAcceleratorKey.foreground": "#9a2d2d",
     // "dropdown.background": "#2f363d",
     // "dropdown.border": "#1b1f23",
     // "dropdown.foreground": "#e1e4e8",
     // "dropdown.listBackground": "#24292e",
   },
-  // primaryBg: colors.bgColor0,
-  // primaryText: colors.fgColor0,
-  // actionsBar: {
-  //   bg: colors.bgColor3,
-  //   color: colors.bgColor0,
-  //   fnKey: {
-  //     color: colors.bgColor7,
-  //   },
-  // },
-  // filePanel: {
-  //   bg: colors.bgColor1,
-  //   activeBg: colors.bgColor3,
-  //   color: colors.fgColor2,
-  //   border: {
-  //     color: colors.fgColor3,
-  //     radius: "0",
-  //     thickness: "1px",
-  //     margin: "0.5em calc(0.5ch - 1px)",
-  //     padding: "0",
-  //   },
-  //   header: {
-  //     activeBg: colors.bgColor3,
-  //     inactiveBg: colors.bgColor1,
-  //     activeColor: colors.bgColor0,
-  //     inactiveColor: colors.fgColor3,
-  //     extension: {
-  //       border: `1px solid ${colors.fgColor3}`,
-  //       marginBottom: 1,
-  //     },
-  //   },
-  //   entries: {
-  //     dir: { activeColor: colors.fgColor7, inactiveColor: colors.fgColor7 },
-  //     file: { activeColor: colors.bgColor0, inactiveColor: colors.fgColor3 },
-  //   },
-  //   content: { margin: "1px" },
-  //   footer: {
-  //     bg: colors.bgColor1,
-  //     color: colors.fgColor2,
-  //   },
-  //   fileInfo: {
-  //     border: {
-  //       color: colors.fgColor3,
-  //       radius: "0",
-  //       thickness: "1px",
-  //       margin: "1px",
-  //       padding: "1px 1px",
-  //     },
-  //   },
-  //   column: {
-  //     bg: "none",
-  //     color: colors.fgColor6,
-  //     border: {
-  //       color: colors.fgColor3,
-  //       radius: "0",
-  //       thickness: "1px",
-  //       margin: "1px",
-  //       padding: "0",
-  //     },
-  //   },
-  // },
-  // modalDialog: {
-  //   bg: colors.fgColor7,
-  //   color: colors.bgColor0,
-  //   border: {
-  //     color: colors.bgColor0,
-  //     radius: "0",
-  //     thickness: "1px",
-  //     margin: "0",
-  //     padding: "1px",
-  //     extension: {
-  //       borderBottomWidth: 0,
-  //       "&:last-child": {
-  //         borderBottomWidth: "1px",
-  //       },
-  //     },
-  //   },
-  //   backdropColor: "#0003",
-  //   shadow: "1rem 1rem 0 0 rgb(0 0 0 / 40%)",
-  // },
-  // misc: {
-  //   hotKeyText: colors.fgColor6,
-  // },
 });
 
 export function extend(base: Theme, extension: RecursivePartial<Theme>) {
