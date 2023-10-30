@@ -4,7 +4,7 @@ import { BaseSchema, Output, parse } from "valibot";
 import { useFileStringContent } from "./useFileStringContent";
 
 export function useFileJsonContent<TSchema extends BaseSchema>(
-  path: string,
+  path: string | undefined,
   schema: TSchema,
   skip = false
 ): { error?: unknown; content?: Output<typeof schema> } {

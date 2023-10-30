@@ -71,7 +71,7 @@ export class CombinedFsProvider implements FileSystemProvider {
   copy?(source: string, destination: string, options?: { overwrite?: boolean; signal?: AbortSignal }) {
     const provider = this.resolveProvider(source);
     if (!provider.copy) {
-      throw FileNotFound(source);
+      throw FileNotFound;
     }
     return provider.copy(source, destination, options);
   }

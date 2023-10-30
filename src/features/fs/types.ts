@@ -20,17 +20,15 @@ export type FileChangeEvent = { type: FileChangeType; path: string; entry: FsEnt
 
 export type FileSystemWatcher = (events: FileChangeEvent[]) => void;
 
-type Result<T> = Promise<T>;
-
 export interface FileSystemProvider {
-  watchDir(path: string, watcher: FileSystemWatcher, options?: { signal?: AbortSignal }): Result<void>;
-  watchFile(path: string, watcher: FileSystemWatcher, options?: { signal?: AbortSignal }): Result<void>;
-  readDirectory(path: string, options?: { signal?: AbortSignal }): Result<FsEntry[]>;
-  createDirectory(path: string, options?: { signal?: AbortSignal }): Result<void>;
-  readFile(path: string, options?: { signal?: AbortSignal }): Result<Uint8Array>;
-  writeFile(path: string, content: Uint8Array, options?: { create?: boolean; overwrite?: boolean; signal?: AbortSignal }): Result<void>;
-  delete(path: string, options?: { recursive?: boolean; signal?: AbortSignal }): Result<void>;
-  rename(oldPath: string, newPath: string, options?: { overwrite?: boolean; signal?: AbortSignal }): Result<void>;
-  copy?(source: string, destination: string, options?: { overwrite?: boolean; signal?: AbortSignal }): Result<void>;
-  mount?(path: string, fs: FileSystemProvider): Result<void>;
+  watchDir(path: string, watcher: FileSystemWatcher, options?: { signal?: AbortSignal }): Promise<void>;
+  watchFile(path: string, watcher: FileSystemWatcher, options?: { signal?: AbortSignal }): Promise<void>;
+  readDirectory(path: string, options?: { signal?: AbortSignal }): Promise<FsEntry[]>;
+  createDirectory(path: string, options?: { signal?: AbortSignal }): Promise<void>;
+  readFile(path: string, options?: { signal?: AbortSignal }): Promise<Uint8Array>;
+  writeFile(path: string, content: Uint8Array, options?: { create?: boolean; overwrite?: boolean; signal?: AbortSignal }): Promise<void>;
+  delete(path: string, options?: { recursive?: boolean; signal?: AbortSignal }): Promise<void>;
+  rename(oldPath: string, newPath: string, options?: { overwrite?: boolean; signal?: AbortSignal }): Promise<void>;
+  copy?(source: string, destination: string, options?: { overwrite?: boolean; signal?: AbortSignal }): Promise<void>;
+  mount?(path: string, fs: FileSystemProvider): Promise<void>;
 }

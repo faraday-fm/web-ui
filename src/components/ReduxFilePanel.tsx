@@ -24,7 +24,7 @@ function fsCompare(a: FsEntry, b: FsEntry) {
 export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
   const { id } = layout;
   const panelRef = useRef<FilePanelActions>(null);
-  const { activePanelId, initPanelState, setPanelItems, setPanelCursorPos, setActivePanel, popDir } = usePanels();
+  const { activePanelId, initPanelState, setPanelItems, setPanelCursorPos, setActivePanel, dirUp } = usePanels();
   const state = usePanelState(id);
   const globalContext = useGlobalContext();
   const isActive = activePanelId === id;
@@ -75,7 +75,7 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
   );
 
   const onFocus = useCallback(() => setActivePanel(id), [id, setActivePanel]);
-  const onDirUp = useCallback(() => popDir(id), [id, popDir]);
+  const onDirUp = useCallback(() => dirUp(id), [id, dirUp]);
 
   const onCursorPositionChange = useCallback(
     (cursorPos: CursorPosition) => {

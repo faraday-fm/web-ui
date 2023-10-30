@@ -1,28 +1,30 @@
-import { useLayoutEffect } from "react";
-import styles from "../../assets/styles.css";
+import { useLayoutEffect, useState } from "react";
+import frdyStyles from "../../assets/styles.css";
 import { Theme } from "../../features/themes";
 
-const injectCSS = (css: string) => {
-  const el = document.createElement("style");
-  el.innerHTML = css;
-  document.head.appendChild(el);
-  return el;
-};
-
 export function useStyles(theme: Theme) {
+  const [colorsEl] = useState(() => document.createElement("style"));
+  const [stylesEl] = useState(() => document.createElement("style"));
+
+  useLayoutEffect(() => {
+    document.head.appendChild(colorsEl);
+    return () => colorsEl.remove();
+  }, [colorsEl]);
+
+  useLayoutEffect(() => {
+    document.head.appendChild(stylesEl);
+    return () => stylesEl.remove();
+  }, [stylesEl]);
+
   useLayoutEffect(() => {
     const colorVariables = Object.entries(theme.colors)
       .concat([["fontFamily", theme.fontFamily]])
       .map(([key, val]) => `--${key.replaceAll(/[.:]/g, "-")}:${val};`)
       .join("\n");
     const frdyColors = `.frdy{${colorVariables}}`;
-    const frdyColorsEl = injectCSS(frdyColors);
-    const stylesEl = injectCSS(styles);
-    return () => {
-      frdyColorsEl.remove();
-      stylesEl.remove();
-    };
-  }, [theme]);
+    colorsEl.innerHTML = frdyColors;
+    stylesEl.innerHTML = frdyStyles;
+  }, [colorsEl, stylesEl, theme]);
 }
 
 export function css(className: string, ...options: string[]) {

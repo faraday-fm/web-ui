@@ -258,13 +258,14 @@ export class InMemoryFsProvider implements FileSystemProvider {
     return Promise.resolve();
   }
 
-  readFile(path: string, options?: { signal?: AbortSignal }) {
+  async readFile(path: string, options?: { signal?: AbortSignal }) {
     const parts = getPathParts(path);
     if (parts.length === 0) {
       throw FileIsADirectory();
     }
     let currEntry: Dir | MountedFs = this.root;
     for (let i = 0; i < parts.length - 1; i += 1) {
+      options?.signal?.throwIfAborted();
       const nextEntry: Entry | undefined = currEntry.children.find((child) => child.name === parts[i]);
       if (!nextEntry) {
         throw FileNotFound();
@@ -286,7 +287,8 @@ export class InMemoryFsProvider implements FileSystemProvider {
       throw FileIsADirectory();
     }
 
-    return Promise.resolve(entry.content);
+    options?.signal?.throwIfAborted();
+    return entry.content;
   }
 
   writeFile(path: string, content: Uint8Array, options?: { create?: boolean; overwrite?: boolean; signal?: AbortSignal }) {

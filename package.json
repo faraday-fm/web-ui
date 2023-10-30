@@ -7,7 +7,6 @@
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
-  "type": "module",
   "scripts": {
     "watch": "rollup -c -w",
     "build": "rollup -c",
@@ -54,7 +53,6 @@
     "@rollup/plugin-json": "^6.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-typescript": "^11.1.5",
     "@types/parsimmon": "^1.10.8",
     "@types/react": "^18.2.33",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
@@ -67,8 +65,10 @@
     "react": "^18.2.0",
     "rollup": "^4.1.4",
     "rollup-plugin-delete": "^2.0.0",
+    "rollup-plugin-dts": "^6.1.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-string": "^3.0.0",
+    "rollup-plugin-typescript2": "^0.36.0",
     "rollup-plugin-visualizer": "^5.9.2",
     "semantic-release": "^22.0.5",
     "typescript": "^5.2.2"

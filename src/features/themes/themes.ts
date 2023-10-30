@@ -1,9 +1,9 @@
-import deepmerge from "deepmerge";
+// import deepmerge from "deepmerge";
 import { Theme } from "./types";
 
-type RecursivePartial<T> = {
-  [P in keyof T]?: T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends object ? RecursivePartial<T[P]> : T[P];
-};
+// type RecursivePartial<T> = {
+//   [P in keyof T]?: T[P] extends (infer U)[] ? RecursivePartial<U>[] : T[P] extends object ? RecursivePartial<T[P]> : T[P];
+// };
 
 // const murenaPalette: Palette = {
 //   bgColor0: "#000000",
@@ -130,9 +130,9 @@ export const baseTheme = (): Theme => ({
   },
 });
 
-export function extend(base: Theme, extension: RecursivePartial<Theme>) {
-  return deepmerge(base, extension) as Theme;
-}
+// export function extend(base: Theme, extension: RecursivePartial<Theme>) {
+//   return deepmerge(base, extension) as Theme;
+// }
 
 export const lightTheme = baseTheme();
 export const darkTheme = baseTheme();

@@ -3,7 +3,7 @@ import { PanelsLayout } from "../../types";
 import { ImmerStateCreator } from "../../utils/immer";
 import { List, createList } from "../../utils/immutableList";
 import { traverseLayout } from "../../utils/layout";
-import { combine, truncateLastDir } from "../../utils/path";
+import { combine, filename, truncateLastDir } from "../../utils/path";
 import { CursorPosition, PanelState } from "./types";
 
 interface State {
@@ -20,8 +20,8 @@ interface Actions {
   setPanelCursorPos(id: string, cursorPos: CursorPosition): void;
   focusNextPanel(backward: boolean): void;
   focusPrevPanel(): void;
-  changeDir(): void;
-  popDir(id: string): void;
+  enterDir(): void;
+  dirUp(id: string): void;
 }
 
 export type PanelsSlice = State & Actions;
@@ -97,7 +97,7 @@ export const createPanelsSlice: ImmerStateCreator<PanelsSlice> = (set) => ({
         }
       }
     }),
-  changeDir: () =>
+  enterDir: () =>
     set((s) => {
       if (!s.layout) return;
       traverseLayout(s.layout, (panel) => {
@@ -126,17 +126,19 @@ export const createPanelsSlice: ImmerStateCreator<PanelsSlice> = (set) => ({
         }
       });
     }),
-  popDir: (id) =>
+  dirUp: (id) =>
     set((s) => {
       if (!s.layout) return;
       const panelsStack = s.states[id];
       if (panelsStack) {
         if (panelsStack.length > 1) {
-          panelsStack.pop();
+          panelsStack.pop()!;
         } else {
           const s = panelsStack[panelsStack.length - 1];
+          const fn = filename(s.path);
           s.path = truncateLastDir(s.path);
-          s.cursor.selectedIndex = 0;
+          s.cursor.selectedIndex = undefined;
+          s.cursor.selectedName = fn;
         }
       }
     }),

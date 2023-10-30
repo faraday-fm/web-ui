@@ -17,7 +17,7 @@
     "sourceMap": true,
     "declaration": true,
     "stripInternal": true,
-    "declarationDir": "dist",
+    "declarationDir": "dist-dts",
     "jsx": "react-jsx"
   },
   "include": ["src"]

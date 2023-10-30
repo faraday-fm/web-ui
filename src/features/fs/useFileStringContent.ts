@@ -3,7 +3,12 @@ import { useFileContent } from "./useFileContent";
 
 const decoder = new TextDecoder();
 
-export function useFileStringContent(path?: string, skip = false) {
+interface FileStringContent {
+  content?: string;
+  error?: unknown;
+}
+
+export function useFileStringContent(path?: string, skip = false): FileStringContent {
   const fileContent = useFileContent(path, skip);
 
   return useMemo(() => {

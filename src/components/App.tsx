@@ -21,7 +21,7 @@ export function App() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [panelsOpen, setPanelsOpen] = useState(true);
   const [executing] = useState(false);
-  const { layout: panelsLayout, setPanelsLayout, focusNextPanel, changeDir } = usePanels();
+  const { layout: panelsLayout, setPanelsLayout, focusNextPanel, enterDir: changeDir } = usePanels();
   const host = useFaradayHost();
 
   const { content: layoutContent } = useFileContent("faraday:/layout.json5");
