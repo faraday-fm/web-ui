@@ -15,7 +15,7 @@ import { clamp } from "../../../utils/number";
 import { useElementSize } from "../../../hooks/useElementSize";
 import { usePrevValueIfDeepEqual } from "../../../hooks/usePrevValueIfDeepEqual";
 import { useFocused } from "../../../hooks/useFocused";
-import { useCommandBindings, useCommandContext, useExecuteBuiltInCommand } from "../../../features/commands";
+import { useCommandBindings, useSetContextVariables, useExecuteBuiltInCommand } from "../../../features/commands";
 import { GlyphSizeProvider } from "../../../contexts/glyphSizeContext";
 import { css } from "../../../features/styles";
 import { Border } from "../../Border";
@@ -89,9 +89,11 @@ export const FilePanel = memo(
       focus: () => panelRootRef.current?.focus(),
     }));
 
-    useCommandContext("filePanel.focus", focused);
-    useCommandContext({ "filePanel.firstItem": cursor.selectedIndex === 0 }, focused);
-    useCommandContext({ "filePanel.lastItem": cursor.selectedIndex === items.size() - 1 }, focused);
+    useSetContextVariables("filePanel.focus", focused);
+    useSetContextVariables({ "filePanel.firstItem": cursor.selectedIndex === 0 }, focused);
+    useSetContextVariables({ "filePanel.lastItem": cursor.selectedIndex === items.size() - 1 }, focused);
+    useSetContextVariables({ "filePanel.selectedItem": cursor.selectedName }, focused);
+    useSetContextVariables({ "filePanel.path": path }, focused);
 
     function moveCursorLeftRight(direction: "left" | "right") {
       let c = structuredClone(adjustedCursor);

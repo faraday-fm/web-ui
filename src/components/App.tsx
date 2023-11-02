@@ -6,7 +6,7 @@ import DialogPlaceholder from "../components/DialogPlaceholder";
 import { LayoutContainer } from "../components/LayoutContainer";
 import { useFaradayHost } from "../contexts/faradayHostContext";
 import { useGlyphSize } from "../contexts/glyphSizeContext";
-import { useCommandBindings, useCommandContext } from "../features/commands";
+import { useCommandBindings, useSetContextVariables } from "../features/commands";
 import { useFileContent } from "../features/fs/hooks";
 import { usePanels } from "../features/panels";
 import { css } from "../features/styles";
@@ -21,8 +21,9 @@ export function App() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [panelsOpen, setPanelsOpen] = useState(true);
   const [executing] = useState(false);
-  const { layout: panelsLayout, setPanelsLayout, focusNextPanel, enterDir: changeDir } = usePanels();
+  const { layout, setPanelsLayout, focusNextPanel, enterDir } = usePanels();
   const host = useFaradayHost();
+  const [devMode, setDevMode] = useState(false);
 
   const { content: layoutContent } = useFileContent("faraday:/layout.json5");
   useEffect(() => {
@@ -34,20 +35,20 @@ export function App() {
         setPanelsLayout(JSON5.parse(defaultLayout));
       }
     }
-    // invoke("show_main_window");
-    // if (isRunningUnderTauri()) setTimeout(() => invoke("show_main_window"), 50);
   }, [layoutContent, setPanelsLayout]);
 
-  useCommandContext("isDesktop", host.config.isDesktop());
+  useSetContextVariables("isDesktop", host.config.isDesktop());
+  useSetContextVariables("devMode", devMode);
 
   useCommandBindings({
     togglePanels: () => setPanelsOpen((p) => !p),
     focusNextPanel: () => focusNextPanel(false),
     focusPrevPanel: () => focusNextPanel(true),
     // open: () => setDialogOpen(true),
-    open: () => changeDir(),
+    open: () => enterDir(),
     openShell: () => setDialogOpen(true),
     copyFiles: () => setDialogOpen(true),
+    switchDevMode: () => setDevMode((d) => !d),
   });
 
   // const leftItems = useMemo(() => Array.from(Array(300).keys()).map((i) => ({ name: i.toString(), size: Math.round(Math.random() * 100000000) })), []);
@@ -56,7 +57,7 @@ export function App() {
   // const onRunStart = useCallback(() => setExecuting(true), []);
   // const onRunEnd = useCallback(() => setExecuting(false), []);
 
-  if (!panelsLayout) {
+  if (!layout) {
     return null;
   }
 
@@ -76,7 +77,7 @@ export function App() {
             bottom: glyphHeight,
           }}
         >
-          {panelsLayout && <LayoutContainer layout={panelsLayout} direction="h" />}
+          {layout && <LayoutContainer layout={layout} direction="h" />}
         </div>
       </div>
       <div className={css("FooterDiv")}>

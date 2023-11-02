@@ -16,4 +16,5 @@ export type BuiltInCommand =
   | "openShell"
   | "copyFiles"
   | "focusTerminal"
-  | "togglePanels";
+  | "togglePanels"
+  | "switchDevMode";

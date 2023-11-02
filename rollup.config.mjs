@@ -38,6 +38,18 @@ export default defineConfig(() => {
           format: "esm",
         },
       ],
+      external: [
+        "fast-deep-equal",
+        "parsimmon",
+        "valibot",
+        "list",
+        "@dhmk/zustand-lens",
+        "zustand",
+        "zustand/middleware/immer",
+        "use-resize-observer",
+        "json5",
+        "is-promise",
+      ],
       context: "window",
       plugins: [
         !watch && [terser({ sourceMap: true }), del({ targets: ["dist/*", "dist-dts/*"] })],

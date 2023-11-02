@@ -1,15 +1,16 @@
 import { FsEntry } from "../../features/fs/types";
-import { PanelsLayout } from "../../types";
+import { FilePanelLayout, PanelLayout, PanelsLayout } from "../../types";
 import { ImmerStateCreator } from "../../utils/immer";
-import { List, createList } from "../../utils/immutableList";
+import { List } from "../../utils/immutableList";
 import { traverseLayout } from "../../utils/layout";
-import { combine, filename, truncateLastDir } from "../../utils/path";
+import { combine, truncateLastDir } from "../../utils/path";
 import { CursorPosition, PanelState } from "./types";
 
 interface State {
-  activePanelId?: string;
+  activePanel?: PanelLayout;
+  activeFilePanel?: FilePanelLayout;
   layout?: PanelsLayout;
-  states: Record<string, PanelState[] | undefined>;
+  states: Record<string, PanelState | undefined>;
 }
 
 interface Actions {
@@ -19,7 +20,6 @@ interface Actions {
   setPanelItems(id: string, items: List<FsEntry>): void;
   setPanelCursorPos(id: string, cursorPos: CursorPosition): void;
   focusNextPanel(backward: boolean): void;
-  focusPrevPanel(): void;
   enterDir(): void;
   dirUp(id: string): void;
 }
@@ -27,119 +27,116 @@ interface Actions {
 export type PanelsSlice = State & Actions;
 
 export const createPanelsSlice: ImmerStateCreator<PanelsSlice> = (set) => ({
-  activePanelId: undefined as string | undefined,
-  layout: undefined as PanelsLayout | undefined,
-  states: {} as Record<string, PanelState[] | undefined>,
+  states: {} as Record<string, PanelState | undefined>,
 
   setPanelsLayout: (layout) => set({ layout }),
-  setActivePanel: (activePanelId) => set({ activePanelId }),
+  setActivePanel: (activePanelId) =>
+    set((s) => {
+      if (s.layout) {
+        traverseLayout(s.layout, (panel) => {
+          if (panel.id === activePanelId) {
+            s.activePanel = panel;
+            if (panel.type === "file-panel") {
+              s.activeFilePanel = panel;
+            }
+          }
+        });
+      }
+    }),
   initPanelState: (id, state) =>
     set((s) => {
       if (!s.states[id]) {
-        s.states[id] = [state];
+        s.states[id] = state;
       }
     }),
   setPanelItems: (id, items) =>
     set((s) => {
-      const panelsStack = s.states[id];
-      if (panelsStack && panelsStack.length > 0) {
-        const ps = panelsStack[panelsStack.length - 1];
-        ps.items = items;
-        if (ps.cursor.selectedIndex && ps.cursor.selectedIndex >= ps.items.size()) {
-          ps.cursor.selectedIndex = ps.items.size() - 1;
-          ps.cursor.selectedName = ps.items.get(ps.cursor.selectedIndex)?.name;
-        }
+      const state = s.states[id];
+      if (!state?.targetPos) {
+        return;
       }
+      state.items = items;
+      state.pos = state.targetPos;
+      state.stack.push(state.pos);
     }),
   setPanelCursorPos: (id, cursorPos) =>
     set((s) => {
-      const panelsStack = s.states[id];
-      if (panelsStack && panelsStack.length > 0) {
-        const s = panelsStack[panelsStack.length - 1];
-        s.cursor = cursorPos;
+      const state = s.states[id];
+      if (!state) {
+        return;
+      }
+      state.pos.cursor = cursorPos;
+      const pos = state.stack.at(-1);
+      if (pos) {
+        pos.cursor = cursorPos;
       }
     }),
   focusNextPanel: (backward) =>
     set((s) => {
       if (s.layout) {
-        let lastPanelId: string | undefined;
+        let lastTraversedPanel: PanelLayout | undefined;
         let newActivePanelSet = false;
         traverseLayout(
           s.layout,
           (panel) => {
-            if (lastPanelId && !newActivePanelSet && panel.id === s.activePanelId) {
-              s.activePanelId = lastPanelId;
+            if (lastTraversedPanel && !newActivePanelSet && panel.id === s.activePanel?.id) {
+              s.activePanel = lastTraversedPanel;
               newActivePanelSet = true;
             }
-            lastPanelId = panel.id;
+            lastTraversedPanel = panel;
           },
           !backward
         );
-        if (!newActivePanelSet && lastPanelId) {
-          s.activePanelId = lastPanelId;
+        if (!newActivePanelSet && lastTraversedPanel) {
+          s.activePanel = lastTraversedPanel;
         }
-      }
-    }),
-  focusPrevPanel: () =>
-    set((s) => {
-      if (s.layout) {
-        let lastPanelId: string | undefined;
-        let newActivePanelSet = false;
-        traverseLayout(s.layout, (panel) => {
-          if (lastPanelId && !newActivePanelSet && panel.id === s.activePanelId) {
-            s.activePanelId = lastPanelId;
-            newActivePanelSet = true;
-          }
-          lastPanelId = panel.id;
-        });
-        if (!newActivePanelSet && lastPanelId) {
-          s.activePanelId = lastPanelId;
+        if (s.activePanel?.type === "file-panel") {
+          s.activeFilePanel = s.activePanel;
         }
       }
     }),
   enterDir: () =>
     set((s) => {
       if (!s.layout) return;
-      traverseLayout(s.layout, (panel) => {
-        if (panel.type === "file-panel" && panel.id === s.activePanelId) {
-          const panelsStack = s.states[panel.id];
-          if (panelsStack) {
-            const s = panelsStack[panelsStack.length - 1];
-            const selectedItemPos = s.cursor.selectedIndex ?? 0;
-            const selectedItem = s.items.get(selectedItemPos);
-            if (selectedItem?.isDir) {
-              if (selectedItem.name === "..") {
-                if (panelsStack.length > 1) {
-                  panelsStack.pop();
-                } else {
-                  s.path = truncateLastDir(s.path);
-                }
-              } else {
-                panelsStack.push({
-                  path: combine(s.path, selectedItem.name),
-                  cursor: {},
-                  items: createList(),
-                });
-              }
-            }
+      if (!s.activeFilePanel) {
+        return;
+      }
+      const state = s.states[s.activeFilePanel.id];
+      if (!state) {
+        return;
+      }
+
+      const cursor = state.stack.at(-1);
+      const selectedItemPos = cursor?.cursor.selectedIndex ?? 0;
+      const selectedItem = state.items.get(selectedItemPos);
+      if (selectedItem?.isDir) {
+        if (selectedItem.name === "..") {
+          const targetPath = truncateLastDir(state.pos.path);
+          if (targetPath === state.pos.path) {
+            return;
           }
+          state.stack.pop();
+          const targetPos = state.stack.pop();
+          state.targetPos = { path: targetPath, cursor: targetPos?.cursor ?? {} };
+        } else {
+          state.targetPos = { path: combine(state.pos.path, selectedItem.name), cursor: {} };
         }
-      });
+      }
     }),
   dirUp: (id) =>
     set((s) => {
       if (!s.layout) return;
-      const panelsStack = s.states[id];
-      if (panelsStack) {
-        if (panelsStack.length > 1) {
-          panelsStack.pop()!;
-        } else {
-          const s = panelsStack[panelsStack.length - 1];
-          const fn = filename(s.path);
-          s.path = truncateLastDir(s.path);
-          s.cursor.selectedIndex = undefined;
-          s.cursor.selectedName = fn;
-        }
+      const state = s.states[id];
+      if (!state) {
+        return;
       }
+
+      const targetPath = truncateLastDir(state.pos.path);
+      if (targetPath === state.pos.path) {
+        return;
+      }
+      state.stack.pop();
+      const targetPos = state.stack.pop();
+      state.targetPos = { path: targetPos?.path ?? targetPath, cursor: targetPos?.cursor ?? {} };
     }),
 });

@@ -3,7 +3,7 @@ import { alt, regexp, seq, string } from "parsimmon";
 import { PropsWithChildren, createContext, useEffect } from "react";
 import { parse } from "valibot";
 import keyBindingsContent from "../assets/keybindings.json5";
-import { useExecuteCommand, useIsInCommandContext } from "../features/commands";
+import { useExecuteCommand, useIsInContext } from "../features/commands";
 import { KeyBindingsSchema } from "../schemas/keyBindings";
 
 const keyBindings = parse(KeyBindingsSchema, JSON5.parse(keyBindingsContent));
@@ -78,7 +78,7 @@ const matchKey = (key: string, event: KeyboardEvent) => {
 };
 
 export function KeyBindingProvider({ children }: PropsWithChildren) {
-  const isInContext = useIsInCommandContext();
+  const isInContext = useIsInContext();
   const executeCommand = useExecuteCommand();
 
   const bindings = keyBindings;

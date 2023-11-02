@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { SyntheticEvent, useEffect, useId, useRef } from "react";
 import { Border } from "./Border";
-import { useCommandContext } from "../features/commands";
+import { useSetContextVariables } from "../features/commands";
 import { QuickNavigationProvider } from "../contexts/quickNavigationContext";
 import { css } from "../features/styles";
 import { AutoHotKeyLabel } from "./AutoHotKeyLabel";
@@ -13,7 +13,7 @@ interface DialogPlaceholderProps {
 }
 
 export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderProps) {
-  useCommandContext("copyDialog", open);
+  useSetContextVariables("copyDialog", open);
   const dialogId = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
 

@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef } from "react";
+import { memo, useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import { FilePanel, FilePanelActions } from "../components/panels/FilePanel/FilePanel";
 import { useDirListing } from "../features/fs/hooks";
 import { FsEntry } from "../features/fs/types";
@@ -8,6 +8,7 @@ import { css } from "../features/styles";
 import { FilePanelLayout } from "../types";
 import { createList } from "../utils/immutableList";
 import { combine, isRoot } from "../utils/path";
+import { ContextVariablesProvider, DebugContextVariables } from "../features/commands/ContextVariablesProvider";
 
 interface ReduxFilePanelProps {
   layout: FilePanelLayout & { id: string };
@@ -24,30 +25,31 @@ function fsCompare(a: FsEntry, b: FsEntry) {
 export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
   const { id } = layout;
   const panelRef = useRef<FilePanelActions>(null);
-  const { activePanelId, initPanelState, setPanelItems, setPanelCursorPos, setActivePanel, dirUp } = usePanels();
+  const { activeFilePanel, initPanelState, setPanelItems, setPanelCursorPos, setActivePanel, dirUp } = usePanels();
   const state = usePanelState(id);
   const globalContext = useGlobalContext();
-  const isActive = activePanelId === id;
+  const isActive = activeFilePanel?.id === id;
 
   const items = state?.items ?? createList();
-  const cursor = state?.cursor ?? {};
+  const cursor = state?.pos.cursor ?? {};
   const selectedItem = state?.items ? state.items.get(cursor.selectedIndex ?? 0) : undefined;
 
   useEffect(() => {
-    if (isActive && state?.path && selectedItem) {
+    if (isActive && state?.pos.path && selectedItem) {
       globalContext.updateState({
-        "filePanel.selectedPath": combine(state.path, selectedItem.name),
+        "filePanel.selectedPath": combine(state.pos.path, selectedItem.name),
         "filePanel.selectedName": selectedItem.name,
         "filePanel.isFileSelected": selectedItem.isFile ?? false,
         "filePanel.isDirectorySelected": selectedItem.isDir ?? false,
       });
       panelRef.current?.focus();
     }
-  }, [globalContext, isActive, selectedItem, state?.path]);
+  }, [globalContext, isActive, selectedItem, state?.pos.path]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { path, id } = layout;
-    initPanelState(id, { cursor: {}, items: createList(), path });
+    const pos = { path, cursor: {} };
+    initPanelState(id, { items: createList(), pos, targetPos: pos, stack: [] });
   }, [initPanelState, layout]);
 
   // FIXME: If "ready" event is not fired by the filesystem watcher, we should add ".." directory
@@ -61,7 +63,7 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
   // }, [dispatch, id, state?.path]);
 
   useDirListing(
-    state?.path,
+    state?.targetPos?.path,
     useCallback(
       (dirPath, files) => {
         files = files.sort(fsCompare);
@@ -86,17 +88,20 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
 
   return (
     <div className={css("ReduxFilePanelRoot")}>
-      <FilePanel
-        ref={panelRef}
-        showCursorWhenBlurred={isActive}
-        onFocus={onFocus}
-        onCursorPositionChange={onCursorPositionChange}
-        onDirUp={onDirUp}
-        cursor={cursor}
-        items={items}
-        path={state ? state.path : "file:/"}
-        view={layout.view}
-      />
+      <ContextVariablesProvider>
+        <FilePanel
+          ref={panelRef}
+          showCursorWhenBlurred={isActive}
+          onFocus={onFocus}
+          onCursorPositionChange={onCursorPositionChange}
+          onDirUp={onDirUp}
+          cursor={cursor}
+          items={items}
+          path={state ? state.pos.path : "file:/"}
+          view={layout.view}
+        />
+        <DebugContextVariables />
+      </ContextVariablesProvider>
     </div>
   );
 });

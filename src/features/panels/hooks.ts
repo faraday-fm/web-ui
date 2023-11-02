@@ -7,5 +7,5 @@ export function usePanels(): PanelsSlice {
 }
 
 export function usePanelState(id: string) {
-  return usePanels().states[id]?.at(-1);
+  return usePanels().states[id];
 }

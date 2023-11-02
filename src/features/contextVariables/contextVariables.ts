@@ -8,6 +8,7 @@ interface State {
 
 interface Actions {
   setVariables(id: string, variables?: Record<string, unknown>): void;
+  updateVariables(id: string, variables?: Record<string, unknown>): void;
 }
 
 export type ContextVariablesSlice = State & Actions;
@@ -22,6 +23,14 @@ export const createContextVariablesSlice: ImmerStateCreator<ContextVariablesSlic
         }
       } else {
         delete s.variables[id];
+      }
+    }),
+  updateVariables: (id: string, variables?: Record<string, unknown>) =>
+    set((s) => {
+      if (variables) {
+        if (!equal(s.variables[id], variables)) {
+          s.variables[id] = { ...s.variables[id], ...variables };
+        }
       }
     }),
 });

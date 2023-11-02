@@ -1,8 +1,8 @@
 import { PropsWithChildren } from "react";
-import { useIsInCommandContextQuery } from "../features/commands";
+import { useIsInContextQuery } from "../features/commands";
 
 export function RenderWhen({ expression, children }: PropsWithChildren<{ expression: string }>) {
-  const shouldRender = useIsInCommandContextQuery(expression);
+  const shouldRender = useIsInContextQuery(expression);
   if (shouldRender) {
     return children;
   }

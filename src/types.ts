@@ -6,6 +6,7 @@ export interface RowLayout {
 }
 
 export interface FilePanelLayout {
+  id: string;
   type: "file-panel";
   path: string;
   view: FilePanelView;
@@ -27,12 +28,12 @@ export interface CondensedView {
 export type FilePanelView = FullView | CondensedView;
 
 export interface QuickViewLayout {
+  id: string;
   type: "quick-view";
 }
 
 export type PanelLayout = FilePanelLayout | QuickViewLayout;
 
-/** @internal */
 export type PanelsLayout = (RowLayout | PanelLayout) & { id: string; flex?: number; when?: string };
 
 export interface FaradayConfig {

@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import { Border } from "../../components/Border";
 import { PanelHeader } from "../../components/PanelHeader";
-import { useCommandContext } from "../../features/commands";
+import { useSetContextVariables } from "../../features/commands";
 import { useFileContent } from "../../features/fs/hooks";
 import { useGlobalContext } from "../../features/globalContext";
 import { usePanels } from "../../features/panels";
@@ -10,22 +10,31 @@ import { css } from "../../features/styles";
 import { useFocused } from "../../hooks/useFocused";
 import { QuickViewLayout } from "../../types";
 import QuickViewHost from "./QuickViewHost";
+import { ContextVariablesProvider, DebugContextVariables } from "../../features/commands/ContextVariablesProvider";
 
 interface QuickViewPanelProps {
   layout: QuickViewLayout & { id: string };
 }
 
+export function QuickViewPanel({ layout }: QuickViewPanelProps) {
+  return (
+    <ContextVariablesProvider>
+      <QuickView layout={layout} />
+    </ContextVariablesProvider>
+  );
+}
+
 export function QuickView({ layout }: QuickViewPanelProps) {
   const { id } = layout;
-  const { activePanelId, setActivePanel } = usePanels();
-  const isActive = activePanelId === id;
+  const { activePanel, setActivePanel } = usePanels();
+  const isActive = activePanel?.id === id;
   const activePath = useGlobalContext()["filePanel.selectedPath"];
 
   const panelRootRef = useRef<HTMLDivElement>(null);
   const focused = useFocused(panelRootRef);
 
-  useCommandContext("quickView.visible");
-  useCommandContext("quickView.focus", focused);
+  useSetContextVariables("quickView.visible");
+  useSetContextVariables("quickView.focus", focused);
 
   useEffect(() => {
     if (focused) {
@@ -49,6 +58,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
           <QuickViewHost content={content} path={contentPath} />
         </div>
       </Border>
+      <DebugContextVariables />
     </div>
   );
 }

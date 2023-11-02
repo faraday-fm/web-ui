@@ -21,4 +21,5 @@
   { key: "ArrowDown", command: "cursorStart", when: "filePanel.focus && filePanel.lastItem" },
 
   { key: "Ctrl+KeyO", command: "togglePanels" },
+  { key: "Ctrl+KeyD", command: "switchDevMode" },
 ]

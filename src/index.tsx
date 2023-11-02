@@ -5,6 +5,7 @@ import { FaradayHostProvider } from "./contexts/faradayHostContext";
 import { FileIconsProvider } from "./contexts/fileIconsContext";
 import { GlyphSizeProvider } from "./contexts/glyphSizeContext";
 import { KeyBindingProvider } from "./contexts/keyBindingContext";
+import { ContextVariablesProvider } from "./features/commands/ContextVariablesProvider";
 import { AppStoreProvider } from "./features/store";
 import { useStyles } from "./features/styles";
 import { ThemeProvider } from "./features/themes";
@@ -22,19 +23,21 @@ export function Faraday({ host }: FaradayProps) {
   useStyles(theme);
   return (
     <AppStoreProvider>
-      <ThemeProvider theme={theme}>
-        <FaradayHostProvider host={host}>
-          <KeyBindingProvider>
-            <GlyphSizeProvider>
-              <FileIconsProvider>
-                <App />
-                <Extensions root="file:/Users/mike/.faraday/extensions" />
-                <SettingsTracker path="file:/Users/mike/.faraday/settings.json5" />
-              </FileIconsProvider>
-            </GlyphSizeProvider>
-          </KeyBindingProvider>
-        </FaradayHostProvider>
-      </ThemeProvider>
+      <ContextVariablesProvider>
+        <ThemeProvider theme={theme}>
+          <FaradayHostProvider host={host}>
+            <KeyBindingProvider>
+              <GlyphSizeProvider>
+                <FileIconsProvider>
+                  <App />
+                  <Extensions root="file:~/.faraday/extensions" />
+                  <SettingsTracker path="file:~/.faraday/settings.json5" />
+                </FileIconsProvider>
+              </GlyphSizeProvider>
+            </KeyBindingProvider>
+          </FaradayHostProvider>
+        </ThemeProvider>
+      </ContextVariablesProvider>
     </AppStoreProvider>
   );
 }

@@ -8,8 +8,14 @@ export interface CursorPosition {
   topmostIndex?: number;
 }
 
-export interface PanelState {
+export interface PanelPosition {
   path: string;
-  items: List<FsEntry>;
   cursor: CursorPosition;
+}
+
+export interface PanelState {
+  items: List<FsEntry>;
+  pos: PanelPosition;
+  targetPos?: PanelPosition;
+  stack: PanelPosition[];
 }

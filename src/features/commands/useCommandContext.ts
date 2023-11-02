@@ -1,33 +1,46 @@
-import { useCallback, useEffect, useId, useMemo } from "react";
+import { useCallback, useContext, useEffect, useMemo } from "react";
 import { usePrevValueIfDeepEqual } from "../../hooks/usePrevValueIfDeepEqual";
 import { Node, parser } from "../../utils/whenClauseParser";
 import { ContextVariables, useContextVariables } from "../contextVariables";
+import { ContextVariablesIdContext } from "./ContextVariablesProvider";
 
 type Variables = string | string[] | Record<string, unknown>;
 
-export function useCommandContext(variables: Variables, isActive = true): void {
-  const id = useId();
-  const { setVariables } = useContextVariables();
+export function useSetContextVariables(variables: Variables, isActive = true): void {
+  const id = useContext(ContextVariablesIdContext);
+  const { setVariables, updateVariables } = useContextVariables();
   variables = usePrevValueIfDeepEqual(variables);
 
   useEffect(() => {
-    if (!isActive) {
-      setVariables(id, undefined);
-      return;
-    }
     let vars: Record<string, unknown>;
-    if (typeof variables === "string") {
-      vars = { [variables]: true };
-    } else if (Array.isArray(variables)) {
-      vars = variables.reduce((r, v) => {
-        r[v] = true;
-        return r;
-      }, {} as Record<string, true>);
+    if (!isActive) {
+      if (typeof variables === "string") {
+        vars = { [variables]: undefined };
+      } else if (Array.isArray(variables)) {
+        vars = variables.reduce((r, v) => {
+          r[v] = undefined;
+          return r;
+        }, {} as typeof vars);
+      } else {
+        vars = Object.keys(variables).reduce((r, v) => {
+          r[v] = undefined;
+          return r;
+        }, {} as typeof vars);
+      }
     } else {
-      vars = variables;
+      if (typeof variables === "string") {
+        vars = { [variables]: true };
+      } else if (Array.isArray(variables)) {
+        vars = variables.reduce((r, v) => {
+          r[v] = true;
+          return r;
+        }, {} as typeof vars);
+      } else {
+        vars = variables;
+      }
     }
-    setVariables(id, vars);
-  }, [id, isActive, setVariables, variables]);
+    updateVariables(id, vars);
+  }, [id, isActive, setVariables, updateVariables, variables]);
 
   useEffect(() => {
     return () => {
@@ -87,7 +100,7 @@ function evaluate(ctx: ContextVariables, node: Node) {
   return !!stack.pop();
 }
 
-export function useIsInCommandContext() {
+export function useIsInContext() {
   const { variables } = useContextVariables();
   return useCallback(
     (expression: string) => {
@@ -101,7 +114,7 @@ export function useIsInCommandContext() {
   );
 }
 
-export function useIsInCommandContextQuery(expression: string) {
+export function useIsInContextQuery(expression: string) {
   const ast = useMemo(() => {
     const result = parser.parse(expression);
     if (!result.status) {

@@ -10,7 +10,7 @@ export function truncateProtocol(path: string) {
   if (startsWithDriveName(path)) {
     return path;
   }
-  path = path.replace(/^[\w._+-]{2,}:+/, "").replace(/^\/+/, "/");
+  path = path.replace(/^[\w._+-]{2,}:+/, "");
   if (!path) {
     path = "/";
   }

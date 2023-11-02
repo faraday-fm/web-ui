@@ -2,7 +2,7 @@ import { css } from "../features/styles";
 import { PanelsLayout } from "../types";
 import { ReduxFilePanel } from "./ReduxFilePanel";
 import { RenderWhen } from "./RenderWhen";
-import { QuickView } from "./panels/QuickView";
+import { QuickViewPanel } from "./panels/QuickView";
 
 interface LayoutContainerProps {
   layout: PanelsLayout;
@@ -34,7 +34,7 @@ export function LayoutContainer({ layout, direction }: LayoutContainerProps) {
     case "quick-view":
       return (
         <RenderWhen expression={layout.when ?? "true"}>
-          <QuickView layout={layout} />
+          <QuickViewPanel layout={layout} />
         </RenderWhen>
       );
     default:
