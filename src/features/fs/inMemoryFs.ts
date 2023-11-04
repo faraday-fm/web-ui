@@ -288,7 +288,9 @@ export class InMemoryFsProvider implements FileSystemProvider {
     }
 
     options?.signal?.throwIfAborted();
-    return entry.content;
+    const dst = new Uint8Array(entry.content.byteLength);
+    dst.set(new Uint8Array(entry.content));
+    return dst;
   }
 
   writeFile(path: string, content: Uint8Array, options?: { create?: boolean; overwrite?: boolean; signal?: AbortSignal }) {

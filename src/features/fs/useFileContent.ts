@@ -40,7 +40,7 @@ export function useFileContent(path?: string, skip = false) {
                   setResult({ done: false, error, path, skipped: false });
                 }
               });
-          }, 20);
+          }, 100);
         },
         { signal: abortController.signal }
       ).catch((error: unknown) => {

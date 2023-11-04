@@ -28,13 +28,13 @@ export function QuickView({ layout }: QuickViewPanelProps) {
   const { id } = layout;
   const { activePanel, setActivePanel } = usePanels();
   const isActive = activePanel?.id === id;
-  const activePath = useGlobalContext()["filePanel.selectedPath"];
+  const { "filePanel.path": path, "filePanel.isFileSelected": isFileSelected } = useGlobalContext();
 
   const panelRootRef = useRef<HTMLDivElement>(null);
   const focused = useFocused(panelRootRef);
 
   useSetContextVariables("quickView.visible");
-  useSetContextVariables("quickView.focus", focused);
+  useSetContextVariables("quickView.focus", isActive);
 
   useEffect(() => {
     if (focused) {
@@ -48,7 +48,7 @@ export function QuickView({ layout }: QuickViewPanelProps) {
     }
   }, [isActive]);
 
-  const { content, path: contentPath } = useFileContent(activePath, activePath?.endsWith("/.."));
+  const { content, path: contentPath } = useFileContent(path, isFileSelected);
 
   return (
     <div className={css("QuickView")} ref={panelRootRef} tabIndex={0}>

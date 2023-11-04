@@ -40,7 +40,7 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
       async setContent({ content, path }) {
         if (iframeRef.current) {
           const iframeWindow = await themeSetPromise.current.promise;
-          iframeWindow.postMessage({ type: "content", content, path }, "*");
+          iframeWindow.postMessage({ type: "content", content, path }, "*", content?.buffer ? [content.buffer] : undefined);
         }
       },
       async setVisibility(show) {

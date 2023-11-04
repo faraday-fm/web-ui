@@ -37,7 +37,7 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
   useEffect(() => {
     if (isActive && state?.pos.path && selectedItem) {
       globalContext.updateState({
-        "filePanel.selectedPath": combine(state.pos.path, selectedItem.name),
+        "filePanel.path": combine(state.pos.path, selectedItem.name),
         "filePanel.selectedName": selectedItem.name,
         "filePanel.isFileSelected": selectedItem.isFile ?? false,
         "filePanel.isDirectorySelected": selectedItem.isDir ?? false,

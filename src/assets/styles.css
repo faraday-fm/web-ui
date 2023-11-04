@@ -1,6 +1,9 @@
 .frdy.App {
   -webkit-font-smoothing: antialiased;
-  font-size: 13.5px;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  font-size: 13.5;
   & :is(button, input) {
     font-family: inherit;
     text-rendering: inherit;
