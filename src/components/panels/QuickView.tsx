@@ -48,7 +48,8 @@ export function QuickView({ layout }: QuickViewPanelProps) {
     }
   }, [isActive]);
 
-  const { content, path: contentPath } = useFileContent(path, isFileSelected);
+  const { content, path: contentPath } = useFileContent(path, !isFileSelected);
+  console.error(isFileSelected, content?.length);
 
   return (
     <div className={css("QuickView")} ref={panelRootRef} tabIndex={0}>
