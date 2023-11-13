@@ -5,7 +5,7 @@ import { FaradayHostProvider } from "./contexts/faradayHostContext";
 import { FileIconsProvider } from "./contexts/fileIconsContext";
 import { GlyphSizeProvider } from "./contexts/glyphSizeContext";
 import { KeyBindingProvider } from "./contexts/keyBindingContext";
-import { ContextVariablesProvider } from "./features/commands/ContextVariablesProvider";
+import { ContextVariablesProvider } from "./features/commands";
 import { AppStoreProvider } from "./features/store";
 import { useStyles } from "./features/styles";
 import { ThemeProvider } from "./features/themes";

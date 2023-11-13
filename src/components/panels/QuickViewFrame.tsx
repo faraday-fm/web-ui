@@ -78,5 +78,5 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
   }, [theme]);
 
   // eslint-disable-next-line jsx-a11y/iframe-has-title, jsx-a11y/no-noninteractive-tabindex
-  return <iframe className={css("QuickViewWebView")} ref={iframeRef} tabIndex={0} title="" src={`data:text/html;base64,${quickViewHtmlBase64}`} />;
+  return <iframe className={css("quick-view-web-view")} ref={iframeRef} tabIndex={0} title="" src={`data:text/html;base64,${quickViewHtmlBase64}`} />;
 });

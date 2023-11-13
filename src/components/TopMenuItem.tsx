@@ -7,10 +7,10 @@ interface TopMenuItemProps {
 
 export function TopMenuItem({ header }: TopMenuItemProps) {
   return (
-    <div className={css("TopMenuItem")}>
+    <div className={css("top-menu-item")}>
       <AutoHotKeyLabel text={header} />
       {/* <HotKey>{(k) => <Highlight text={header} highlight={k} />}</HotKey> */}
-      <div className={css("TopMenuLabel")}>
+      <div className={css("top-menu-label")}>
         <AutoHotKeyLabel text="12345" />
       </div>
     </div>

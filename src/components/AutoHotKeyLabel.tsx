@@ -13,7 +13,7 @@ export function AutoHotKeyLabel({ text, htmlFor }: AutoHotKeyLabelProps): ReactE
   const key = useQuickNavigation(ref, text);
 
   return (
-    <label className={css("AutoHotKeyLabel")} ref={ref} htmlFor={htmlFor}>
+    <label className={css("auto-hotkey-label")} ref={ref} htmlFor={htmlFor}>
       <Highlight text={text} highlight={key} />
     </label>
   );

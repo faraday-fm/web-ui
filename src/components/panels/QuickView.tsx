@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import { Border } from "../../components/Border";
 import { PanelHeader } from "../../components/PanelHeader";
-import { useSetContextVariables } from "../../features/commands";
+import { ContextVariablesProvider, DebugContextVariables, useSetContextVariables } from "../../features/commands";
 import { useFileContent } from "../../features/fs/hooks";
 import { useGlobalContext } from "../../features/globalContext";
 import { usePanels } from "../../features/panels";
@@ -10,7 +10,6 @@ import { css } from "../../features/styles";
 import { useFocused } from "../../hooks/useFocused";
 import { QuickViewLayout } from "../../types";
 import QuickViewHost from "./QuickViewHost";
-import { ContextVariablesProvider, DebugContextVariables } from "../../features/commands/ContextVariablesProvider";
 
 interface QuickViewPanelProps {
   layout: QuickViewLayout & { id: string };
@@ -49,12 +48,11 @@ export function QuickView({ layout }: QuickViewPanelProps) {
   }, [isActive]);
 
   const { content, path: contentPath } = useFileContent(path, !isFileSelected);
-  console.error(isFileSelected, content?.length);
 
   return (
-    <div className={css("QuickView")} ref={panelRootRef} tabIndex={0}>
+    <div className={css("quick-view")} ref={panelRootRef} tabIndex={0}>
       <Border color={focused ? "panel-border-focus" : "panel-border"}>
-        <div className={css("QuickViewContent")}>
+        <div className={css("quick-view-content")}>
           <PanelHeader active={isActive}>Quick View</PanelHeader>
           <QuickViewHost content={content} path={contentPath} />
         </div>

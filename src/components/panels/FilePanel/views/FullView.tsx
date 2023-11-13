@@ -36,7 +36,7 @@ export function FullView({ items, cursor, cursorStyle, columnDefs, onMaxVisibleI
     );
   }
   return (
-    <div className={css("FullViewColumns")} style={{ gridTemplateColumns }}>
+    <div className={css("full-view-columns")} style={{ gridTemplateColumns }}>
       {columns}
     </div>
   );

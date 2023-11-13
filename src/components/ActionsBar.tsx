@@ -4,7 +4,7 @@ import { ActionButton } from "./ActionButton";
 
 export const ActionsBar = memo(function ActionsBar() {
   return (
-    <div className={css("ActionsBar")} tabIndex={-1}>
+    <div className={css("actions-bar")} tabIndex={-1}>
       <ActionButton fnKey="1" header="Help" />
       <ActionButton fnKey="2" header="Menu" />
       <ActionButton fnKey="3" header="View" />

@@ -1,5 +1,6 @@
 import { memo, useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import { FilePanel, FilePanelActions } from "../components/panels/FilePanel/FilePanel";
+import { ContextVariablesProvider, DebugContextVariables } from "../features/commands";
 import { useDirListing } from "../features/fs/hooks";
 import { FsEntry } from "../features/fs/types";
 import { useGlobalContext } from "../features/globalContext";
@@ -8,7 +9,6 @@ import { css } from "../features/styles";
 import { FilePanelLayout } from "../types";
 import { createList } from "../utils/immutableList";
 import { combine, isRoot } from "../utils/path";
-import { ContextVariablesProvider, DebugContextVariables } from "../features/commands/ContextVariablesProvider";
 
 interface ReduxFilePanelProps {
   layout: FilePanelLayout & { id: string };
@@ -87,7 +87,7 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
   );
 
   return (
-    <div className={css("ReduxFilePanelRoot")}>
+    <div className={css("redux-file-panel-root")}>
       <ContextVariablesProvider>
         <FilePanel
           ref={panelRef}

@@ -7,6 +7,7 @@ import { ExtensionStatesSlice, createExtensionStatesSlice } from "./extensions/e
 import { GlobalContextSlice, createGlobalContextSlice } from "./globalContext/globalContext";
 import { PanelsSlice, createPanelsSlice } from "./panels/panels";
 import { SettingsSlice, createSettingsSlice } from "./settings/settings";
+import { InertSlice, createInertSlice } from "./inert";
 
 interface Store {
   panels: PanelsSlice;
@@ -14,6 +15,7 @@ interface Store {
   globalContext: GlobalContextSlice;
   settings: SettingsSlice;
   contextVariables: ContextVariablesSlice;
+  inert: InertSlice;
 }
 
 const createAppStore = createStore<Store>()(
@@ -24,6 +26,7 @@ const createAppStore = createStore<Store>()(
       globalContext: lens(createGlobalContextSlice),
       settings: lens(createSettingsSlice),
       contextVariables: lens(createContextVariablesSlice),
+      inert: lens(createInertSlice),
     })
   )
 );

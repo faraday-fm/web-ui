@@ -16,7 +16,7 @@ export function BreadcrumbItem({ children }: PropsWithChildren) {
   useResizeObserver({ ref, onResize: updateOverflowAdornerVisibility });
 
   return (
-    <div className={css("BreadcrumbItem", showOverflowAdorner ? "-showOverflow" : "")} ref={ref}>
+    <div className={css("breadcrumb-item", showOverflowAdorner ? "-showOverflow" : "")} ref={ref}>
       {children}
     </div>
   );

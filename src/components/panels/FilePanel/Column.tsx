@@ -48,8 +48,8 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
   let idx = 0;
   return (
     <Border color="panel-border">
-      <div className={css("ColumnRoot")} style={{ overflow: "hidden" }}>
-        <div className={css("ColumnHeader")}>{columnDef.name}</div>
+      <div className={css("column-root")} style={{ overflow: "hidden" }}>
+        <div className={css("column-header")}>{columnDef.name}</div>
         <div
           ref={ref}
           style={{ overflow: "hidden" }}
@@ -100,7 +100,7 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
             })}
         </div>
         <div
-          className={css("TopScroller")}
+          className={css("top-scroller")}
           onMouseDown={(e) => {
             e.stopPropagation();
             window.addEventListener("mouseup", () => setAutoscroll(0), { once: true });
@@ -108,7 +108,7 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
           }}
         />
         <div
-          className={css("BottomScroller")}
+          className={css("bottom-scroller")}
           onMouseDown={(e) => {
             e.stopPropagation();
             window.addEventListener("mouseup", () => setAutoscroll(0), { once: true });

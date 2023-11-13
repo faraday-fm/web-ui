@@ -5,7 +5,7 @@ import { TopMenuItem } from "./TopMenuItem";
 export function TopMenu() {
   return (
     <QuickNavigationProvider>
-      <div className={css("TopMenuRoot")}>
+      <div className={css("top-menu-root")}>
         <TopMenuItem header="Left" />
         <TopMenuItem header="Files" />
         <TopMenuItem header="Commands" />

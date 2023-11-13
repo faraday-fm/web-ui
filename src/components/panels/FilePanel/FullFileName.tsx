@@ -45,8 +45,8 @@ export const FullFileName = memo(function FullFileName({ cursorStyle, data }: Ce
   return (
     <>
       <div>{icon}</div>
-      <span className={css("LineItem")} style={{ lineHeight: `${height}px`, color: getColor(data.name, data?.isDir, cursorStyle === "firm") }}>
-        <span className={css("FileName")}>
+      <span className={css("line-item")} style={{ lineHeight: `${height}px`, color: getColor(data.name, data?.isDir, cursorStyle === "firm") }}>
+        <span className={css("file-name")}>
           <CellText cursorStyle={cursorStyle} text={name} />
         </span>
       </span>

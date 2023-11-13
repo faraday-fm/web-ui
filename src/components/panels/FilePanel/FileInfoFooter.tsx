@@ -37,10 +37,10 @@ function formatFileSize(e?: FsEntry) {
 export const FileInfoFooter = memo(({ file }: FileInfoFooterProps) => {
   const { height } = useGlyphSize();
   return (
-    <div className={css("FileInfoRoot")} style={{ height }}>
-      <div className={css("FileInfoName")}>{file?.name}</div>
-      <div className={css("FileInfoSize")}>{formatFileSize(file)}</div>
-      <div className={css("FileInfoTime")}>{file?.modified ? formatDateTime(new Date(file.modified)) : undefined}</div>
+    <div className={css("file-info-root")} style={{ height }}>
+      <div className={css("file-info-name")}>{file?.name}</div>
+      <div className={css("file-info-size")}>{formatFileSize(file)}</div>
+      <div className={css("file-info-time")}>{file?.modified ? formatDateTime(new Date(file.modified)) : undefined}</div>
     </div>
   );
 });

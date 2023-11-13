@@ -11,12 +11,14 @@ import { useFileContent } from "../features/fs/hooks";
 import { usePanels } from "../features/panels";
 import { css } from "../features/styles";
 import { PanelsLayout } from "../types";
+import { useInert } from "../features/inert";
 
 // const Terminal = lazy(() => import("@components/Terminal/Terminal"));
 
 const decoder = new TextDecoder();
 
 export function App() {
+  const { inert } = useInert();
   const rootRef = useRef<HTMLDivElement>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [panelsOpen, setPanelsOpen] = useState(true);
@@ -62,15 +64,15 @@ export function App() {
   }
 
   return (
-    <div className={css("App")} ref={rootRef}>
-      <div className={css("MainDiv")}>
-        <div className={css("TerminalContainer")}>
+    <div className={css("app")} ref={rootRef} {...{ inert: inert ? "" : undefined }}>
+      <div className={css("main-div")}>
+        <div className={css("terminal-container")}>
           {/* <Suspense fallback={<div />}>
               <Terminal fullScreen={!panelsOpen} onRunStart={onRunStart} onRunEnd={onRunEnd} />
             </Suspense> */}
         </div>
         <div
-          className={css("PanelsContainer")}
+          className={css("panels-container")}
           style={{
             opacity: !executing && panelsOpen ? 1 : 0,
             pointerEvents: !executing && panelsOpen ? "all" : "none",
@@ -80,7 +82,7 @@ export function App() {
           {layout && <LayoutContainer layout={layout} direction="h" />}
         </div>
       </div>
-      <div className={css("FooterDiv")}>
+      <div className={css("footer-div")}>
         <ActionsBar />
       </div>
       <DialogPlaceholder open={dialogOpen} onClose={() => setDialogOpen(false)} />

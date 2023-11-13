@@ -1,6 +1,7 @@
 import { FileSystemProvider } from "./features/fs/types";
 
 export interface RowLayout {
+  id: string;
   type: "row";
   children: PanelsLayout[];
 }

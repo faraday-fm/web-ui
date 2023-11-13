@@ -2,7 +2,7 @@ import { FsEntry } from "../../features/fs/types";
 import { FilePanelLayout, PanelLayout, PanelsLayout } from "../../types";
 import { ImmerStateCreator } from "../../utils/immer";
 import { List } from "../../utils/immutableList";
-import { traverseLayout } from "../../utils/layout";
+import { traverseLayout, traverseLayoutRows } from "../../utils/layout";
 import { combine, truncateLastDir } from "../../utils/path";
 import { CursorPosition, PanelState } from "./types";
 
@@ -15,6 +15,7 @@ interface State {
 
 interface Actions {
   setPanelsLayout(layout: PanelsLayout): void;
+  resizeChildren(id: string, flexes: number[]): void;
   setActivePanel(activePanelId: string): void;
   initPanelState(id: string, state: PanelState): void;
   setPanelItems(id: string, items: List<FsEntry>): void;
@@ -30,6 +31,16 @@ export const createPanelsSlice: ImmerStateCreator<PanelsSlice> = (set) => ({
   states: {} as Record<string, PanelState | undefined>,
 
   setPanelsLayout: (layout) => set({ layout }),
+  resizeChildren: (id, flexes) =>
+    set((s) => {
+      if (s.layout) {
+        traverseLayoutRows(s.layout, (panel) => {
+          if (panel.id === id) {
+            panel.children.forEach((child, idx) => (child.flex = flexes[idx]));
+          }
+        });
+      }
+    }),
   setActivePanel: (activePanelId) =>
     set((s) => {
       if (s.layout) {

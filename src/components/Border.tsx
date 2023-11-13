@@ -3,7 +3,7 @@ import { css } from "../features/styles";
 
 export const Border = ({ color, children, double }: PropsWithChildren<{ color: string; double?: boolean }>) => {
   return (
-    <div className={css("Border", double ? "-double" : "")} style={{ borderColor: `var(--${color})` }}>
+    <div className={css("border", double ? "-double" : "")} style={{ borderColor: `var(--${color})` }}>
       {children}
     </div>
   );

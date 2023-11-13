@@ -1,8 +1,7 @@
-import { useCallback, useContext, useEffect, useMemo } from "react";
+import { PropsWithChildren, createContext, useCallback, useContext, useEffect, useId, useMemo } from "react";
 import { usePrevValueIfDeepEqual } from "../../hooks/usePrevValueIfDeepEqual";
 import { Node, parser } from "../../utils/whenClauseParser";
 import { ContextVariables, useContextVariables } from "../contextVariables";
-import { ContextVariablesIdContext } from "./ContextVariablesProvider";
 
 type Variables = string | string[] | Record<string, unknown>;
 
@@ -127,4 +126,42 @@ export function useIsInContextQuery(expression: string) {
     return evaluate(variables, ast.value);
   }
   return false;
+}
+
+export const ContextVariablesIdContext = createContext<string>("<root>");
+
+export function ContextVariablesProvider({ children }: PropsWithChildren) {
+  const id = useId();
+  return <ContextVariablesIdContext.Provider value={id}>{children}</ContextVariablesIdContext.Provider>;
+}
+
+export function DebugContextVariables() {
+  const id = useContext(ContextVariablesIdContext);
+  const devMode = useIsInContextQuery("devMode");
+  const { variables } = useContextVariables();
+  const vars = variables[id];
+  const entries = useMemo(
+    () =>
+      Object.entries(vars ?? {})
+        .filter(([, v]) => v != null)
+        .toSorted(([k1], [k2]) => k1.localeCompare(k2)),
+    [vars]
+  );
+  return (
+    devMode &&
+    entries.length > 0 && (
+      <div style={{ position: "absolute", fontSize: "xx-small", right: 0, top: 0, color: "black", background: "#fff8" }}>
+        <table>
+          <tbody>
+            {entries.map(([key, val]) => (
+              <tr key={key}>
+                <td>{key}:</td>
+                <td>{JSON.stringify(val)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+  );
 }

@@ -13,7 +13,7 @@ interface CellProps {
 
 export function Cell({ children, cursorStyle, onMouseDown, onMouseOver, onDoubleClick }: PropsWithChildren<CellProps>) {
   return (
-    <div className={css("Cell", `-${cursorStyle}`)} onMouseDown={onMouseDown} onMouseOver={onMouseOver} onDoubleClick={onDoubleClick}>
+    <div className={css("cell", `-${cursorStyle}`)} onMouseDown={onMouseDown} onMouseOver={onMouseOver} onDoubleClick={onDoubleClick}>
       {children}
     </div>
   );

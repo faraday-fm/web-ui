@@ -49,5 +49,5 @@ export default function QuickViewHost({ path, content }: { path?: string; conten
     void activeFrame?.actions.promise.then((a) => a.setContent({ content, path }));
   }, [content, path, activeFrame]);
 
-  return <div className={css("QuickViewHost")}>{Object.values(frames).map((f) => f.element)}</div>;
+  return <div className={css("quick-view-host")}>{Object.values(frames).map((f) => f.element)}</div>;
 }

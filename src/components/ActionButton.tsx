@@ -9,9 +9,9 @@ interface ActionButtonProps {
 export const ActionButton = memo(function ActionButton({ fnKey, header }: ActionButtonProps) {
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <span className={css("ActionButton")} onMouseDown={(e: React.MouseEvent) => e.preventDefault()}>
-      <span className={css("FnKey")}>{fnKey}</span>
-      <div className={css("HeaderButton")}>{header}</div>
+    <span className={css("action-button")} onMouseDown={(e: React.MouseEvent) => e.preventDefault()}>
+      <span className={css("fn-key")}>{fnKey}</span>
+      <div className={css("header-button")}>{header}</div>
     </span>
   );
 });

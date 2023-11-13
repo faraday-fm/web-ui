@@ -13,10 +13,12 @@ const FileIconsContext = createContext<IconResolver>(() => undefined);
 
 const decoder = new TextDecoder();
 const parseSvg = decoder.decode.bind(decoder);
-const defaultDirIcon =
-  '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 4H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8c0-1.11-.9-2-2-2h-8l-2-2z" fill="#90a4ae" /></svg>';
-const defaultFileIcon =
-  '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 9h5.5L13 3.5V9M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m5 2H6v16h12v-9h-7V4z" fill="#90a4ae" /></svg>';
+const defaultDirIcon = btoa(
+  '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 4H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8c0-1.11-.9-2-2-2h-8l-2-2z" fill="#90a4ae" /></svg>'
+);
+const defaultFileIcon = btoa(
+  '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 9h5.5L13 3.5V9M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m5 2H6v16h12v-9h-7V4z" fill="#90a4ae" /></svg>'
+);
 
 export function useFileIconResolver() {
   return useContext(FileIconsContext);
@@ -53,6 +55,10 @@ function resolveIconDefinitionName(iconTheme: IconTheme, path: string, isDir: bo
   return defaultDef;
 }
 
+function FileIcon({ svg }: { svg: string }) {
+  return <div className={css("file-icon")} style={{ backgroundImage: `url('data:image/svg+xml;base64,${svg}')` }} />;
+}
+
 export function FileIconsProvider({ children }: PropsWithChildren) {
   const fs = useFs();
   // const [iconTheme, setIconTheme] = useState<{ path: string; theme: IconTheme }>();
@@ -68,7 +74,7 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
   const resolver: IconResolver = useCallback(
     (path, isDir) => {
       if (!theme || !themePath) {
-        return <div className={css("FileIcon")} dangerouslySetInnerHTML={{ __html: isDir ? defaultDirIcon : defaultFileIcon }} />;
+        return <FileIcon svg={isDir ? defaultDirIcon : defaultFileIcon} />;
       }
 
       const iconDefinitionName = resolveIconDefinitionName(theme, path, isDir);
@@ -79,11 +85,11 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
           return cachedIcon
             .then((svg) => {
               cache.set(iconDefinitionName, svg);
-              return <div className={css("FileIcon")} dangerouslySetInnerHTML={{ __html: svg }} />;
+              return <FileIcon svg={svg} />;
             })
             .catch(() => undefined);
         }
-        return <div className={css("FileIcon")} dangerouslySetInnerHTML={{ __html: cachedIcon }} />;
+        return <FileIcon svg={cachedIcon} />;
       }
       const iconDefinition = iconDefinitionName ? theme.iconDefinitions[iconDefinitionName] : undefined;
       const iconPath = isSvgIcon(iconDefinition) ? iconDefinition.iconPath : undefined;
@@ -95,17 +101,13 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
       try {
         const svgContent = fs.readFile(iconPathAbsolute);
         if (isPromise(svgContent)) {
-          const svgPromise = svgContent.then(parseSvg);
+          const svgPromise = svgContent.then(parseSvg).then((svg) => btoa(svg));
           cache.set(iconDefinitionName, svgPromise);
-          return svgPromise
-            .then((svg) => {
-              return <div className={css("FileIcon")} dangerouslySetInnerHTML={{ __html: svg }} />;
-            })
-            .catch(() => undefined);
+          return svgPromise.then((svg) => <FileIcon svg={svg} />).catch(() => undefined);
         }
-        const svg = parseSvg(svgContent);
+        const svg = btoa(parseSvg(svgContent));
         cache.set(iconDefinitionName, svg);
-        return <div className={css("FileIcon")} dangerouslySetInnerHTML={{ __html: svg }} />;
+        return <FileIcon svg={svg} />;
       } catch {
         return undefined;
       }

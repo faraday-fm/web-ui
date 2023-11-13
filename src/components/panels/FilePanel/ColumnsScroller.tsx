@@ -19,9 +19,9 @@ interface ColumnsScrollerProps {
 function Borders({ columnCount }: { columnCount: number }) {
   const borders = [];
   for (let i = 0; i < columnCount; i++) {
-    borders.push(<div className={css("ColumnBorder")} key={i} />);
+    borders.push(<div className={css("column-border")} key={i} />);
   }
-  return <div className={css("ColumnBorders")}>{borders}</div>;
+  return <div className={css("column-borders")}>{borders}</div>;
 }
 
 export const ColumnsScroller = memo(
@@ -85,16 +85,16 @@ export const ColumnsScroller = memo(
     }, [columnCount, itemContent, itemHeight, itemsPerColumn, topmostItem, totalCount]);
 
     return (
-      <div className={css("ColumnsScrollerRoot")} ref={rootRef}>
+      <div className={css("columns-scroller-root")} ref={rootRef}>
         <Borders columnCount={columnCount} />
-        <div className={css("ColumnsScrollerFixed")} ref={fixedRef} style={{ columnCount }}>
+        <div className={css("columns-scroller-fixed")} ref={fixedRef} style={{ columnCount }}>
           {/* BUG in Chrome (macOS)? When we use `e` as a key, the column layout works incorrectly without this hidden div */}
           {/* To reproduce: comment out the next line, navigate to a directory with big amount of files and use left-right keyboard arrows. */}
           <div style={{ height: 0.1, overflow: "hidden" }} />
           {items}
         </div>
         <div
-          className={css("ScrollableRoot")}
+          className={css("scrollable-root")}
           ref={scrollableRef}
           style={{ height: itemsPerColumn * itemHeight }}
           onScroll={() => {

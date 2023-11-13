@@ -209,14 +209,14 @@ export const FilePanel = memo(
       pathParts.push("/");
     }
     if (!columnCount) {
-      return <div className={css("PanelRoot", focused ? "-focused" : "")} ref={panelRootRef} tabIndex={0} onFocus={handleFocus} />;
+      return <div className={css("panel-root", focused ? "-focused" : "")} ref={panelRootRef} tabIndex={0} onFocus={handleFocus} />;
     }
 
     return (
-      <div className={css("PanelRoot", focused ? "-focused" : "")} ref={panelRootRef} tabIndex={0} onFocus={handleFocus}>
+      <div className={css("panel-root", focused ? "-focused" : "")} ref={panelRootRef} tabIndex={0} onFocus={handleFocus}>
         <GlyphSizeProvider>
           <Border color={focused ? "panel-border-focus" : "panel-border"}>
-            <div className={css("PanelContent")}>
+            <div className={css("panel-content")}>
               <PanelHeader active={focused}>
                 <Breadcrumb isActive={focused}>
                   {pathParts.map((x, i) => (
@@ -225,7 +225,7 @@ export const FilePanel = memo(
                 </Breadcrumb>
               </PanelHeader>
               <div
-                className={css("PanelColumns")}
+                className={css("panel-columns")}
                 // onWheel={(e) => scroll(Math.sign(e.deltaY), true)}
                 onKeyDown={(e) => {
                   // dispatch({ type: "findFirst", char: e.key });
@@ -256,12 +256,12 @@ export const FilePanel = memo(
                   />
                 )}
               </div>
-              <div className={css("FileInfoPanel")}>
+              <div className={css("file-info-panel")}>
                 <Border color={"panel-border"}>
                   <FileInfoFooter file={items.get(adjustedCursor.selectedIndex)} />
                 </Border>
               </div>
-              <div className={css("PanelFooter")}>
+              <div className={css("panel-footer")}>
                 {bytesCount.toLocaleString()} bytes in {filesCount.toLocaleString()} files
               </div>
             </div>
