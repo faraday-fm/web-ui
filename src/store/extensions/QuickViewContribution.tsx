@@ -1,8 +1,8 @@
+import { InferStateType, state } from "effie";
 import { useState } from "react";
-import { InferStateType, state } from "react-rehoox";
+import { useFileStringContent } from "../../features/fs/useFileStringContent";
 import { QuickViewDefinition } from "../../schemas/manifest";
 import { combine } from "../../utils/path";
-import { useFileStringContent } from "../../features/fs/useFileStringContent";
 
 export function QuickViewContribution({ extensionHomePath: path, quickView }: { extensionHomePath: string; quickView: QuickViewDefinition }) {
   const [isActive, setIsActive] = useState(true);

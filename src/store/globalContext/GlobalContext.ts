@@ -1,5 +1,5 @@
+import { state } from "effie";
 import { useCallback, useState } from "react";
-import { state } from "react-rehoox";
 
 export interface State {
   "filePanel.selectedName"?: string;

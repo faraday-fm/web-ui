@@ -1,9 +1,9 @@
+import { InferStateType, from, state } from "effie";
 import { useState } from "react";
-import { InferStateType, from, state } from "react-rehoox";
-import { ExtensionContributions } from "./ExtensionContributions";
 import { useFileJsonContent } from "../../features/fs/useFileJsonContent";
-import { combine } from "../../utils/path";
 import { ExtensionManifest } from "../../schemas/manifest";
+import { combine } from "../../utils/path";
+import { ExtensionContributions } from "./ExtensionContributions";
 
 export function Extension({ path, id }: { path: string; id: string }) {
   const [isActive, setIsActive] = useState(true);

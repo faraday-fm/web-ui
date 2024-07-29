@@ -1,7 +1,7 @@
-import { InferStateType, from, state } from "react-rehoox";
+import { InferStateType, from, state } from "effie";
+import { ExtensionManifest } from "../../schemas/manifest";
 import { IconThemeContribution } from "./IconThemeContribution";
 import { QuickViewContribution } from "./QuickViewContribution";
-import { ExtensionManifest } from "../../schemas/manifest";
 
 export function ExtensionContributions({ extensionHomePath, manifest }: { extensionHomePath: string; manifest: ExtensionManifest }) {
   const contributes = manifest.contributes;

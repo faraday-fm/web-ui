@@ -1,8 +1,8 @@
+import { state } from "effie";
 import { useCallback, useEffect, useState } from "react";
-import { state } from "react-rehoox";
+import { useFileStringContent } from "../../features/fs/hooks";
 import { FontIconDefinition, IconTheme, SvgIconDefinition, isSvgIcon } from "../../schemas/iconTheme";
 import { filename } from "../../utils/path";
-import { useFileStringContent } from "../../features/fs/hooks";
 
 function resolveIconDefinitionName(iconTheme: IconTheme, path: string, isDir: boolean, languageId?: string): string {
   const defaultDef = isDir ? iconTheme.folder : iconTheme.file;

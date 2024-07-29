@@ -1,14 +1,14 @@
+import { state } from "effie";
 import { produce } from "immer";
 import JSON5 from "json5";
 import { useCallback, useEffect, useState } from "react";
-import { state } from "react-rehoox";
+import defaultLayout from "../../assets/layout.json5";
 import { FsEntry } from "../../features/fs/types";
 import { useFileContent } from "../../features/fs/useFileContent";
 import { FilePanelLayout, PanelLayout, PanelsLayout } from "../../types";
 import { List } from "../../utils/immutableList";
 import { traverseLayout, traverseLayoutRows } from "../../utils/layout";
 import { combine, truncateLastDir } from "../../utils/path";
-import defaultLayout from "../../assets/layout.json5";
 import { CursorPosition, PanelState } from "./types";
 
 const decoder = new TextDecoder();

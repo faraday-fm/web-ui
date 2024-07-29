@@ -38,7 +38,7 @@ export default defineConfig(() => {
           format: "esm",
         },
       ],
-      external: ["fast-deep-equal", "parsimmon", "valibot", "list", "immer", "use-resize-observer", "json5", "react-rehoox", "is-promise"],
+      external: ["fast-deep-equal", "parsimmon", "valibot", "list", "immer", "use-resize-observer", "json5", "effie", "is-promise"],
       context: "window",
       plugins: [
         !watch && [terser({ sourceMap: true }), del({ targets: ["dist/*", "dist-dts/*"] })],

@@ -101,7 +101,8 @@ function evaluate(ctx: ContextVariables, node: Node) {
 }
 
 export function useIsInContext() {
-  const { variables } = useContextVariables();
+  const t = useContextVariables();
+  const { variables } = t;
   return useCallback(
     (expression: string) => {
       const ast = parser.parse(expression);

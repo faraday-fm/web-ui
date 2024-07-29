@@ -49,17 +49,17 @@ export function QuickView({ layout }: QuickViewPanelProps) {
   }, [isActive]);
 
   // const { content, path: contentPath } = useFileContent(path, !isFileSelected);
-  return null;
+  const { content, path: contentPath } = { content: undefined, path: undefined };
 
-  // return (
-  //   <div className={css("quick-view")} ref={panelRootRef} tabIndex={0}>
-  //     <Border color={focused ? "panel-border-focus" : "panel-border"}>
-  //       <div className={css("quick-view-content")}>
-  //         <PanelHeader active={isActive}>Quick View</PanelHeader>
-  //         <QuickViewHost content={content} path={contentPath} />
-  //       </div>
-  //     </Border>
-  //     <DebugContextVariables />
-  //   </div>
-  // );
+  return (
+    <div className={css("quick-view")} ref={panelRootRef} tabIndex={0}>
+      <Border color={focused ? "panel-border-focus" : "panel-border"}>
+        <div className={css("quick-view-content")}>
+          <PanelHeader active={isActive}>Quick View</PanelHeader>
+          <QuickViewHost content={content} path={contentPath} />
+        </div>
+      </Border>
+      <DebugContextVariables />
+    </div>
+  );
 }

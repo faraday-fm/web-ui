@@ -1,7 +1,7 @@
+import { state } from "effie";
 import equal from "fast-deep-equal";
 import { produce } from "immer";
 import { useCallback, useRef, useState } from "react";
-import { state } from "react-rehoox";
 
 type ContextVariables = Record<string, Record<string, unknown>>;
 

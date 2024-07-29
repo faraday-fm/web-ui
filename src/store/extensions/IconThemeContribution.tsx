@@ -1,9 +1,9 @@
+import { InferStateType, from, state } from "effie";
 import { useCallback, useEffect, useState } from "react";
-import { InferStateType, from, state } from "react-rehoox";
-import { IconThemeDefinition } from "../../schemas/manifest";
-import { combine } from "../../utils/path";
 import { useFileJsonContent } from "../../features/fs/useFileJsonContent";
 import { IconThemeSchema } from "../../schemas/iconTheme";
+import { IconThemeDefinition } from "../../schemas/manifest";
+import { combine } from "../../utils/path";
 import { FileIcon } from "./FileIcon";
 
 export function IconThemeContribution({ extensionHomePath, iconTheme }: { extensionHomePath: string; iconTheme: IconThemeDefinition }) {

@@ -1,17 +1,17 @@
+import { createStore } from "effie";
 import { ReactNode, useState } from "react";
-import { createStore } from "react-rehoox";
 import { App } from "./components/App";
 import { FaradayHostProvider } from "./contexts/faradayHostContext";
 import { GlyphSizeProvider } from "./contexts/glyphSizeContext";
 import { KeyBindingProvider } from "./contexts/keyBindingContext";
 import { ContextVariablesProvider } from "./features/commands";
+import { FileSystemProvider } from "./features/fs/FileSystemContext";
 import { useStyles } from "./features/styles";
 import { ThemeProvider } from "./features/themes";
 import { darkTheme, lightTheme } from "./features/themes/themes";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import { RootStore } from "./store/RootStore";
 import { FaradayProps } from "./types";
-import { FileSystemProvider } from "./features/fs/FileSystemContext";
 
 export { InMemoryFsProvider } from "./features/fs/inMemoryFs";
 export type { FileChangeEvent, FileChangeType, FileSystemProvider, FileSystemWatcher, FsEntry } from "./features/fs/types";

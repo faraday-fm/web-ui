@@ -1,8 +1,8 @@
-import { from, state } from "react-rehoox";
-import { Extension } from "./Extension";
+import { from, state } from "effie";
 import { useFileJsonContent } from "../../features/fs/useFileJsonContent";
-import { combine } from "../../utils/path";
 import { ExtensionRepoSchema } from "../../schemas/extensionRepo";
+import { combine } from "../../utils/path";
+import { Extension } from "./Extension";
 
 export const Extensions = ({ root }: { root: string }) => {
   // const refs = useRef<ReturnType<typeof Extension>[typeof $stateType][]>([]);

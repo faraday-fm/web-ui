@@ -1,4 +1,4 @@
-import { state } from "react-rehoox";
+import { state } from "effie";
 import { useFileJsonContent } from "../../features/fs/hooks";
 import { Settings as SettingsSchema } from "../../schemas/settings";
 
