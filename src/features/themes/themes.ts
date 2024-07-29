@@ -101,6 +101,10 @@ export const baseTheme = (): Theme => ({
     "dialog.foreground": "#000000",
     "dialog.border": "#405262",
     "dialog.shadow": "#ff0000",
+    "dialog.buttonBackground": "transparent",
+    "dialog.buttonForeground": "#black",
+    "dialog.buttonBackground:focus": "#3272bd",
+    "dialog.buttonForeground:focus": "#dcffe4",
     "panel.background": "#1c2f40",
     "panel.foreground": "#d1d5da",
     "panel.background:focus": "#203447",
@@ -121,6 +125,7 @@ export const baseTheme = (): Theme => ({
     "files.file.background:focus": "#16385b",
     "files.file.foreground:focus": "#ffffff",
     "files.file.border:focus": "#3272bd",
+    "files.file.border:focus:inactive": "#3272bd44",
 
     "textAcceleratorKey.foreground": "#9a2d2d",
     // "dropdown.background": "#2f363d",

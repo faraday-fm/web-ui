@@ -1,17 +1,17 @@
+import { ReactNode, useState } from "react";
+import { createStore } from "react-rehoox";
 import { App } from "./components/App";
-import { SettingsTracker } from "./components/SettingsTracker/SettingsTracker";
-import { Extensions } from "./components/extensions/Extensions";
 import { FaradayHostProvider } from "./contexts/faradayHostContext";
-import { FileIconsProvider } from "./contexts/fileIconsContext";
 import { GlyphSizeProvider } from "./contexts/glyphSizeContext";
 import { KeyBindingProvider } from "./contexts/keyBindingContext";
 import { ContextVariablesProvider } from "./features/commands";
-import { AppStoreProvider } from "./features/store";
 import { useStyles } from "./features/styles";
 import { ThemeProvider } from "./features/themes";
 import { darkTheme, lightTheme } from "./features/themes/themes";
 import { useMediaQuery } from "./hooks/useMediaQuery";
+import { RootStore } from "./store/RootStore";
 import { FaradayProps } from "./types";
+import { FileSystemProvider } from "./features/fs/FileSystemContext";
 
 export { InMemoryFsProvider } from "./features/fs/inMemoryFs";
 export type { FileChangeEvent, FileChangeType, FileSystemProvider, FileSystemWatcher, FsEntry } from "./features/fs/types";
@@ -20,24 +20,31 @@ export type { FaradayConfig, FaradayHost, FaradayProps, Terminal, TerminalSessio
 export function Faraday({ host }: FaradayProps) {
   const dark = useMediaQuery("(prefers-color-scheme: dark)");
   const theme = dark ? darkTheme : lightTheme;
+  const [store] = useState(() => {
+    const providers = (child: ReactNode) => (
+      <FaradayHostProvider host={host}>
+        <FileSystemProvider>{child}</FileSystemProvider>
+      </FaradayHostProvider>
+    );
+    return createStore(RootStore, providers);
+  });
+
   useStyles(theme);
   return (
-    <AppStoreProvider>
+    <store.Provider>
+      {/* <FaradayHostProvider host={host}> */}
       <ContextVariablesProvider>
         <ThemeProvider theme={theme}>
-          <FaradayHostProvider host={host}>
-            <KeyBindingProvider>
-              <GlyphSizeProvider>
-                <FileIconsProvider>
-                  <App />
-                  <Extensions root="file:~/.faraday/extensions" />
-                  <SettingsTracker path="file:~/.faraday/settings.json5" />
-                </FileIconsProvider>
-              </GlyphSizeProvider>
-            </KeyBindingProvider>
-          </FaradayHostProvider>
+          <KeyBindingProvider>
+            <GlyphSizeProvider>
+              {/* <FileIconsProvider> */}
+              <App host={host} />
+              {/* </FileIconsProvider> */}
+            </GlyphSizeProvider>
+          </KeyBindingProvider>
         </ThemeProvider>
       </ContextVariablesProvider>
-    </AppStoreProvider>
+      {/* </FaradayHostProvider> */}
+    </store.Provider>
   );
 }

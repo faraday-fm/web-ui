@@ -75,18 +75,20 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
               </p>
             </Border>
             <Border color={"dialog-border"}>
-              <button className={css("dialog-button")} id={`${dialogId}copy`} tabIndex={0}>
-                <AutoHotKeyLabel text="Copy" htmlFor={`${dialogId}copy`} />
-              </button>
-              <button className={css("dialog-button")} id={`${dialogId}tree`} tabIndex={0}>
-                <AutoHotKeyLabel text="F10-Tree" htmlFor={`${dialogId}tree`} />
-              </button>
-              <button className={css("dialog-button")} id={`${dialogId}filter`} tabIndex={0}>
-                <AutoHotKeyLabel text="Filter" htmlFor={`${dialogId}filter`} />
-              </button>
-              <button className={css("dialog-button")} id={`${dialogId}cancel`} tabIndex={0}>
-                <AutoHotKeyLabel text="Cancel" htmlFor={`${dialogId}cancel`} />
-              </button>
+              <div className={css("dialog-actions")}>
+                <button className={css("dialog-button")} id={`${dialogId}copy`} tabIndex={0}>
+                  <AutoHotKeyLabel text="Copy" htmlFor={`${dialogId}copy`} />
+                </button>
+                <button className={css("dialog-button")} id={`${dialogId}tree`} tabIndex={0}>
+                  <AutoHotKeyLabel text="F10-Tree" htmlFor={`${dialogId}tree`} />
+                </button>
+                <button className={css("dialog-button")} id={`${dialogId}filter`} tabIndex={0}>
+                  <AutoHotKeyLabel text="Filter" htmlFor={`${dialogId}filter`} />
+                </button>
+                <button className={css("dialog-button")} id={`${dialogId}cancel`} tabIndex={0}>
+                  <AutoHotKeyLabel text="Cancel" htmlFor={`${dialogId}cancel`} />
+                </button>
+              </div>
             </Border>
           </Border>
         </div>

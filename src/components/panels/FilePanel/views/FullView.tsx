@@ -1,6 +1,6 @@
 import { FsEntry } from "../../../../features/fs/types";
-import { CursorPosition } from "../../../../features/panels";
 import { css } from "../../../../features/styles";
+import { CursorPosition } from "../../../../store/panels/types";
 import { List } from "../../../../utils/immutableList";
 import { Column } from "../Column";
 import { ColumnDef, CursorStyle } from "../types";

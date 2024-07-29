@@ -1,12 +1,13 @@
 import { PropsWithChildren, createContext, useCallback, useContext, useEffect, useId, useMemo } from "react";
 import { usePrevValueIfDeepEqual } from "../../hooks/usePrevValueIfDeepEqual";
 import { Node, parser } from "../../utils/whenClauseParser";
-import { ContextVariables, useContextVariables } from "../contextVariables";
+import { ContextVariables, useContextVariables } from "../../store/contextVariables";
 
 type Variables = string | string[] | Record<string, unknown>;
 
 export function useSetContextVariables(variables: Variables, isActive = true): void {
   const id = useContext(ContextVariablesIdContext);
+
   const { setVariables, updateVariables } = useContextVariables();
   variables = usePrevValueIfDeepEqual(variables);
 

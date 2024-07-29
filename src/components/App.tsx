@@ -1,43 +1,24 @@
-import JSON5 from "json5";
-import { useEffect, useRef, useState } from "react";
-import defaultLayout from "../assets/layout.json5";
+import { useRef, useState } from "react";
 import { ActionsBar } from "../components/ActionsBar";
 import DialogPlaceholder from "../components/DialogPlaceholder";
 import { LayoutContainer } from "../components/LayoutContainer";
-import { useFaradayHost } from "../contexts/faradayHostContext";
 import { useGlyphSize } from "../contexts/glyphSizeContext";
 import { useCommandBindings, useSetContextVariables } from "../features/commands";
-import { useFileContent } from "../features/fs/hooks";
-import { usePanels } from "../features/panels";
 import { css } from "../features/styles";
-import { PanelsLayout } from "../types";
-import { useInert } from "../features/inert";
+import { useInert } from "../store/inert/hooks";
+import { usePanels } from "../store/panels/hooks";
+import { FaradayHost } from "../types";
 
 // const Terminal = lazy(() => import("@components/Terminal/Terminal"));
 
-const decoder = new TextDecoder();
-
-export function App() {
+export function App({ host }: { host: FaradayHost }) {
   const { inert } = useInert();
   const rootRef = useRef<HTMLDivElement>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [panelsOpen, setPanelsOpen] = useState(true);
   const [executing] = useState(false);
-  const { layout, setPanelsLayout, focusNextPanel, enterDir } = usePanels();
-  const host = useFaradayHost();
+  const { layout, focusNextPanel, enterDir } = usePanels();
   const [devMode, setDevMode] = useState(false);
-
-  const { content: layoutContent } = useFileContent("faraday:/layout.json5");
-  useEffect(() => {
-    if (layoutContent) {
-      try {
-        const layout: PanelsLayout = JSON5.parse(decoder.decode(layoutContent));
-        setPanelsLayout(layout);
-      } catch {
-        setPanelsLayout(JSON5.parse(defaultLayout));
-      }
-    }
-  }, [layoutContent, setPanelsLayout]);
 
   useSetContextVariables("isDesktop", host.config.isDesktop());
   useSetContextVariables("devMode", devMode);
@@ -52,6 +33,8 @@ export function App() {
     copyFiles: () => setDialogOpen(true),
     switchDevMode: () => setDevMode((d) => !d),
   });
+
+  // console.error(layout);
 
   // const leftItems = useMemo(() => Array.from(Array(300).keys()).map((i) => ({ name: i.toString(), size: Math.round(Math.random() * 100000000) })), []);
   const { height: glyphHeight } = useGlyphSize();

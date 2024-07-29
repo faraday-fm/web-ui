@@ -5,6 +5,7 @@ import { CursorStyle } from "./types";
 import { useFileIconResolver } from "../../../contexts/fileIconsContext";
 import { useGlyphSize } from "../../../contexts/glyphSizeContext";
 import { css } from "../../../features/styles";
+import { useAppSelector } from "../../../store/store";
 
 interface CellProps {
   cursorStyle: CursorStyle;
@@ -19,6 +20,7 @@ function getColor(name: string, dir: boolean | undefined, selected: boolean) {
 }
 
 export const FullFileName = memo(function FullFileName({ cursorStyle, data }: CellProps) {
+  useAppSelector((state) => state.extensions);
   const iconResolver = useFileIconResolver();
   const { height } = useGlyphSize();
 

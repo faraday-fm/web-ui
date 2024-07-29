@@ -1,11 +1,11 @@
 import isPromise from "is-promise";
 import { PropsWithChildren, ReactNode, createContext, useCallback, useContext, useMemo } from "react";
-import { useFs } from "../features/fs/hooks";
-import { useIconThemes } from "../features/iconThemes/hooks";
-import { useSettings } from "../features/settings/hooks";
+import { useIconThemes } from "../store/extensions/hooks";
 import { css } from "../features/styles";
 import { IconTheme, isSvgIcon } from "../schemas/iconTheme";
 import { combine, filename } from "../utils/path";
+import { useAppSelector } from "../store/store";
+import { useAppFs } from "../features/fs/useAppFs";
 
 export type IconResolver = (path: string, isDir: boolean) => ReactNode | PromiseLike<ReactNode>;
 
@@ -60,9 +60,9 @@ function FileIcon({ svg }: { svg: string }) {
 }
 
 export function FileIconsProvider({ children }: PropsWithChildren) {
-  const fs = useFs();
+  const fs = useAppFs();
+  const iconThemeId = useAppSelector((state) => state.settings.iconThemeId);
   // const [iconTheme, setIconTheme] = useState<{ path: string; theme: IconTheme }>();
-  const iconThemeId = useSettings().iconThemeId;
   const iconThemes = useIconThemes();
   const iconTheme = iconThemes[iconThemeId];
   const theme = iconTheme?.theme;

@@ -1,5 +1,5 @@
-import { useExtensionStates } from "../extensions/useExtensionStates";
+import { useAppSelector } from "../../store/store";
 
 export function useQuickViews() {
-  return useExtensionStates().quickViews;
+  return useAppSelector((state) => state.extensions.flatMap((e) => e.contributions?.quickViews ?? []) ?? []);
 }

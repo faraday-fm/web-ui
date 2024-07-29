@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { List, createList } from "../../utils/immutableList";
 import { FsEntry } from "./types";
-import { useFs } from "./useFs";
+import { useAppFs } from "./useAppFs";
 
 export function useDirListing(path: string | undefined, onListUpdated: (path: string, files: List<FsEntry>) => void) {
-  const fs = useFs();
+  const fs = useAppFs();
 
   useEffect(() => {
     if (!path) return undefined;

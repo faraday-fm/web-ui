@@ -1,17 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-
-import { useFs } from "./useFs";
+import { useFileSystem } from "./FileSystemContext";
 
 interface FileContent {
   done: boolean;
-  error?: unknown;
+  error?: Error;
   content?: Uint8Array;
   path?: string;
   skipped: boolean;
 }
 
+function getError(error: unknown, path: string) {
+  return error instanceof Error ? error : new Error(`Unable to read file ${path}`);
+}
+
 export function useFileContent(path?: string, skip = false) {
-  const fs = useFs();
+  const fs = useFileSystem();
   const [result, setResult] = useState<FileContent>({ done: false, path, skipped: skip });
   const counter = useRef(0);
 
@@ -35,17 +38,18 @@ export function useFileContent(path?: string, skip = false) {
               .then((content) => {
                 setResult({ done: true, content, path, skipped: false });
               })
-              .catch((error: unknown) => {
+              .catch((error) => {
                 if (counter.current === pendingOp) {
-                  setResult({ done: false, error, path, skipped: false });
+                  setResult({ done: false, error: getError(error, path), path, skipped: false });
                 }
               });
           }, 100);
         },
         { signal: abortController.signal }
       ).catch((error: unknown) => {
+        const err = error instanceof Error ? error : new Error(`Unable to read file ${path}`);
         if (counter.current === pendingOp) {
-          setResult({ done: false, error, path, skipped: false });
+          setResult({ done: false, error: err, path, skipped: false });
         }
       });
       fs.readFile(path, { signal: abortController.signal })
@@ -56,12 +60,12 @@ export function useFileContent(path?: string, skip = false) {
         })
         .catch((error: unknown) => {
           if (counter.current === pendingOp) {
-            setResult({ done: false, error, path, skipped: false });
+            setResult({ done: false, error: getError(error, path), path, skipped: false });
           }
         });
     } catch (error) {
       if (counter.current === pendingOp) {
-        setResult({ done: false, error, path, skipped: false });
+        setResult({ done: false, error: getError(error, path), path, skipped: false });
       }
     }
     return () => abortController.abort();

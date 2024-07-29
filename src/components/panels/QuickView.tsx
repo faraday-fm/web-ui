@@ -4,10 +4,10 @@ import { Border } from "../../components/Border";
 import { PanelHeader } from "../../components/PanelHeader";
 import { ContextVariablesProvider, DebugContextVariables, useSetContextVariables } from "../../features/commands";
 import { useFileContent } from "../../features/fs/hooks";
-import { useGlobalContext } from "../../features/globalContext";
-import { usePanels } from "../../features/panels";
 import { css } from "../../features/styles";
 import { useFocused } from "../../hooks/useFocused";
+import { useGlobalContext } from "../../store/globalContext";
+import { usePanels } from "../../store/panels/hooks";
 import { QuickViewLayout } from "../../types";
 import QuickViewHost from "./QuickViewHost";
 
@@ -27,7 +27,8 @@ export function QuickView({ layout }: QuickViewPanelProps) {
   const { id } = layout;
   const { activePanel, setActivePanel } = usePanels();
   const isActive = activePanel?.id === id;
-  const { "filePanel.path": path, "filePanel.isFileSelected": isFileSelected } = useGlobalContext();
+  const { context } = useGlobalContext();
+  const { "filePanel.path": path, "filePanel.isFileSelected": isFileSelected } = context;
 
   const panelRootRef = useRef<HTMLDivElement>(null);
   const focused = useFocused(panelRootRef);
@@ -47,17 +48,18 @@ export function QuickView({ layout }: QuickViewPanelProps) {
     }
   }, [isActive]);
 
-  const { content, path: contentPath } = useFileContent(path, !isFileSelected);
+  // const { content, path: contentPath } = useFileContent(path, !isFileSelected);
+  return null;
 
-  return (
-    <div className={css("quick-view")} ref={panelRootRef} tabIndex={0}>
-      <Border color={focused ? "panel-border-focus" : "panel-border"}>
-        <div className={css("quick-view-content")}>
-          <PanelHeader active={isActive}>Quick View</PanelHeader>
-          <QuickViewHost content={content} path={contentPath} />
-        </div>
-      </Border>
-      <DebugContextVariables />
-    </div>
-  );
+  // return (
+  //   <div className={css("quick-view")} ref={panelRootRef} tabIndex={0}>
+  //     <Border color={focused ? "panel-border-focus" : "panel-border"}>
+  //       <div className={css("quick-view-content")}>
+  //         <PanelHeader active={isActive}>Quick View</PanelHeader>
+  //         <QuickViewHost content={content} path={contentPath} />
+  //       </div>
+  //     </Border>
+  //     <DebugContextVariables />
+  //   </div>
+  // );
 }

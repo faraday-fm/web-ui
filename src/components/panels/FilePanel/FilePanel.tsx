@@ -9,7 +9,6 @@ import { CondensedView } from "./views/CondensedView";
 import { FullView } from "./views/FullView";
 import { FsEntry } from "../../../features/fs/types";
 import { List } from "../../../utils/immutableList";
-import { CursorPosition } from "../../../features/panels";
 import { FilePanelView } from "../../../types";
 import { clamp } from "../../../utils/number";
 import { useElementSize } from "../../../hooks/useElementSize";
@@ -20,6 +19,7 @@ import { GlyphSizeProvider } from "../../../contexts/glyphSizeContext";
 import { css } from "../../../features/styles";
 import { Border } from "../../Border";
 import { PanelHeader } from "../../PanelHeader";
+import { CursorPosition } from "../../../store/panels/types";
 
 export interface FilePanelProps {
   items: List<FsEntry>;

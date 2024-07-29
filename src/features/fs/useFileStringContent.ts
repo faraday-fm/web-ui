@@ -5,10 +5,10 @@ const decoder = new TextDecoder();
 
 interface FileStringContent {
   content?: string;
-  error?: unknown;
+  error?: Error;
 }
 
-export function useFileStringContent(path?: string, skip = false): FileStringContent {
+export function useFileStringContent({ path, skip = false }: { path?: string; skip?: boolean }): FileStringContent {
   const fileContent = useFileContent(path, skip);
 
   return useMemo(() => {
@@ -22,7 +22,7 @@ export function useFileStringContent(path?: string, skip = false): FileStringCon
     try {
       return { content: content ? decoder.decode(content) : undefined };
     } catch (error) {
-      return { error };
+      return { error: new Error(`Unable to read file ${path}`, { cause: error }) };
     }
-  }, [fileContent]);
+  }, [fileContent, path]);
 }

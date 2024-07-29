@@ -1,11 +1,11 @@
 import { useCallback, useRef } from "react";
 import { css } from "../features/styles";
+import { useInert } from "../store/inert/hooks";
+import { usePanels } from "../store/panels/hooks";
 import { PanelsLayout, RowLayout } from "../types";
-import { ReduxFilePanel } from "./ReduxFilePanel";
 import { RenderWhen } from "./RenderWhen";
 import { QuickViewPanel } from "./panels/QuickView";
-import { usePanels } from "../features/panels";
-import { useInert } from "../features/inert";
+import { StoreFilePanel } from "./panels/StoreFilePanel";
 
 interface LayoutContainerProps {
   layout: PanelsLayout;
@@ -97,7 +97,7 @@ function LayoutContainerChooser({ layout, direction }: LayoutContainerProps) {
     case "row":
       return <RowContainer layout={layout} direction={direction} />;
     case "file-panel":
-      return <ReduxFilePanel layout={layout} />;
+      return <StoreFilePanel layout={layout} />;
     case "quick-view":
       return <QuickViewPanel layout={layout} />;
     default:

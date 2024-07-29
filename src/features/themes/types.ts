@@ -75,6 +75,10 @@ export interface Theme {
     "dialog.backdrop": string;
     "dialog.border": string;
     "dialog.shadow": string;
+    "dialog.buttonBackground": string;
+    "dialog.buttonForeground": string;
+    "dialog.buttonBackground:focus": string;
+    "dialog.buttonForeground:focus": string;
 
     /* Panel */
     "panel.header.foreground": string;
@@ -98,6 +102,7 @@ export interface Theme {
     "files.file.background:focus": string;
     "files.file.foreground:focus": string;
     "files.file.border:focus": string;
+    "files.file.border:focus:inactive": string;
   };
   // palette: Palette;
   // fontFamily: string;
