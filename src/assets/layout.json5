@@ -10,7 +10,7 @@
         {
           id: "panel1",
           type: "file-panel",
-          path: "file:/",
+          path: "/",
           view: {
             type: "condensed",
             columnDef: { field: "name", name: "Name" },
@@ -26,7 +26,7 @@
         {
           id: "panel2",
           type: "file-panel",
-          path: "file:/",
+          path: "/",
           view: {
             type: "full",
             columnDefs: [

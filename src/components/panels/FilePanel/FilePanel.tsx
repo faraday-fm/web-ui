@@ -116,9 +116,11 @@ export const FilePanel = memo(
       }
     }
 
+    const adjustedCursorRef = useRef(adjustedCursor);
+    adjustedCursorRef.current = adjustedCursor;
     const scroll = useCallback(
       (delta: number, followCursor: boolean) => {
-        let c = structuredClone(adjustedCursor);
+        let c = structuredClone(adjustedCursorRef.current);
         c.selectedIndex += delta;
         if (followCursor) {
           c.topmostIndex += delta;
@@ -126,11 +128,11 @@ export const FilePanel = memo(
         c.selectedName = items.get(c.selectedIndex)?.name ?? "";
         c.topmostName = items.get(c.topmostIndex)?.name ?? "";
         c = adjustCursor(c, items, displayedItems);
-        if (!equal(c, adjustedCursor)) {
+        if (!equal(c, adjustedCursorRef.current)) {
           onCursorPositionChange(c);
         }
       },
-      [adjustedCursor, items, displayedItems, onCursorPositionChange]
+      [items, displayedItems, onCursorPositionChange]
     );
 
     const moveCursorToPos = useCallback(
@@ -186,10 +188,9 @@ export const FilePanel = memo(
     const onItemActivated = useCallback(() => {
       void executeBuiltInCommand("open", { path });
     }, [executeBuiltInCommand, path]);
-    const handleSelect = useCallback(
-      (topmost: number, selected: number) => scroll(selected - (cursor.selectedIndex ?? 0), true),
-      [cursor.selectedIndex, scroll]
-    );
+    const selectedIndexRef = useRef(cursor.selectedIndex);
+    selectedIndexRef.current = cursor.selectedIndex;
+    const handleSelect = useCallback((topmost: number, selected: number) => scroll(selected - (selectedIndexRef.current ?? 0), true), [scroll]);
     const handleFocus = useCallback(() => onFocus?.(), [onFocus]);
 
     let cursorStyle: CursorStyle;
