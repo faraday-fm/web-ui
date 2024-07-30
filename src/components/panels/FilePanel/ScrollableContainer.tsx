@@ -11,6 +11,11 @@ interface ScrollableContainerProps {
   onScroll?: (scrollTop: number) => void;
 }
 
+let isTouchscreen = false;
+if (window.matchMedia("(pointer: coarse)").matches) {
+  isTouchscreen = true;
+}
+
 const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
   children,
   scrollHeight,
@@ -37,7 +42,7 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
 
     if (!scrollPane || !innerContainer) return;
 
-    let touchStartY = 0;
+    let touchStartY: number | undefined;
     let touchStartTime = 0;
     let velocity = 0;
     let isInertiaScrolling = false;
@@ -58,26 +63,42 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
       event.preventDefault();
     };
 
-    const handleTouchStart = (event: TouchEvent) => {
-      touchStartY = event.touches[0].clientY;
-      touchStartTime = Date.now();
+    const handlePointerDown = (event: PointerEvent) => {
+      touchStartY = event.clientY;
+      touchStartTime = performance.now();
       isInertiaScrolling = false;
       velocity = 0;
     };
 
-    const handleTouchMove = (event: TouchEvent) => {
-      const touchCurrentY = event.touches[0].clientY;
+    const handlePointerMove = (event: PointerEvent) => {
+      if (touchStartY == null) {
+        return;
+      }
+
+      const touchCurrentY = event.clientY;
       const deltaY = touchStartY - touchCurrentY;
+      if (Math.abs(deltaY) < 3) {
+        return;
+      }
+
+      innerContainer.setPointerCapture(event.pointerId);
       updateScrollTop(deltaY);
       touchStartY = touchCurrentY;
-      const currentTime = Date.now();
+      const currentTime = performance.now();
       const timeDelta = currentTime - touchStartTime;
       touchStartTime = currentTime;
-      velocity = deltaY / timeDelta;
+      if (timeDelta > 0) {
+        velocity = deltaY / timeDelta;
+      }
       event.preventDefault();
     };
 
-    const handleTouchEnd = () => {
+    const handlePointerUp = (event: PointerEvent) => {
+      if (touchStartY == null) {
+        return;
+      }
+      touchStartY = undefined;
+      innerContainer.releasePointerCapture(event.pointerId);
       const inertiaScroll = () => {
         if (Math.abs(velocity) > 0.1) {
           updateScrollTop(velocity * velocityFactor);
@@ -94,20 +115,26 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
     };
 
     innerContainer.addEventListener("wheel", handleWheel);
-    innerContainer.addEventListener("touchstart", handleTouchStart);
-    innerContainer.addEventListener("touchmove", handleTouchMove);
-    innerContainer.addEventListener("touchend", handleTouchEnd);
+    if (isTouchscreen) {
+      innerContainer.addEventListener("pointerdown", handlePointerDown);
+      innerContainer.addEventListener("pointermove", handlePointerMove);
+      innerContainer.addEventListener("pointerup", handlePointerUp);
+      innerContainer.addEventListener("pointercancel", handlePointerUp);
+    }
 
     return () => {
       innerContainer.removeEventListener("wheel", handleWheel);
-      innerContainer.removeEventListener("touchstart", handleTouchStart);
-      innerContainer.removeEventListener("touchmove", handleTouchMove);
-      innerContainer.removeEventListener("touchend", handleTouchEnd);
+      if (isTouchscreen) {
+        innerContainer.removeEventListener("pointerdown", handlePointerDown);
+        innerContainer.removeEventListener("pointermove", handlePointerMove);
+        innerContainer.removeEventListener("pointerup", handlePointerUp);
+        innerContainer.removeEventListener("pointercancel", handlePointerUp);
+      }
     };
   }, [velocityFactor, frictionFactor, onScroll, scrollHeight]);
 
   return (
-    <div className="AAA" style={{ overflow: "hidden", position: "relative", ...style }}>
+    <div className="AAA" style={{ overflow: "hidden", position: "relative", touchAction: "none", ...style }}>
       <div
         ref={scrollPaneRef}
         style={{
