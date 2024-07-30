@@ -10,7 +10,7 @@ export const Extension = memo(function Extension({ path }: { path: string }) {
   const { setExtensionManifest, activateExtension, deactivateExtension } = useExtensionStates();
   const manifest = useFileJsonContent(combine(path, "package.json"), ExtensionManifest);
   if (manifest.error) {
-    console.error("Cannot load extension.", manifest.error);
+    console.error("Cannot load extension.", path, manifest.error);
   }
 
   useEffect(() => {

@@ -64,6 +64,7 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
     };
 
     const handlePointerDown = (event: PointerEvent) => {
+      console.info("***");
       touchStartY = event.clientY;
       touchStartTime = performance.now();
       isInertiaScrolling = false;

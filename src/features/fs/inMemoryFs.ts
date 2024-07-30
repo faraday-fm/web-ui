@@ -33,14 +33,17 @@ function getPathParts(path: string) {
 
 export class InMemoryFsProvider implements FileSystemProvider {
   private root: Dir;
+  private homeDir: string;
 
   private watchers = new Map<string, Set<FileSystemWatcher>>();
 
-  constructor() {
+  constructor(homeDir?: string) {
+    this.homeDir = homeDir ?? "";
     this.root = { name: "<root>", isDir: true, isMoundedFs: false, isFile: false, children: [] };
   }
 
   async mount(path: string, fs: FileSystemProvider) {
+    path = this.realPath(path);
     const parts = getPathParts(path);
     if (parts.length === 0) {
       throw FileNotADirectory(path);
@@ -81,6 +84,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
   }
 
   async watchDir(path: string, watcher: FileSystemWatcher, options?: { signal?: AbortSignal }) {
+    path = this.realPath(path);
     const parts = getPathParts(path);
     let currEntry: Dir | MountedFs = this.root;
     for (let i = 0; i < parts.length - 1; i += 1) {
@@ -143,6 +147,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
   }
 
   async watchFile(path: string, watcher: FileSystemWatcher, options?: { signal?: AbortSignal }) {
+    path = this.realPath(path);
     const parts = getPathParts(path);
     let currEntry: Dir | MountedFs = this.root;
     for (let i = 0; i < parts.length - 1; i += 1) {
@@ -205,6 +210,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
   }
 
   readDirectory(path: string, options?: { signal?: AbortSignal }) {
+    path = this.realPath(path);
     const parts = getPathParts(path);
     let currEntry: Dir | MountedFs = this.root;
     for (let i = 0; i < parts.length; i += 1) {
@@ -230,6 +236,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
   }
 
   createDirectory(path: string, options?: { signal?: AbortSignal }) {
+    path = this.realPath(path);
     const parts = getPathParts(path);
     let currEntry: Dir | MountedFs = this.root;
     const newDirName = parts.at(-1) ?? "";
@@ -259,6 +266,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
   }
 
   async readFile(path: string, options?: { signal?: AbortSignal }) {
+    path = this.realPath(path);
     const parts = getPathParts(path);
     if (parts.length === 0) {
       throw FileIsADirectory();
@@ -294,6 +302,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
   }
 
   writeFile(path: string, content: Uint8Array, options?: { create?: boolean; overwrite?: boolean; signal?: AbortSignal }) {
+    path = this.realPath(path);
     const parts = getPathParts(path);
     if (parts.length === 0) {
       throw FileIsADirectory();
@@ -344,5 +353,12 @@ export class InMemoryFsProvider implements FileSystemProvider {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   copy?(source: string, destination: string, options?: { overwrite?: boolean; signal?: AbortSignal }): Promise<void> {
     throw new Error("Method not implemented.");
+  }
+
+  realPath(path: string) {
+    if (path.startsWith("~/")) {
+      return `${this.homeDir}${path.substring(1)}`;
+    }
+    return path;
   }
 }

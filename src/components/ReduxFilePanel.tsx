@@ -97,7 +97,7 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
           onDirUp={onDirUp}
           cursor={cursor}
           items={items}
-          path={state ? state.pos.path : "file:/"}
+          path={state ? state.pos.path : "/"}
           view={layout.view}
         />
         <DebugContextVariables />

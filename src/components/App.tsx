@@ -27,7 +27,7 @@ export function App() {
   const host = useFaradayHost();
   const [devMode, setDevMode] = useState(false);
 
-  const { content: layoutContent } = useFileContent("faraday:/layout.json5");
+  const { content: layoutContent } = useFileContent("~/.faraday/layout.json5");
   useEffect(() => {
     if (layoutContent) {
       try {
