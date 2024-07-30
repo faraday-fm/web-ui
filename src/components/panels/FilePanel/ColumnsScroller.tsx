@@ -1,9 +1,10 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { css } from "../../../features/styles";
 import { useElementSize } from "../../../hooks/useElementSize";
+import ScrollableContainer from "./ScrollableContainer";
 
 interface ColumnsScrollerProps {
   topmostItem: number;
@@ -32,7 +33,7 @@ export const ColumnsScroller = memo(
 
     const rootRef = useRef<HTMLDivElement>(null);
     const fixedRef = useRef<HTMLDivElement>(null);
-    const scrollableRef = useRef<HTMLDivElement>(null);
+    // const scrollableRef = useRef<HTMLDivElement>(null);
     const { height } = useElementSize(rootRef);
     let itemsPerColumn = Math.floor(height / itemHeight);
     if (itemsPerColumn < 1) {
@@ -42,14 +43,14 @@ export const ColumnsScroller = memo(
       onMaxItemsPerColumnChanged?.(itemsPerColumn);
     }, [itemsPerColumn, onMaxItemsPerColumnChanged]);
 
-    useEffect(() => {
-      if (!scrollableRef.current) {
-        return;
-      }
-      if (Math.abs(scrollableRef.current.scrollTop - selectedItem * itemHeight) >= itemHeight) {
-        scrollableRef.current.scrollTop = selectedItem * itemHeight;
-      }
-    }, [itemHeight, selectedItem]);
+    // useEffect(() => {
+    //   if (!scrollableRef.current) {
+    //     return;
+    //   }
+    //   if (Math.abs(scrollableRef.current.scrollTop - selectedItem * itemHeight) >= itemHeight) {
+    //     scrollableRef.current.scrollTop = selectedItem * itemHeight;
+    //   }
+    // }, [itemHeight, selectedItem]);
 
     if (selectedItem < topmostItem) {
       topmostItem = selectedItem;
@@ -59,18 +60,18 @@ export const ColumnsScroller = memo(
       topmostItem = Math.max(0, totalCount - columnCount * itemsPerColumn);
     }
 
-    const handleMouseEvent = useCallback((e: React.MouseEvent) => {
-      let targetEl: Element | undefined;
-      for (const el of document.elementsFromPoint(e.clientX, e.clientY)) {
-        if (fixedRef.current?.contains(el)) {
-          targetEl = el;
-          break;
-        }
-      }
-      if (targetEl) {
-        targetEl.dispatchEvent(new PointerEvent(e.type, e.nativeEvent));
-      }
-    }, []);
+    // const handleMouseEvent = useCallback((e: React.MouseEvent) => {
+    //   let targetEl: Element | undefined;
+    //   for (const el of document.elementsFromPoint(e.clientX, e.clientY)) {
+    //     if (fixedRef.current?.contains(el)) {
+    //       targetEl = el;
+    //       break;
+    //     }
+    //   }
+    //   if (targetEl) {
+    //     targetEl.dispatchEvent(new PointerEvent(e.type, e.nativeEvent));
+    //   }
+    // }, []);
 
     const items = useMemo(() => {
       const res = [];
@@ -84,43 +85,48 @@ export const ColumnsScroller = memo(
       return res;
     }, [columnCount, itemContent, itemHeight, itemsPerColumn, topmostItem, totalCount]);
 
+    const [scrollTop, setScrollTop] = useState(0);
+
+    useEffect(() => {
+      setScrollTop(selectedItem * itemHeight);
+    }, [itemHeight, selectedItem]);
+
+    const selectedItemRef = useRef(selectedItem);
+    const topmostItemRef = useRef(topmostItem);
+    selectedItemRef.current = selectedItem;
+    topmostItemRef.current = topmostItem;
+
+    const onScroll = useCallback(
+      (scroll: number) => {
+        // console.info(scroll);
+        setScrollTop(scroll);
+        const newSelectedItem = Math.round(scroll / itemHeight);
+        const delta = newSelectedItem - selectedItemRef.current;
+        if (delta) {
+          onSelect?.(topmostItemRef.current + delta, newSelectedItem);
+        }
+      },
+      [itemHeight, onSelect]
+    );
+
     return (
       <div className={css("columns-scroller-root")} ref={rootRef}>
         <Borders columnCount={columnCount} />
-        <div className={css("columns-scroller-fixed")} ref={fixedRef} style={{ columnCount }}>
-          {/* BUG in Chrome (macOS)? When we use `e` as a key, the column layout works incorrectly without this hidden div */}
-          {/* To reproduce: comment out the next line, navigate to a directory with big amount of files and use left-right keyboard arrows. */}
-          <div style={{ height: 0.1, overflow: "hidden" }} />
-          {items}
-        </div>
-        <div
-          className={css("scrollable-root")}
-          ref={scrollableRef}
-          style={{ height: itemsPerColumn * itemHeight }}
-          onScroll={() => {
-            if (!scrollableRef.current) {
-              return;
-            }
-            const newSelectedItem = Math.round(scrollableRef.current.scrollTop / itemHeight);
-            const delta = newSelectedItem - selectedItem;
-            if (delta) {
-              onSelect?.(topmostItem + delta, newSelectedItem);
-            }
-          }}
+
+        <ScrollableContainer
+          scrollTop={scrollTop}
+          scrollHeight={(totalCount - 1) * itemHeight}
+          style={{ height: "100%" }}
+          innerContainerStyle={{ width: "100%", height: "100%" }}
+          onScroll={onScroll}
         >
-          <div
-            style={{ height: `calc(100% + ${(totalCount - 1) * itemHeight}px)` }}
-            onMouseDown={handleMouseEvent}
-            onMouseEnter={handleMouseEvent}
-            onMouseLeave={handleMouseEvent}
-            onMouseMove={handleMouseEvent}
-            onMouseOut={handleMouseEvent}
-            onMouseOver={handleMouseEvent}
-            onMouseUp={handleMouseEvent}
-            onClick={handleMouseEvent}
-            onDoubleClick={handleMouseEvent}
-          />
-        </div>
+          <div className={css("columns-scroller-fixed")} ref={fixedRef} style={{ columnCount }}>
+            {/* BUG in Chrome (macOS)? When we use `e` as a key, the column layout works incorrectly without this hidden div */}
+            {/* To reproduce: comment out the next line, navigate to a directory with big amount of files and use left-right keyboard arrows. */}
+            <div style={{ height: 0.1, overflow: "hidden" }} />
+            {items}
+          </div>
+        </ScrollableContainer>
       </div>
     );
   }
