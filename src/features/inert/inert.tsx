@@ -1,5 +1,4 @@
-import { StateCreator, useStore } from "zustand";
-import { useAppStore } from "../store";
+import { StateCreator } from "zustand";
 
 interface State {
   inert: boolean;
@@ -16,7 +15,3 @@ export const createInertSlice: StateCreator<InertSlice> = (set) => ({
 
   setInert: (inert) => set({ inert }),
 });
-
-export function useInert() {
-  return useStore(useAppStore(), (s) => s.inert);
-}

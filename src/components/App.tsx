@@ -11,7 +11,7 @@ import { useFileContent } from "../features/fs/hooks";
 import { usePanels } from "../features/panels";
 import { css } from "../features/styles";
 import { PanelsLayout } from "../types";
-import { useInert } from "../features/inert";
+import { useInert } from "../features/inert/hooks";
 
 // const Terminal = lazy(() => import("@components/Terminal/Terminal"));
 

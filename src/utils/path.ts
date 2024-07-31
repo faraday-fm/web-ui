@@ -32,7 +32,8 @@ export function truncateLastDir(path: string) {
     return path;
   }
   const slashIdx = path.lastIndexOf("/");
-  return slashIdx >= 0 ? path.substring(0, slashIdx) : path;
+  const result = slashIdx >= 0 ? path.substring(0, slashIdx) : path;
+  return !result ? "/" : result;
 }
 
 export function filename(path: string) {

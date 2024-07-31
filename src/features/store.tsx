@@ -7,7 +7,7 @@ import { ExtensionStatesSlice, createExtensionStatesSlice } from "./extensions/e
 import { GlobalContextSlice, createGlobalContextSlice } from "./globalContext/globalContext";
 import { PanelsSlice, createPanelsSlice } from "./panels/panels";
 import { SettingsSlice, createSettingsSlice } from "./settings/settings";
-import { InertSlice, createInertSlice } from "./inert";
+import { InertSlice, createInertSlice } from "./inert/inert";
 
 interface Store {
   panels: PanelsSlice;

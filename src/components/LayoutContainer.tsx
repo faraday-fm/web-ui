@@ -5,7 +5,7 @@ import { ReduxFilePanel } from "./ReduxFilePanel";
 import { RenderWhen } from "./RenderWhen";
 import { QuickViewPanel } from "./panels/QuickView";
 import { usePanels } from "../features/panels";
-import { useInert } from "../features/inert";
+import { useInert } from "../features/inert/hooks";
 
 interface LayoutContainerProps {
   layout: PanelsLayout;
