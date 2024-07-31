@@ -6,6 +6,17 @@ import { useSetContextVariables } from "../features/commands";
 import { QuickNavigationProvider } from "../contexts/quickNavigationContext";
 import { css } from "../features/styles";
 import { AutoHotKeyLabel } from "./AutoHotKeyLabel";
+import {
+  already_existing_files,
+  copy_extended_attributes,
+  copy_files_access_mode,
+  copy_to,
+  disable_write_cache,
+  process_multiple_destinations,
+  produce_sparse_files,
+  use_copy_on_write_if_possible,
+  with_symlinks,
+} from "../paraglide/messages";
 
 interface DialogPlaceholderProps {
   open: boolean;
@@ -37,41 +48,41 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
           <Border color={"dialog-border"}>
             <Border color={"dialog-border"}>
               <p style={{ display: "flex", flexDirection: "column" }}>
-                <AutoHotKeyLabel text="Copy to:" htmlFor={`${dialogId}copyTo`} />
+                <AutoHotKeyLabel text={copy_to()} htmlFor={`${dialogId}copyTo`} />
                 <input id={`${dialogId}copyTo`} />
               </p>
             </Border>
             <Border color={"dialog-border"}>
               <p>
-                <AutoHotKeyLabel text="Already existing files:" htmlFor={`${dialogId}alreadyExisting`} />
+                <AutoHotKeyLabel text={already_existing_files()} htmlFor={`${dialogId}alreadyExisting`} />
                 <input id={`${dialogId}alreadyExisting`} />
               </p>
               <p>
                 <input id={`${dialogId}processMultDist`} type="checkbox" tabIndex={0} />
-                <AutoHotKeyLabel text="Process multiple destinations" htmlFor={`${dialogId}processMultDist`} />
+                <AutoHotKeyLabel text={process_multiple_destinations()} htmlFor={`${dialogId}processMultDist`} />
               </p>
               <p>
                 <input id={`${dialogId}copyAccessMode`} type="checkbox" tabIndex={0} />
-                <AutoHotKeyLabel text="Copy files access mode" htmlFor={`${dialogId}copyAccessMode`} />
+                <AutoHotKeyLabel text={copy_files_access_mode()} htmlFor={`${dialogId}copyAccessMode`} />
               </p>
               <p>
                 <input id={`${dialogId}copyAttributes`} type="checkbox" tabIndex={0} />
-                <AutoHotKeyLabel text="Copy extended attributes" htmlFor={`${dialogId}copyAttributes`} />
+                <AutoHotKeyLabel text={copy_extended_attributes()} htmlFor={`${dialogId}copyAttributes`} />
               </p>
               <p>
                 <input id={`${dialogId}disableCache`} type="checkbox" tabIndex={0} />
-                <AutoHotKeyLabel text="Disable write cache" htmlFor={`${dialogId}disableCache`} />
+                <AutoHotKeyLabel text={disable_write_cache()} htmlFor={`${dialogId}disableCache`} />
               </p>
               <p>
                 <input id={`${dialogId}sparseFiles`} type="checkbox" tabIndex={0} />
-                <AutoHotKeyLabel text="Produce sparse files" htmlFor={`${dialogId}sparseFiles`} />
+                <AutoHotKeyLabel text={produce_sparse_files()} htmlFor={`${dialogId}sparseFiles`} />
               </p>
               <p>
                 <input id={`${dialogId}useCopyOnWrite`} type="checkbox" tabIndex={0} />
-                <AutoHotKeyLabel text="Use copy-on-write if possible" htmlFor={`${dialogId}useCopyOnWrite`} />
+                <AutoHotKeyLabel text={use_copy_on_write_if_possible()} htmlFor={`${dialogId}useCopyOnWrite`} />
               </p>
               <p>
-                <AutoHotKeyLabel text="With symlinks:" />
+                <AutoHotKeyLabel text={with_symlinks()} />
               </p>
             </Border>
             <Border color={"dialog-border"}>

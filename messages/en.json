@@ -12,5 +12,14 @@
   "quit_button_text": "Quit",
   "plugins_button_text": "Plugins",
   "screens_button_text": "Screens",
-  "folder_stats": "{bytes} bytes in {files} files"
+  "folder_stats": "{bytes} bytes in {files} files",
+  "copy_to": "Copy to:",
+  "already_existing_files": "Already existing files:",
+  "process_multiple_destinations": "Process multiple destinations",
+  "copy_files_access_mode": "Copy files access mode",
+  "copy_extended_attributes": "Copy extended attributes",
+  "disable_write_cache": "Disable write cache",
+  "produce_sparse_files": "Produce sparse files",
+  "use_copy_on_write_if_possible": "Use copy-on-write if possible",
+  "with_symlinks": "With symlinks:"
 }
