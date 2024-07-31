@@ -13,7 +13,9 @@
     "test": "echo \"Error: no test specified\" && exit 0",
     "commit": "git-cz",
     "semantic-release": "semantic-release --branches main",
-    "lint": "eslint ./src --ext .ts,.tsx"
+    "lint": "eslint ./src --ext .ts,.tsx",
+    "paraglide": "paraglide-js compile --watch --project ./project.inlang --outdir ./src/paraglide",
+    "paraglide-translate": "npx @inlang/cli machine translate --project ./project.inlang"
   },
   "files": [
     "dist",
@@ -71,7 +73,8 @@
     "rollup-plugin-typescript2": "^0.36.0",
     "rollup-plugin-visualizer": "^5.9.2",
     "semantic-release": "^22.0.5",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "@inlang/paraglide-js": "1.11.2"
   },
   "dependencies": {
     "@dhmk/zustand-lens": "^3.0.2",

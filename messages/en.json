@@ -1,0 +1,16 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "help_button_text": "Help",
+  "menu_button_text": "Menu",
+  "view_button_text": "View",
+  "edit_button_text": "Edit",
+  "copy_button_text": "Copy",
+  "rename_button_text": "RenMov",
+  "mkdir_button_text": "Mkdir",
+  "delete_button_text": "Delete",
+  "pull_down_button_text": "PullDn",
+  "quit_button_text": "Quit",
+  "plugins_button_text": "Plugins",
+  "screens_button_text": "Screens",
+  "folder_stats": "{bytes} bytes in {files} files"
+}

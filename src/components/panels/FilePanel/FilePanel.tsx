@@ -20,6 +20,7 @@ import { GlyphSizeProvider } from "../../../contexts/glyphSizeContext";
 import { css } from "../../../features/styles";
 import { Border } from "../../Border";
 import { PanelHeader } from "../../PanelHeader";
+import { folder_stats } from "../../../paraglide/messages";
 
 export interface FilePanelProps {
   items: List<FsEntry>;
@@ -262,9 +263,7 @@ export const FilePanel = memo(
                   <FileInfoFooter file={items.get(adjustedCursor.selectedIndex)} />
                 </Border>
               </div>
-              <div className={css("panel-footer")}>
-                {bytesCount.toLocaleString()} bytes in {filesCount.toLocaleString()} files
-              </div>
+              <div className={css("panel-footer")}>{folder_stats({ bytes: bytesCount.toLocaleString(), files: filesCount.toLocaleString() })}</div>
             </div>
           </Border>
         </GlyphSizeProvider>

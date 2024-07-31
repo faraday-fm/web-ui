@@ -1,0 +1,16 @@
+{
+    "$schema": "https://inlang.com/schema/inlang-message-format",
+    "help_button_text": "Помощь",
+    "menu_button_text": "Меню",
+    "view_button_text": "Вид",
+    "edit_button_text": "Редактировать",
+    "copy_button_text": "Копировать",
+    "rename_button_text": "РенМов",
+    "mkdir_button_text": "Мкдир",
+    "delete_button_text": "Удалить",
+    "pull_down_button_text": "ПулДн",
+    "quit_button_text": "Покидать",
+    "plugins_button_text": "Плагины",
+    "screens_button_text": "Экраны",
+    "folder_stats": "{bytes} байтов в {files}"
+}
