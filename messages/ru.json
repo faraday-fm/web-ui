@@ -12,5 +12,14 @@
     "quit_button_text": "Выход",
     "plugins_button_text": "Плагины",
     "screens_button_text": "Экраны",
-    "folder_stats": "{bytes} байтов в {files} файлах"
+    "folder_stats": "{bytes} байтов в {files} файлах",
+    "copy_to": "Скопировать в:",
+    "already_existing_files": "Уже существующие файлы:",
+    "process_multiple_destinations": "Обработка нескольких пунктов назначения",
+    "copy_files_access_mode": "Режим доступа к копированию файлов",
+    "copy_extended_attributes": "Копировать расширенные атрибуты",
+    "disable_write_cache": "Отключить кэш записи",
+    "produce_sparse_files": "Создавать разреженные файлы",
+    "use_copy_on_write_if_possible": "Использовать copy-on-write, если возможно",
+    "with_symlinks": "С символическими ссылками:"
 }
