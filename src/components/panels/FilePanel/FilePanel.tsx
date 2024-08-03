@@ -207,10 +207,7 @@ export const FilePanel = memo(
     const bytesCount = useMemo(() => items.reduce((acc, item) => acc + ((item.isFile ? item.size : 0) ?? 0), 0), [items]);
     const filesCount = useMemo(() => items.reduce((acc, item) => acc + (item.isFile ? 1 : 0), 0), [items]);
 
-    const pathParts = path.split("/").filter((x) => x);
-    if (pathParts.length === 0) {
-      pathParts.push("/");
-    }
+    const pathParts = path.split("/");
     if (!columnCount) {
       return <div className={css("panel-root", focused ? "-focused" : "")} ref={panelRootRef} tabIndex={0} onFocus={handleFocus} />;
     }

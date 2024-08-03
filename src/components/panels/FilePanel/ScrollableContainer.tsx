@@ -1,5 +1,6 @@
 import type React from "react";
 import { type CSSProperties, type ReactNode, useEffect, useRef } from "react";
+import { useMediaQuery } from "../../../hooks/useMediaQuery";
 
 interface ScrollableContainerProps {
   children: ReactNode;
@@ -10,11 +11,6 @@ interface ScrollableContainerProps {
   style?: CSSProperties;
   innerContainerStyle?: CSSProperties;
   onScroll?: (scrollTop: number) => void;
-}
-
-let isTouchscreen = false;
-if (window.matchMedia("(pointer: coarse)").matches) {
-  isTouchscreen = true;
 }
 
 const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
@@ -36,6 +32,8 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
   if (scrollPaneRef.current) {
     scrollPaneRef.current.scrollTop = scrollTop;
   }
+
+  const isTouchscreen = useMediaQuery("(pointer: coarse)");
 
   useEffect(() => {
     const scrollPane = scrollPaneRef.current;
@@ -65,7 +63,6 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
     };
 
     const handlePointerDown = (event: PointerEvent) => {
-      console.info("***");
       touchStartY = event.clientY;
       touchStartTime = performance.now();
       isInertiaScrolling = false;
@@ -133,11 +130,10 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
         innerContainer.removeEventListener("pointercancel", handlePointerUp);
       }
     };
-  }, [velocityFactor, frictionFactor, onScroll, scrollHeight]);
+  }, [velocityFactor, frictionFactor, onScroll, scrollHeight, isTouchscreen]);
 
   return (
     <div
-      className="AAA"
       style={{
         overflow: "hidden",
         position: "relative",
