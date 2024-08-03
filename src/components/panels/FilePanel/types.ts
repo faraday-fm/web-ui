@@ -1,4 +1,4 @@
-import { FsEntry } from "../../../features/fs/types";
+import type { FsEntry } from "../../../features/fs/types";
 
 export interface ColumnDef {
   name: string;

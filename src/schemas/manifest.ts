@@ -1,4 +1,4 @@
-import { Output, array, enumType, object, optional, string } from "valibot";
+import { type InferOutput, array, enum as enum_, object, optional, string } from "valibot";
 
 const QuickViewDefinition = object({
   id: string(),
@@ -16,7 +16,12 @@ const IconThemeDefinition = object({
 
 const ThemeDefinition = object({
   label: string(),
-  uiTheme: enumType(["fd", "fd-light", "hc", "hc-light"]),
+  uiTheme: enum_({
+    fd: "fd",
+    "fd-light": "fd-light",
+    hc: "hc",
+    "hc-light": "hc-light",
+  }),
   path: string(),
 });
 
@@ -37,10 +42,10 @@ export const ExtensionManifest = object({
   contributes: optional(Contributes),
 });
 
-export type QuickViewDefinition = Output<typeof QuickViewDefinition>;
+export type QuickViewDefinition = InferOutput<typeof QuickViewDefinition>;
 
-export type IconThemeDefinition = Output<typeof IconThemeDefinition>;
+export type IconThemeDefinition = InferOutput<typeof IconThemeDefinition>;
 
-export type Contributes = Output<typeof Contributes>;
+export type Contributes = InferOutput<typeof Contributes>;
 
-export type ExtensionManifest = Output<typeof ExtensionManifest>;
+export type ExtensionManifest = InferOutput<typeof ExtensionManifest>;

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 interface HotKeyProps {
   children: (hotKey: string) => ReactNode;

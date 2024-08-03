@@ -1,13 +1,13 @@
 import JSON5 from "json5";
 import { useMemo } from "react";
-import { BaseSchema, Output, parse } from "valibot";
+import { type BaseIssue, type BaseSchema, type InferOutput, parse } from "valibot";
 import { useFileStringContent } from "./useFileStringContent";
 
-export function useFileJsonContent<TSchema extends BaseSchema>(
+export function useFileJsonContent<TSchema extends BaseSchema<unknown, unknown, BaseIssue<unknown>>>(
   path: string | undefined,
   schema: TSchema,
-  skip = false
-): { error?: unknown; content?: Output<typeof schema> } {
+  skip = false,
+): { error?: unknown; content?: InferOutput<typeof schema> } {
   const stringContent = useFileStringContent(path, skip);
   return useMemo(() => {
     const { error, content } = stringContent;
@@ -18,7 +18,9 @@ export function useFileJsonContent<TSchema extends BaseSchema>(
       return {};
     }
     try {
-      return { content: content ? (parse(schema, JSON5.parse(content)) as TSchema) : undefined };
+      return {
+        content: content ? (parse(schema, JSON5.parse(content)) as TSchema) : undefined,
+      };
     } catch (error) {
       return { error };
     }

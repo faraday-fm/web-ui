@@ -1,11 +1,11 @@
 import { memo, useCallback } from "react";
 import { useGlyphSize } from "../../../../contexts/glyphSizeContext";
-import { List } from "../../../../utils/immutableList";
+import type { FsEntry } from "../../../../features/fs/types";
+import type { List } from "../../../../utils/immutableList";
 import { Cell } from "../Cell";
 import { ColumnsScroller } from "../ColumnsScroller";
 import { FullFileName } from "../FullFileName";
-import { CursorStyle } from "../types";
-import { FsEntry } from "../../../../features/fs/types";
+import type { CursorStyle } from "../types";
 
 interface CondensedViewProps {
   items: List<FsEntry>;
@@ -49,7 +49,7 @@ export const CondensedView = memo(function CondensedView({
         <FullFileName cursorStyle={index === selectedIndex && cursorStyle === "firm" ? "firm" : "hidden"} data={items.get(index)} />
       </Cell>
     ),
-    [cursorStyle, items, onItemActivated, onItemClicked, selectedIndex]
+    [cursorStyle, items, onItemActivated, onItemClicked, selectedIndex],
   );
 
   return (

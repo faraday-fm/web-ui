@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
-import { Callback, CommandBindingsContext } from "./commandBindingsContext";
-import { BuiltInCommand } from "./types";
+import { type Callback, CommandBindingsContext } from "./commandBindingsContext";
+import type { BuiltInCommand } from "./types";
 
 type PartialRecord<K extends keyof never, T> = {
   [P in K]?: T;

@@ -1,19 +1,19 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import alias from "@rollup/plugin-alias";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
-import { nodeResolve } from "@rollup/plugin-node-resolve";
+import nodeResolve from "@rollup/plugin-node-resolve";
 import terser from "@rollup/plugin-terser";
-import ts from "rollup-plugin-typescript2";
-import path from "path";
 import { defineConfig } from "rollup";
 import del from "rollup-plugin-delete";
+import { dts } from "rollup-plugin-dts";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import { string } from "rollup-plugin-string";
+import ts from "rollup-plugin-typescript2";
 import { visualizer } from "rollup-plugin-visualizer";
-import { fileURLToPath } from "url";
-import { dts } from "rollup-plugin-dts";
 
-import packageJson from "./package.json" assert { type: "json" };
+import packageJson from "./package.json" with { type: "json" };
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -38,26 +38,21 @@ export default defineConfig(() => {
           format: "esm",
         },
       ],
-      external: [
-        "fast-deep-equal",
-        "parsimmon",
-        "valibot",
-        "list",
-        "@dhmk/zustand-lens",
-        "zustand",
-        "zustand/middleware/immer",
-        "use-resize-observer",
-        "json5",
-        "is-promise",
-      ],
+      // external: ["react", "react/jsx-runtime"],
+      external: ["react", "react/jsx-runtime", "fast-deep-equal", "parsimmon", "valibot", "list", "json5", "is-promise"],
       context: "window",
       plugins: [
         !watch && [terser({ sourceMap: true }), del({ targets: ["dist/*", "dist-dts/*"] })],
         json(),
-        peerDepsExternal(),
-        // nodeResolve({ browser: true }),
+        // peerDepsExternal(),
+        nodeResolve({ browser: true }),
         alias({
-          entries: [{ find: "@assets", replacement: path.resolve(projectRootDir, "src/assets") }],
+          entries: [
+            {
+              find: "@assets",
+              replacement: path.resolve(projectRootDir, "src/assets"),
+            },
+          ],
         }),
         commonjs(),
         ts({ useTsconfigDeclarationDir: true }),

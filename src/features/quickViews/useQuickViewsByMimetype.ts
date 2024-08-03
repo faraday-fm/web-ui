@@ -1,9 +1,9 @@
 import { useMemo } from "react";
+import type { FullyQualifiedQuickView, Mimetype } from "../extensions/types";
 import { useQuickViews } from "./useQuickViews";
-import { FullyQualifiedQuickView, Mimetype } from "../extensions/types";
 
 export function useQuickViewsByMimetype() {
-  const quickViews = useQuickViews();
+  const { quickViews } = useQuickViews();
   return useMemo(() => {
     const result: Record<Mimetype, FullyQualifiedQuickView[]> = {};
     const quickViewsByExtension = Object.entries(quickViews);
@@ -15,7 +15,11 @@ export function useQuickViewsByMimetype() {
       const script = qv.script;
       if (qv.definition.mimetypes) {
         qv.definition.mimetypes.forEach((type) => {
-          (result[type] ??= []).push({ extId: qvId, quickView: quickView, script });
+          (result[type] ??= []).push({
+            extId: qvId,
+            quickView: quickView,
+            script,
+          });
         });
       }
     });

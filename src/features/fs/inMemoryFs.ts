@@ -1,11 +1,26 @@
 import { combine } from "../../utils/path";
 
 import { FileExists, FileIsADirectory, FileNotADirectory, FileNotFound, MountNotSupported } from "./FileSystemError";
-import { FileSystemProvider, FileSystemWatcher, FsEntry } from "./types";
+import type { FileSystemProvider, FileSystemWatcher, FsEntry } from "./types";
 
-type Dir = FsEntry & { isDir: true; isFile: false; isMoundedFs: false; children: Entry[] };
-type File = FsEntry & { isFile: true; isDir: false; isMoundedFs: false; content: Uint8Array };
-type MountedFs = FsEntry & { isDir: true; isFile: false; isMoundedFs: true; fs: FileSystemProvider };
+type Dir = FsEntry & {
+  isDir: true;
+  isFile: false;
+  isMoundedFs: false;
+  children: Entry[];
+};
+type File = FsEntry & {
+  isFile: true;
+  isDir: false;
+  isMoundedFs: false;
+  content: Uint8Array;
+};
+type MountedFs = FsEntry & {
+  isDir: true;
+  isFile: false;
+  isMoundedFs: true;
+  fs: FileSystemProvider;
+};
 
 type Entry = Dir | File | MountedFs;
 
@@ -39,7 +54,13 @@ export class InMemoryFsProvider implements FileSystemProvider {
 
   constructor(homeDir?: string) {
     this.homeDir = homeDir ?? "";
-    this.root = { name: "<root>", isDir: true, isMoundedFs: false, isFile: false, children: [] };
+    this.root = {
+      name: "<root>",
+      isDir: true,
+      isMoundedFs: false,
+      isFile: false,
+      children: [],
+    };
   }
 
   async mount(path: string, fs: FileSystemProvider) {
@@ -48,7 +69,6 @@ export class InMemoryFsProvider implements FileSystemProvider {
     if (parts.length === 0) {
       throw FileNotADirectory(path);
     }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const newDirName = parts.at(-1)!;
     let currEntry: Dir | MountedFs = this.root;
     for (let i = 0; i < parts.length - 1; i += 1) {
@@ -75,7 +95,13 @@ export class InMemoryFsProvider implements FileSystemProvider {
     if (entry) {
       throw MountNotSupported();
     }
-    const newDir: MountedFs = { isDir: true, isMoundedFs: true, isFile: false, fs, name: newDirName };
+    const newDir: MountedFs = {
+      isDir: true,
+      isMoundedFs: true,
+      isFile: false,
+      fs,
+      name: newDirName,
+    };
     currEntry.children.push(newDir);
     const watchers = this.watchers.get(parts.slice(0, parts.length - 1).join("/"));
     if (watchers) {
@@ -100,10 +126,13 @@ export class InMemoryFsProvider implements FileSystemProvider {
             watcher(
               events.map((e) => {
                 if (e.type === "ready") return e;
-                return { ...e, path: combine(parts.slice(0, i).join("/"), e.path) };
-              })
+                return {
+                  ...e,
+                  path: combine(parts.slice(0, i).join("/"), e.path),
+                };
+              }),
             ),
-          options
+          options,
         );
         return;
       }
@@ -122,13 +151,25 @@ export class InMemoryFsProvider implements FileSystemProvider {
     if (entry.isDir) {
       try {
         const entries = await this.readDirectory(path, options);
-        watcher(entries.map((e) => ({ type: "created", entry: e, path: combine(path, e.name) })));
+        watcher(
+          entries.map((e) => ({
+            type: "created",
+            entry: e,
+            path: combine(path, e.name),
+          })),
+        );
         watcher([{ type: "ready" }]);
       } catch {
         // todo
       }
     } else {
-      watcher([{ type: "created", entry: currEntry, path: combine(path, currEntry.name) }]);
+      watcher([
+        {
+          type: "created",
+          entry: currEntry,
+          path: combine(path, currEntry.name),
+        },
+      ]);
       watcher([{ type: "ready" }]);
     }
 
@@ -163,10 +204,13 @@ export class InMemoryFsProvider implements FileSystemProvider {
             watcher(
               events.map((e) => {
                 if (e.type === "ready") return e;
-                return { ...e, path: combine(parts.slice(0, i).join("/"), e.path) };
-              })
+                return {
+                  ...e,
+                  path: combine(parts.slice(0, i).join("/"), e.path),
+                };
+              }),
             ),
-          options
+          options,
         );
         return;
       }
@@ -185,13 +229,25 @@ export class InMemoryFsProvider implements FileSystemProvider {
     if (entry.isDir) {
       try {
         const entries = await this.readDirectory(path, options);
-        watcher(entries.map((e) => ({ type: "created", entry: e, path: combine(path, e.name) })));
+        watcher(
+          entries.map((e) => ({
+            type: "created",
+            entry: e,
+            path: combine(path, e.name),
+          })),
+        );
         watcher([{ type: "ready" }]);
       } catch {
         // todo
       }
     } else {
-      watcher([{ type: "created", entry: currEntry, path: combine(path, currEntry.name) }]);
+      watcher([
+        {
+          type: "created",
+          entry: currEntry,
+          path: combine(path, currEntry.name),
+        },
+      ]);
       watcher([{ type: "ready" }]);
     }
 
@@ -256,7 +312,13 @@ export class InMemoryFsProvider implements FileSystemProvider {
     if (currEntry.children.find((child) => child.name === newDirName)) {
       throw FileExists();
     }
-    const newDir: Dir = { isDir: true, isFile: false, isMoundedFs: false, name: newDirName, children: [] };
+    const newDir: Dir = {
+      isDir: true,
+      isFile: false,
+      isMoundedFs: false,
+      name: newDirName,
+      children: [],
+    };
     currEntry.children.push(newDir);
     const watchers = this.watchers.get(parts.slice(0, parts.length - 1).join("/"));
     if (watchers) {
@@ -335,22 +397,26 @@ export class InMemoryFsProvider implements FileSystemProvider {
       }
       entry.content = content;
     } else {
-      currEntry.children.push({ isFile: true, isDir: false, isMoundedFs: false, name: fileName, content, size: content.byteLength });
+      currEntry.children.push({
+        isFile: true,
+        isDir: false,
+        isMoundedFs: false,
+        name: fileName,
+        content,
+        size: content.byteLength,
+      });
     }
     return Promise.resolve();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   delete(path: string, options?: { recursive: boolean; signal?: AbortSignal }): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   rename(oldPath: string, newPath: string, options?: { overwrite?: boolean; signal?: AbortSignal }): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   copy?(source: string, destination: string, options?: { overwrite?: boolean; signal?: AbortSignal }): Promise<void> {
     throw new Error("Method not implemented.");
   }

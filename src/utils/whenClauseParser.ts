@@ -1,4 +1,4 @@
-import { alt, createLanguage, optWhitespace, Parser, regexp, seq, seqMap, string } from "parsimmon";
+import { type Parser, alt, createLanguage, optWhitespace, regexp, seq, seqMap, string } from "parsimmon";
 
 interface Var {
   _: "v";
@@ -55,7 +55,11 @@ const lang = createLanguage<{
       }
     }),
   Number: () => regexp(/[0-9]+(\.[0-9]+)?/).map((val) => ({ _: "c", val: Number(val) })),
-  String: () => regexp(/(".*?")|('.*?')/).map((val) => ({ _: "c", val: String(val).substring(1, val.length - 1) })),
+  String: () =>
+    regexp(/(".*?")|('.*?')/).map((val) => ({
+      _: "c",
+      val: String(val).substring(1, val.length - 1),
+    })),
   Const: (r) => alt(r.Number).or(r.Var).or(r.String),
   Not: (r) => seq(string("!").trim(_).many(), alt(r.List, r.Const)).map(([excl, node]) => (excl.length % 2 === 1 ? { _: "!", node } : node)),
   Eq: (r) =>

@@ -11,11 +11,23 @@ import { useStyles } from "./features/styles";
 import { ThemeProvider } from "./features/themes";
 import { darkTheme, lightTheme } from "./features/themes/themes";
 import { useMediaQuery } from "./hooks/useMediaQuery";
-import { FaradayProps } from "./types";
+import type { FaradayHost, FaradayProps } from "./types";
 
 export { InMemoryFsProvider } from "./features/fs/inMemoryFs";
-export type { FileChangeEvent, FileChangeType, FileSystemProvider, FileSystemWatcher, FsEntry } from "./features/fs/types";
-export type { FaradayConfig, FaradayHost, FaradayProps, Terminal, TerminalSession } from "./types";
+export type {
+  FileChangeEvent,
+  FileChangeType,
+  FileSystemProvider,
+  FileSystemWatcher,
+  FsEntry,
+} from "./features/fs/types";
+export type {
+  FaradayConfig,
+  FaradayHost,
+  FaradayProps,
+  Terminal,
+  TerminalSession,
+} from "./types";
 
 export function Faraday({ host }: FaradayProps) {
   const dark = useMediaQuery("(prefers-color-scheme: dark)");

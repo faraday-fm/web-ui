@@ -1,21 +1,15 @@
-import { StateCreator } from "zustand";
+import { atom, useAtom } from "jotai";
 
-interface State {
-  wheelSensitivity: number;
-  iconThemeId: string;
+const iconThemeIdAtom = atom<string>();
+const langAtom = atom<string>();
+
+export function useSettings() {
+  const [iconThemeId, setIconThemeId] = useAtom(iconThemeIdAtom);
+  const [lang, setLang] = useAtom(langAtom);
+  return {
+    iconThemeId,
+    setIconThemeId,
+    lang,
+    setLang,
+  };
 }
-
-interface Actions {
-  setWheelSensitivity(wheelSensitivity: number): void;
-  setIconThemeId(iconThemeId: string): void;
-}
-
-export type SettingsSlice = State & Actions;
-
-export const createSettingsSlice: StateCreator<SettingsSlice> = (set) => ({
-  wheelSensitivity: 64,
-  iconThemeId: "",
-
-  setWheelSensitivity: (wheelSensitivity) => set({ wheelSensitivity }),
-  setIconThemeId: (iconThemeId) => set({ iconThemeId }),
-});

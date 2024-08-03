@@ -13,25 +13,16 @@
     "test": "echo \"Error: no test specified\" && exit 0",
     "commit": "git-cz",
     "semantic-release": "semantic-release --branches main",
-    "lint": "eslint ./src --ext .ts,.tsx",
+    "lint": "biome check",
     "paraglide": "paraglide-js compile --watch --project ./project.inlang --outdir ./src/paraglide",
     "paraglide-translate": "npx @inlang/cli machine translate --project ./project.inlang"
   },
-  "files": [
-    "dist",
-    "package.json",
-    "README.md"
-  ],
+  "files": ["dist", "package.json", "README.md"],
   "repository": {
     "type": "git",
     "url": "https://github.com/faraday-fm/web-ui.git"
   },
-  "keywords": [
-    "faraday",
-    "web",
-    "ui",
-    "frontend"
-  ],
+  "keywords": ["faraday", "web", "ui", "frontend"],
   "author": "Mikhail Isupov",
   "license": "MIT",
   "bugs": {
@@ -50,31 +41,27 @@
     "react": ">=18"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
+    "@inlang/paraglide-js": "1.11.2",
     "@rollup/plugin-alias": "^5.0.1",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-json": "^6.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@types/parsimmon": "^1.10.8",
-    "@types/react": "^18.2.33",
-    "@typescript-eslint/eslint-plugin": "^6.9.0",
-    "@typescript-eslint/parser": "^6.9.0",
+    "@types/react": "^18.3.3",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^8.52.0",
-    "eslint-plugin-jsx-a11y": "^6.7.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
     "git-cz": "^4.9.0",
-    "react": "^18.2.0",
-    "rollup": "^4.1.4",
+    "react": "^18.3.1",
+    "rollup": "^4.20.0",
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^6.1.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-string": "^3.0.0",
     "rollup-plugin-typescript2": "^0.36.0",
-    "rollup-plugin-visualizer": "^5.9.2",
+    "rollup-plugin-visualizer": "^5.12.0",
     "semantic-release": "^22.0.5",
-    "typescript": "^5.2.2",
-    "@inlang/paraglide-js": "1.11.2"
+    "typescript": "^5.5.4"
   },
   "dependencies": {
     "@dhmk/zustand-lens": "^3.0.2",
@@ -83,12 +70,11 @@
     "fast-deep-equal": "^3.1.3",
     "immer": "^10.0.3",
     "is-promise": "^4.0.0",
+    "jotai": "^2.9.1",
     "json5": "^2.2.3",
     "list": "^2.0.19",
     "parsimmon": "^1.18.1",
-    "react-resize-observer": "^1.1.1",
-    "use-resize-observer": "^9.1.0",
-    "valibot": "^0.19.0",
+    "valibot": "^0.37.0",
     "xterm": "^5.3.0",
     "xterm-addon-fit": "^0.8.0",
     "xterm-addon-unicode11": "^0.6.0",

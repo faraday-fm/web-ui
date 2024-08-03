@@ -8,10 +8,10 @@ import { useFaradayHost } from "../contexts/faradayHostContext";
 import { useGlyphSize } from "../contexts/glyphSizeContext";
 import { useCommandBindings, useSetContextVariables } from "../features/commands";
 import { useFileContent } from "../features/fs/hooks";
+import { useInert } from "../features/inert/hooks";
 import { usePanels } from "../features/panels";
 import { css } from "../features/styles";
-import { PanelsLayout } from "../types";
-import { useInert } from "../features/inert/hooks";
+import type { PanelsLayout } from "../types";
 
 // const Terminal = lazy(() => import("@components/Terminal/Terminal"));
 

@@ -1,9 +1,9 @@
-import { FsEntry } from "../../../../features/fs/types";
-import { CursorPosition } from "../../../../features/panels";
+import type { FsEntry } from "../../../../features/fs/types";
+import type { CursorPosition } from "../../../../features/panels";
 import { css } from "../../../../features/styles";
-import { List } from "../../../../utils/immutableList";
+import type { List } from "../../../../utils/immutableList";
 import { Column } from "../Column";
-import { ColumnDef, CursorStyle } from "../types";
+import type { ColumnDef, CursorStyle } from "../types";
 
 interface FullViewProps {
   items: List<FsEntry>;
@@ -32,7 +32,7 @@ export function FullView({ items, cursor, cursorStyle, columnDefs, onMaxVisibleI
         onMaxItemsCountChange={onMaxVisibleItemsChanged}
         selectItem={onItemClicked}
         activateItem={onItemActivated}
-      />
+      />,
     );
   }
   return (

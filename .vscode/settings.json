@@ -5,7 +5,7 @@
     "package-lock.json": true
   },
   "editor.codeActionsOnSave": {
-    "source.organizeImports": false
+    "source.organizeImports": "never"
   },
   "editor.formatOnSave": true,
   "editor.tabSize": 2,

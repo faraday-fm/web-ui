@@ -1,4 +1,4 @@
-import { QuickViewDefinition } from "../../schemas/manifest";
+import type { QuickViewDefinition } from "../../schemas/manifest";
 
 export type Mimetype = string;
 export type FileName = string;

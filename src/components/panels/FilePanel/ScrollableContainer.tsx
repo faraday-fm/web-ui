@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, ReactNode, CSSProperties } from "react";
+import type React from "react";
+import { type CSSProperties, type ReactNode, useEffect, useRef } from "react";
 
 interface ScrollableContainerProps {
   children: ReactNode;
@@ -135,7 +136,15 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
   }, [velocityFactor, frictionFactor, onScroll, scrollHeight]);
 
   return (
-    <div className="AAA" style={{ overflow: "hidden", position: "relative", touchAction: "none", ...style }}>
+    <div
+      className="AAA"
+      style={{
+        overflow: "hidden",
+        position: "relative",
+        touchAction: "none",
+        ...style,
+      }}
+    >
       <div
         ref={scrollPaneRef}
         style={{
@@ -145,7 +154,11 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
           position: "absolute",
         }}
       >
-        <div style={{ height: `${scrollHeight + (scrollPaneRef.current?.clientHeight ?? 0)}px` }}></div>
+        <div
+          style={{
+            height: `${scrollHeight + (scrollPaneRef.current?.clientHeight ?? 0)}px`,
+          }}
+        />
       </div>
       <div
         ref={containerRef}

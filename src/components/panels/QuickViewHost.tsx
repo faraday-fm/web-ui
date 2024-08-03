@@ -1,14 +1,13 @@
-import { ReactElement, useEffect, useState } from "react";
+import { type ReactElement, useEffect, useState } from "react";
 import { useQuickView } from "../../features/quickViews";
 import { css } from "../../features/styles";
-import { QuickViewDefinition } from "../../schemas/manifest";
-import { DeferredPromise, deferredPromise } from "../../utils/promise";
-import { QuickViewFrame, QuickViewFrameActions } from "./QuickViewFrame";
+import type { QuickViewDefinition } from "../../schemas/manifest";
+import { QuickViewFrame, type QuickViewFrameActions } from "./QuickViewFrame";
 
 interface Frame {
   quickView: QuickViewDefinition;
   element: ReactElement;
-  actions: DeferredPromise<QuickViewFrameActions>;
+  actions: PromiseWithResolvers<QuickViewFrameActions>;
 }
 
 export default function QuickViewHost({ path, content }: { path?: string; content?: Uint8Array }) {
@@ -28,7 +27,7 @@ export default function QuickViewHost({ path, content }: { path?: string; conten
           const qw = (
             <QuickViewFrame
               key={key}
-              ref={(r) => {
+              ref={(r: QuickViewFrameActions | null) => {
                 if (r) {
                   newFrames[key].actions.resolve(r);
                 }
@@ -36,7 +35,11 @@ export default function QuickViewHost({ path, content }: { path?: string; conten
               script={quickView.script}
             />
           );
-          frame = { quickView: quickView.quickView, element: qw, actions: deferredPromise() };
+          frame = {
+            quickView: quickView.quickView,
+            element: qw,
+            actions: Promise.withResolvers(),
+          };
           newFrames[key] = frame;
         }
       }

@@ -1,11 +1,7 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import { SyntheticEvent, useEffect, useId, useRef } from "react";
-import { Border } from "./Border";
-import { useSetContextVariables } from "../features/commands";
+import { type ReactEventHandler, useEffect, useId, useRef } from "react";
 import { QuickNavigationProvider } from "../contexts/quickNavigationContext";
+import { useSetContextVariables } from "../features/commands";
 import { css } from "../features/styles";
-import { AutoHotKeyLabel } from "./AutoHotKeyLabel";
 import {
   already_existing_files,
   copy_extended_attributes,
@@ -17,6 +13,8 @@ import {
   use_copy_on_write_if_possible,
   with_symlinks,
 } from "../paraglide/messages";
+import { AutoHotKeyLabel } from "./AutoHotKeyLabel";
+import { Border } from "./Border";
 
 interface DialogPlaceholderProps {
   open: boolean;
@@ -36,7 +34,7 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
     }
   }, [open]);
 
-  const handleCancel = (e: SyntheticEvent<HTMLDialogElement>) => {
+  const handleCancel: ReactEventHandler = (e) => {
     e.stopPropagation();
     onClose?.();
   };
@@ -86,16 +84,16 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
               </p>
             </Border>
             <Border color={"dialog-border"}>
-              <button className={css("dialog-button")} id={`${dialogId}copy`} tabIndex={0}>
+              <button type="button" className={css("dialog-button")} id={`${dialogId}copy`} tabIndex={0}>
                 <AutoHotKeyLabel text="Copy" htmlFor={`${dialogId}copy`} />
               </button>
-              <button className={css("dialog-button")} id={`${dialogId}tree`} tabIndex={0}>
+              <button type="button" className={css("dialog-button")} id={`${dialogId}tree`} tabIndex={0}>
                 <AutoHotKeyLabel text="F10-Tree" htmlFor={`${dialogId}tree`} />
               </button>
-              <button className={css("dialog-button")} id={`${dialogId}filter`} tabIndex={0}>
+              <button type="button" className={css("dialog-button")} id={`${dialogId}filter`} tabIndex={0}>
                 <AutoHotKeyLabel text="Filter" htmlFor={`${dialogId}filter`} />
               </button>
-              <button className={css("dialog-button")} id={`${dialogId}cancel`} tabIndex={0}>
+              <button type="button" className={css("dialog-button")} id={`${dialogId}cancel`} tabIndex={0}>
                 <AutoHotKeyLabel text="Cancel" htmlFor={`${dialogId}cancel`} />
               </button>
             </Border>

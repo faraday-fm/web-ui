@@ -1,8 +1,7 @@
+import { type ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import quickViewHtml from "../../assets/quick-view.html";
 import { css } from "../../features/styles";
 import { useTheme } from "../../features/themes";
-import { deferredPromise } from "../../utils/promise";
-import { ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 
 export interface QuickViewFrameActions {
   setContent({ content, path }: { content?: Uint8Array; path?: string }): Promise<void>;
@@ -13,8 +12,8 @@ const quickViewHtmlBase64 = btoa(quickViewHtml);
 
 export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { script: string }, ref: ForwardedRef<QuickViewFrameActions>) {
   const [initialScript] = useState(script);
-  const loadedPromise = useRef(deferredPromise<Window>());
-  const themeSetPromise = useRef(deferredPromise<Window>());
+  const loadedPromise = useRef(Promise.withResolvers<Window>());
+  const themeSetPromise = useRef(Promise.withResolvers<Window>());
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const theme = useTheme();
 
@@ -55,7 +54,7 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
         }
       },
     }),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -78,5 +77,5 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
   }, [theme]);
 
   // eslint-disable-next-line jsx-a11y/iframe-has-title, jsx-a11y/no-noninteractive-tabindex
-  return <iframe className={css("quick-view-web-view")} ref={iframeRef} tabIndex={0} title="" src={`data:text/html;base64,${quickViewHtmlBase64}`} />;
+  return <iframe className={css("quick-view-web-view")} ref={iframeRef} tabIndex={0} title="quick view" src={`data:text/html;base64,${quickViewHtmlBase64}`} />;
 });

@@ -1,6 +1,6 @@
-import { PropsWithChildren, useLayoutEffect, useRef, useState } from "react";
-import useResizeObserver from "use-resize-observer";
+import { type PropsWithChildren, useLayoutEffect, useRef, useState } from "react";
 import { css } from "../features/styles";
+import { useResizeObserver } from "../hooks/useResizeObserver";
 
 export function BreadcrumbItem({ children }: PropsWithChildren) {
   const ref = useRef<HTMLDivElement>(null);

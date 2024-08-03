@@ -1,4 +1,4 @@
-import { ExtensionManifest, IconThemeDefinition, QuickViewDefinition } from "../../schemas/manifest";
+import type { ExtensionManifest, IconThemeDefinition, QuickViewDefinition } from "../../schemas/manifest";
 
 export function getExtId(manifest: ExtensionManifest) {
   return `${manifest.publisher}.${manifest.name}`;

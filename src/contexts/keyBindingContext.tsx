@@ -1,6 +1,6 @@
 import JSON5 from "json5";
 import { alt, regexp, seq, string } from "parsimmon";
-import { PropsWithChildren, createContext, useEffect } from "react";
+import { type PropsWithChildren, createContext, useEffect } from "react";
 import { parse } from "valibot";
 import keyBindingsContent from "../assets/keybindings.json5";
 import { useExecuteCommand, useIsInContext } from "../features/commands";
@@ -22,7 +22,10 @@ type KeyCombination =
 const modifier = alt(string("ctrl"), string("alt"), string("shift"), string("meta"));
 const modifierPlus = seq(modifier, string("+")).map(([mod]) => mod);
 const modifiers = modifierPlus.many();
-const parser = seq(modifiers, regexp(/[A-Za-z0-9]+/)).map(([mod, key]) => ({ mod, key }));
+const parser = seq(modifiers, regexp(/[A-Za-z0-9]+/)).map(([mod, key]) => ({
+  mod,
+  key,
+}));
 
 function normalizeKeyCombinationStr(keyStr: string): string {
   return keyStr.replaceAll(/\s+/gi, "").toLowerCase();

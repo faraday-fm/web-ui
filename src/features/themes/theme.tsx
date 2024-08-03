@@ -1,5 +1,5 @@
-import { PropsWithChildren, createContext, useContext } from "react";
-import { Theme } from "./types";
+import { type PropsWithChildren, createContext, useContext } from "react";
+import type { Theme } from "./types";
 
 const ThemeContext = createContext<Theme | undefined>(undefined);
 

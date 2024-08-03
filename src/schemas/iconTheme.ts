@@ -1,4 +1,4 @@
-import { Output, array, object, optional, record, string, union } from "valibot";
+import { type InferOutput, array, object, optional, record, string, union } from "valibot";
 
 const FontDefinitionSchema = object({
   id: string(),
@@ -13,23 +13,23 @@ const SvgIconDefinitionSchema = object({ iconPath: string() });
 const FontIconDefinitionSchema = object({
   fontId: optional(string()),
   fontCharacter: string(),
-  fontColor: optional(union([string(), record(string())])),
+  fontColor: optional(union([string(), record(string(), string())])),
 });
 
 const IconDefinitionSchema = union([SvgIconDefinitionSchema, FontIconDefinitionSchema]);
 
-const IconDefinitionsSchema = record(IconDefinitionSchema);
+const IconDefinitionsSchema = record(string(), IconDefinitionSchema);
 
 const ThemeSchema = object({
-  folderNames: optional(record(string())),
-  folderNamesExpanded: optional(record(string())),
-  fileExtensions: optional(record(string())),
-  fileNames: optional(record(string())),
-  languageIds: optional(record(string())),
+  folderNames: optional(record(string(), string())),
+  folderNamesExpanded: optional(record(string(), string())),
+  fileExtensions: optional(record(string(), string())),
+  fileNames: optional(record(string(), string())),
+  languageIds: optional(record(string(), string())),
 });
 
 export const IconThemeSchema = object({
-  ...ThemeSchema.object,
+  ...ThemeSchema.entries,
   fonts: optional(array(FontDefinitionSchema)),
   iconDefinitions: IconDefinitionsSchema,
   file: string(),
@@ -42,13 +42,13 @@ export const IconThemeSchema = object({
   highContrastLight: optional(ThemeSchema),
 });
 
-export type SvgIconDefinition = Output<typeof SvgIconDefinitionSchema>;
+export type SvgIconDefinition = InferOutput<typeof SvgIconDefinitionSchema>;
 
-export type FontIconDefinition = Output<typeof FontIconDefinitionSchema>;
+export type FontIconDefinition = InferOutput<typeof FontIconDefinitionSchema>;
 
-export type IconDefinition = Output<typeof IconDefinitionSchema>;
+export type IconDefinition = InferOutput<typeof IconDefinitionSchema>;
 
-export type IconTheme = Output<typeof IconThemeSchema>;
+export type IconTheme = InferOutput<typeof IconThemeSchema>;
 
 export function isSvgIcon(def?: IconDefinition): def is SvgIconDefinition {
   return !!def && Object.hasOwn(def, "iconPath");

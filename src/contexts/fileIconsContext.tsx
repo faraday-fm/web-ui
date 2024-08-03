@@ -1,10 +1,10 @@
 import isPromise from "is-promise";
-import { PropsWithChildren, ReactNode, createContext, useCallback, useContext, useMemo } from "react";
+import { type PropsWithChildren, type ReactNode, createContext, useCallback, useContext, useMemo } from "react";
+import { useIconThemes } from "../features/extensions/hooks";
 import { useFs } from "../features/fs/hooks";
-import { useIconThemes } from "../features/iconThemes/hooks";
-import { useSettings } from "../features/settings/hooks";
+import { useSettings } from "../features/settings/settings";
 import { css } from "../features/styles";
-import { IconTheme, isSvgIcon } from "../schemas/iconTheme";
+import { type IconTheme, isSvgIcon } from "../schemas/iconTheme";
 import { combine, filename } from "../utils/path";
 
 export type IconResolver = (path: string, isDir: boolean) => ReactNode | PromiseLike<ReactNode>;
@@ -12,12 +12,12 @@ export type IconResolver = (path: string, isDir: boolean) => ReactNode | Promise
 const FileIconsContext = createContext<IconResolver>(() => undefined);
 
 const decoder = new TextDecoder();
-const parseSvg = decoder.decode.bind(decoder);
+const parseSvg = (u: Uint8Array) => decoder.decode(u);
 const defaultDirIcon = btoa(
-  '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 4H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8c0-1.11-.9-2-2-2h-8l-2-2z" fill="#90a4ae" /></svg>'
+  '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 4H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8c0-1.11-.9-2-2-2h-8l-2-2z" fill="#90a4ae" /></svg>',
 );
 const defaultFileIcon = btoa(
-  '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 9h5.5L13 3.5V9M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m5 2H6v16h12v-9h-7V4z" fill="#90a4ae" /></svg>'
+  '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 9h5.5L13 3.5V9M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m5 2H6v16h12v-9h-7V4z" fill="#90a4ae" /></svg>',
 );
 
 export function useFileIconResolver() {
@@ -63,12 +63,12 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
   const fs = useFs();
   // const [iconTheme, setIconTheme] = useState<{ path: string; theme: IconTheme }>();
   const iconThemeId = useSettings().iconThemeId;
-  const iconThemes = useIconThemes();
-  const iconTheme = iconThemes[iconThemeId];
+  const { iconThemes } = useIconThemes();
+  const iconTheme = iconThemeId ? iconThemes[iconThemeId] : undefined;
   const theme = iconTheme?.theme;
   const themePath = iconTheme?.path;
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   const cache = useMemo(() => new Map<string, Promise<string> | string>(), [iconTheme]);
 
   const resolver: IconResolver = useCallback(
@@ -112,7 +112,7 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
         return undefined;
       }
     },
-    [cache, fs, theme, themePath]
+    [cache, fs, theme, themePath],
   );
 
   return <FileIconsContext.Provider value={resolver}>{children}</FileIconsContext.Provider>;

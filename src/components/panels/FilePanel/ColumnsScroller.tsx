@@ -1,7 +1,4 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/mouse-events-have-key-events */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-import { ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { css } from "../../../features/styles";
 import { useElementSize } from "../../../hooks/useElementSize";
 import ScrollableContainer from "./ScrollableContainer";
@@ -79,7 +76,7 @@ export const ColumnsScroller = memo(
         res.push(
           <div key={i} style={{ height: itemHeight }}>
             {itemContent(i)}
-          </div>
+          </div>,
         );
       }
       return res;
@@ -106,7 +103,7 @@ export const ColumnsScroller = memo(
           onSelect?.(topmostItemRef.current + delta, newSelectedItem);
         }
       },
-      [itemHeight, onSelect]
+      [itemHeight, onSelect],
     );
 
     return (
@@ -129,6 +126,5 @@ export const ColumnsScroller = memo(
         </ScrollableContainer>
       </div>
     );
-  }
+  },
 );
-ColumnsScroller.displayName = "ColumnsScroller";

@@ -1,4 +1,4 @@
-import { Output, array, object, optional, string } from "valibot";
+import { type InferOutput, array, object, optional, string } from "valibot";
 
 export const KeyBindingSchema = object({
   key: string(),
@@ -9,4 +9,4 @@ export const KeyBindingSchema = object({
 
 export const KeyBindingsSchema = array(KeyBindingSchema);
 
-export type KeyBindingsSchema = Output<typeof KeyBindingsSchema>;
+export type KeyBindingsSchema = InferOutput<typeof KeyBindingsSchema>;

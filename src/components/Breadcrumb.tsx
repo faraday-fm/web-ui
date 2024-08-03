@@ -1,7 +1,7 @@
-import { PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 
-import { BreadcrumbItem } from "./BreadcrumbItem";
 import { css } from "../features/styles";
+import { BreadcrumbItem } from "./BreadcrumbItem";
 
 function BreadcrumbRoot({ isActive, children }: PropsWithChildren & { isActive: boolean }) {
   return <nav className={css("breadcrumb", isActive ? "-active" : "")}>{children}</nav>;

@@ -1,6 +1,6 @@
 import { useLayoutEffect, useState } from "react";
 import frdyStyles from "../../assets/styles.css";
-import { Theme } from "../../features/themes";
+import type { Theme } from "../../features/themes";
 
 export function useStyles(theme: Theme) {
   const [colorsEl] = useState(() => document.createElement("style"));

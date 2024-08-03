@@ -1,6 +1,8 @@
-import { useStore } from "zustand";
-import { useAppStore } from "../store";
+import { atom, useAtom } from "jotai";
+
+const inertAtom = atom(false);
 
 export function useInert() {
-  return useStore(useAppStore(), (s) => s.inert);
+  const [inert, setInert] = useAtom(inertAtom);
+  return { inert, setInert };
 }

@@ -1,12 +1,12 @@
-import { RefObject, useLayoutEffect, useState } from "react";
-import useResizeObserver from "use-resize-observer";
+import { type RefObject, useLayoutEffect, useState } from "react";
+import { useResizeObserver } from "./useResizeObserver";
 
 interface ElementSize {
   width: number;
   height: number;
 }
 
-export function useElementSize<T extends Element>(ref: RefObject<T>, defaultSize?: ElementSize) {
+export function useElementSize<T extends HTMLElement>(ref: RefObject<T>, defaultSize?: ElementSize) {
   const [size, setSize] = useState(defaultSize ?? { width: 8, height: 16 });
 
   useLayoutEffect(() => {
@@ -15,7 +15,10 @@ export function useElementSize<T extends Element>(ref: RefObject<T>, defaultSize
     }
   }, [ref]);
 
-  useResizeObserver({ ref, round: (n) => n, onResize: (size) => setSize(size as DOMRect) });
+  useResizeObserver({
+    ref,
+    onResize: (size) => setSize(size as DOMRect),
+  });
 
   return size;
 }

@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { useGlyphSize } from "../../../contexts/glyphSizeContext";
-import { FsEntry } from "../../../features/fs/types";
+import type { FsEntry } from "../../../features/fs/types";
 import { css } from "../../../features/styles";
 import { formatDateTime } from "../../../utils/date";
 import { bytesToSize } from "../../../utils/number";

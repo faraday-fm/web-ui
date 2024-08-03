@@ -1,6 +1,5 @@
 import { memo } from "react";
 import { css } from "../features/styles";
-import { ActionButton } from "./ActionButton";
 import {
   copy_button_text,
   delete_button_text,
@@ -15,6 +14,7 @@ import {
   screens_button_text,
   view_button_text,
 } from "../paraglide/messages";
+import { ActionButton } from "./ActionButton";
 
 export const ActionsBar = memo(function ActionsBar() {
   return (

@@ -1,5 +1,6 @@
 import React from "react";
 
+// biome-ignore lint/suspicious/noConfusingVoidType: <explanation>
 export type Callback = (args?: unknown) => Promise<boolean> | boolean | void;
 
 export type CommandBindingsContext = Record<string, Set<Callback> | undefined>;

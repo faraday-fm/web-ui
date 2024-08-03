@@ -1,10 +1,10 @@
 import isPromise from "is-promise";
 import { memo, useEffect, useMemo, useState } from "react";
-import { CellText } from "./CellText";
-import { CursorStyle } from "./types";
 import { useFileIconResolver } from "../../../contexts/fileIconsContext";
 import { useGlyphSize } from "../../../contexts/glyphSizeContext";
 import { css } from "../../../features/styles";
+import { CellText } from "./CellText";
+import type { CursorStyle } from "./types";
 
 interface CellProps {
   cursorStyle: CursorStyle;
@@ -29,7 +29,7 @@ export const FullFileName = memo(function FullFileName({ cursorStyle, data }: Ce
 
   useEffect(() => {
     void (async () => {
-      const iconElement = isPromise(resolvedIcon) ? await resolvedIcon : resolvedIcon;
+      const iconElement = isPromise(resolvedIcon) ? <>{await resolvedIcon}</> : resolvedIcon;
       if (iconElement) {
         setIcon(iconElement);
       }
@@ -45,7 +45,13 @@ export const FullFileName = memo(function FullFileName({ cursorStyle, data }: Ce
   return (
     <>
       <div>{icon}</div>
-      <span className={css("line-item")} style={{ lineHeight: `${height}px`, color: getColor(data.name, data?.isDir, cursorStyle === "firm") }}>
+      <span
+        className={css("line-item")}
+        style={{
+          lineHeight: `${height}px`,
+          color: getColor(data.name, data?.isDir, cursorStyle === "firm"),
+        }}
+      >
         <span className={css("file-name")}>
           <CellText cursorStyle={cursorStyle} text={name} />
         </span>

@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
-import { Callback, CommandBindingsContext } from "./commandBindingsContext";
-import { BuiltInCommand } from "./types";
+import { type Callback, CommandBindingsContext } from "./commandBindingsContext";
+import type { BuiltInCommand } from "./types";
 
 export function useCommandBinding(command: BuiltInCommand, callback: Callback, isActive = true) {
   const bindings = useContext(CommandBindingsContext);

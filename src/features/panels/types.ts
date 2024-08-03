@@ -1,5 +1,5 @@
-import { List } from "../../utils/immutableList";
-import { FsEntry } from "../fs/types";
+import type { List } from "../../utils/immutableList";
+import type { FsEntry } from "../fs/types";
 
 export interface CursorPosition {
   selectedName?: string;

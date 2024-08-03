@@ -1,7 +1,8 @@
-import { Output, object, string } from "valibot";
+import { type InferOutput, object, optional, string } from "valibot";
 
 export const Settings = object({
   iconThemeId: string(),
+  lang: optional(string()),
 });
 
-export type Settings = Output<typeof Settings>;
+export type Settings = InferOutput<typeof Settings>;

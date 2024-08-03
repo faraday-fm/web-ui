@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useContext, useRef } from "react";
+import { type PropsWithChildren, createContext, useContext, useRef } from "react";
 import { useElementSize } from "../hooks/useElementSize";
 
 const GlyphSizeContext = createContext({ width: 8, height: 16 });
@@ -13,7 +13,18 @@ export function GlyphSizeProvider({ children }: PropsWithChildren) {
 
   return (
     <GlyphSizeContext.Provider value={size}>
-      <div aria-hidden ref={ref} style={{ position: "absolute", opacity: 0, userSelect: "none", pointerEvents: "none", left: -1000, top: -1000 }}>
+      <div
+        aria-hidden
+        ref={ref}
+        style={{
+          position: "absolute",
+          opacity: 0,
+          userSelect: "none",
+          pointerEvents: "none",
+          left: -1000,
+          top: -1000,
+        }}
+      >
         W
       </div>
       {children}

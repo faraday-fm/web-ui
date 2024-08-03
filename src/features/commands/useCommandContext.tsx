@@ -1,7 +1,7 @@
-import { PropsWithChildren, createContext, useCallback, useContext, useEffect, useId, useMemo } from "react";
+import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useId, useMemo } from "react";
 import { usePrevValueIfDeepEqual } from "../../hooks/usePrevValueIfDeepEqual";
-import { Node, parser } from "../../utils/whenClauseParser";
-import { ContextVariables, useContextVariables } from "../contextVariables";
+import { type Node, parser } from "../../utils/whenClauseParser";
+import { type ContextVariables, useContextVariables } from "../contextVariables";
 
 type Variables = string | string[] | Record<string, unknown>;
 
@@ -16,30 +16,39 @@ export function useSetContextVariables(variables: Variables, isActive = true): v
       if (typeof variables === "string") {
         vars = { [variables]: undefined };
       } else if (Array.isArray(variables)) {
-        vars = variables.reduce((r, v) => {
-          r[v] = undefined;
-          return r;
-        }, {} as typeof vars);
+        vars = variables.reduce(
+          (r, v) => {
+            r[v] = undefined;
+            return r;
+          },
+          {} as typeof vars,
+        );
       } else {
-        vars = Object.keys(variables).reduce((r, v) => {
-          r[v] = undefined;
-          return r;
-        }, {} as typeof vars);
+        vars = Object.keys(variables).reduce(
+          (r, v) => {
+            r[v] = undefined;
+            return r;
+          },
+          {} as typeof vars,
+        );
       }
     } else {
       if (typeof variables === "string") {
         vars = { [variables]: true };
       } else if (Array.isArray(variables)) {
-        vars = variables.reduce((r, v) => {
-          r[v] = true;
-          return r;
-        }, {} as typeof vars);
+        vars = variables.reduce(
+          (r, v) => {
+            r[v] = true;
+            return r;
+          },
+          {} as typeof vars,
+        );
       } else {
         vars = variables;
       }
     }
     updateVariables(id, vars);
-  }, [id, isActive, setVariables, updateVariables, variables]);
+  }, [id, isActive, updateVariables, variables]);
 
   useEffect(() => {
     return () => {
@@ -49,7 +58,7 @@ export function useSetContextVariables(variables: Variables, isActive = true): v
 }
 
 function getContextValue(ctx: ContextVariables, variable: string) {
-  let r;
+  let r: unknown;
   for (const v of Object.values(ctx)) {
     const val = v[variable];
     if (val !== undefined) {
@@ -109,7 +118,7 @@ export function useIsInContext() {
       }
       return false;
     },
-    [variables]
+    [variables],
   );
 }
 
@@ -145,23 +154,33 @@ export function DebugContextVariables() {
       Object.entries(vars ?? {})
         .filter(([, v]) => v != null)
         .toSorted(([k1], [k2]) => k1.localeCompare(k2)),
-    [vars]
+    [vars],
   );
   return (
-    devMode &&
-    entries.length > 0 && (
-      <div style={{ position: "absolute", fontSize: "xx-small", right: 0, top: 0, color: "black", background: "#fff8" }}>
-        <table>
-          <tbody>
-            {entries.map(([key, val]) => (
-              <tr key={key}>
-                <td>{key}:</td>
-                <td>{JSON.stringify(val)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    )
+    <>
+      {devMode && entries.length > 0 && (
+        <div
+          style={{
+            position: "absolute",
+            fontSize: "xx-small",
+            right: 0,
+            top: 0,
+            color: "black",
+            background: "#fff8",
+          }}
+        >
+          <table>
+            <tbody>
+              {entries.map(([key, val]) => (
+                <tr key={key}>
+                  <td>{key}:</td>
+                  <td>{JSON.stringify(val)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </>
   );
 }

@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import { Border } from "../../components/Border";
 import { PanelHeader } from "../../components/PanelHeader";
 import { ContextVariablesProvider, DebugContextVariables, useSetContextVariables } from "../../features/commands";
@@ -8,7 +8,7 @@ import { useGlobalContext } from "../../features/globalContext";
 import { usePanels } from "../../features/panels";
 import { css } from "../../features/styles";
 import { useFocused } from "../../hooks/useFocused";
-import { QuickViewLayout } from "../../types";
+import type { QuickViewLayout } from "../../types";
 import QuickViewHost from "./QuickViewHost";
 
 interface QuickViewPanelProps {
@@ -23,11 +23,13 @@ export function QuickViewPanel({ layout }: QuickViewPanelProps) {
   );
 }
 
-export function QuickView({ layout }: QuickViewPanelProps) {
+export const QuickView = memo(({ layout }: QuickViewPanelProps) => {
   const { id } = layout;
-  const { activePanel, setActivePanel } = usePanels();
+  const { activePanel, setActivePanelId } = usePanels();
   const isActive = activePanel?.id === id;
-  const { "filePanel.path": path, "filePanel.isFileSelected": isFileSelected } = useGlobalContext();
+  const {
+    globalContext: { "filePanel.path": path, "filePanel.isFileSelected": isFileSelected },
+  } = useGlobalContext();
 
   const panelRootRef = useRef<HTMLDivElement>(null);
   const focused = useFocused(panelRootRef);
@@ -37,9 +39,9 @@ export function QuickView({ layout }: QuickViewPanelProps) {
 
   useEffect(() => {
     if (focused) {
-      setActivePanel(id);
+      setActivePanelId(id);
     }
-  }, [id, focused, setActivePanel]);
+  }, [id, focused, setActivePanelId]);
 
   useEffect(() => {
     if (isActive) {
@@ -60,4 +62,4 @@ export function QuickView({ layout }: QuickViewPanelProps) {
       <DebugContextVariables />
     </div>
   );
-}
+});

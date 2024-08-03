@@ -1,4 +1,4 @@
-import { FileSystemProvider } from "./features/fs/types";
+import type { FileSystemProvider } from "./features/fs/types";
 
 export interface RowLayout {
   id: string;
@@ -35,7 +35,11 @@ export interface QuickViewLayout {
 
 export type PanelLayout = FilePanelLayout | QuickViewLayout;
 
-export type PanelsLayout = (RowLayout | PanelLayout) & { id: string; flex?: number; when?: string };
+export type PanelsLayout = (RowLayout | PanelLayout) & {
+  id: string;
+  flex?: number;
+  when?: string;
+};
 
 export interface FaradayConfig {
   isDesktop(): boolean;

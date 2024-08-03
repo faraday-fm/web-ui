@@ -1,7 +1,7 @@
 import { memo, useEffect } from "react";
-import { useExtensionStates } from "../../features/extensions/useExtensionStates";
 import { useFileStringContent } from "../../features/fs/hooks";
-import { ExtensionManifest, QuickViewDefinition } from "../../schemas/manifest";
+import { useQuickViews } from "../../features/quickViews/hooks";
+import type { ExtensionManifest, QuickViewDefinition } from "../../schemas/manifest";
 import { combine } from "../../utils/path";
 import { getQuickViewId } from "./utils";
 
@@ -15,7 +15,7 @@ export const QuickViewContribution = memo(function QuickViewContribution({
   quickView: QuickViewDefinition;
 }) {
   const id = getQuickViewId(manifest, quickView);
-  const { quickViews, activateQuickView, deactivateQuickView, setQuickViewScript, setQuickViewDefinition } = useExtensionStates();
+  const { quickViews, activateQuickView, deactivateQuickView, setQuickViewScript, setQuickViewDefinition } = useQuickViews();
   const isActive = quickViews[id]?.isActive;
   const quickViewScript = useFileStringContent(combine(path, quickView.path), !isActive);
 

@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { type PropsWithChildren, type RefObject, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 const QuickNavigationContext = createContext(new Map<string, RefObject<HTMLElement>>());
 
@@ -29,42 +29,46 @@ export function QuickNavigationProvider({ children }: PropsWithChildren) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapping = useMemo(() => new Map<string, RefObject<HTMLElement>>(), []);
   const onKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
+    (e: React.KeyboardEvent) => {
       switch (e.key) {
-        case "ArrowUp": {
-          const tabbedElements = containerRef.current?.querySelectorAll("input, button, select, textarea, a[href]");
-          const elementsArray = Array.from(tabbedElements?.values() ?? []) as HTMLElement[];
-          let currIndex = elementsArray.indexOf(e.target as HTMLElement);
-          if (currIndex >= 0) {
-            currIndex -= 1;
-            if (currIndex < 0) currIndex = elementsArray.length - 1;
-            elementsArray[currIndex].focus();
+        case "ArrowUp":
+          {
+            const tabbedElements = containerRef.current?.querySelectorAll("input, button, select, textarea, a[href]");
+            const elementsArray = Array.from(tabbedElements?.values() ?? []) as HTMLElement[];
+            let currIndex = elementsArray.indexOf(e.target as HTMLElement);
+            if (currIndex >= 0) {
+              currIndex -= 1;
+              if (currIndex < 0) currIndex = elementsArray.length - 1;
+              elementsArray[currIndex].focus();
+            }
           }
           break;
-        }
-        case "ArrowDown": {
-          const tabbedElements = containerRef.current?.querySelectorAll("input, button, select, textarea, a[href]");
-          const elementsArray = Array.from(tabbedElements?.values() ?? []) as HTMLElement[];
-          let currIndex = elementsArray.indexOf(e.target as HTMLElement);
-          if (currIndex >= 0) {
-            currIndex += 1;
-            if (currIndex >= elementsArray.length) currIndex = 0;
-            elementsArray[currIndex].focus();
+        case "ArrowDown":
+          {
+            const tabbedElements = containerRef.current?.querySelectorAll("input, button, select, textarea, a[href]");
+            const elementsArray = Array.from(tabbedElements?.values() ?? []) as HTMLElement[];
+            let currIndex = elementsArray.indexOf(e.target as HTMLElement);
+            if (currIndex >= 0) {
+              currIndex += 1;
+              if (currIndex >= elementsArray.length) currIndex = 0;
+              elementsArray[currIndex].focus();
+            }
           }
           break;
-        }
         default:
-          const ref = mapping.get(e.key.toLowerCase());
-          if (ref) {
-            e.preventDefault();
-            e.stopPropagation();
-            ref.current?.focus();
-            ref.current?.click();
+          {
+            const ref = mapping.get(e.key.toLowerCase());
+            if (ref) {
+              e.preventDefault();
+              e.stopPropagation();
+              ref.current?.focus();
+              ref.current?.click();
+            }
           }
           break;
       }
     },
-    [mapping]
+    [mapping],
   );
   return (
     <QuickNavigationContext.Provider value={mapping}>

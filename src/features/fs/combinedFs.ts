@@ -1,7 +1,7 @@
 import { truncateProtocol } from "../../utils/path";
 
 import { FileNotFound } from "./FileSystemError";
-import { FileChangeEvent, FileSystemProvider } from "./types";
+import type { FileChangeEvent, FileSystemProvider } from "./types";
 
 export class CombinedFsProvider implements FileSystemProvider {
   innerProviders: Record<string, FileSystemProvider | undefined>;

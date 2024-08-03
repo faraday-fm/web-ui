@@ -1,5 +1,1 @@
-import { useExtensionStates } from "../extensions/useExtensionStates";
-
-export function useQuickViews() {
-  return useExtensionStates().quickViews;
-}
+export { useQuickViews } from "../extensions/useQuickViews";

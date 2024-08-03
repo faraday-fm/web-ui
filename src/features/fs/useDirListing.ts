@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { List, createList } from "../../utils/immutableList";
-import { FsEntry } from "./types";
+import { type List, createList } from "../../utils/immutableList";
+import type { FsEntry } from "./types";
 import { useFs } from "./useFs";
 
 export function useDirListing(path: string | undefined, onListUpdated: (path: string, files: List<FsEntry>) => void) {
@@ -28,11 +28,13 @@ export function useDirListing(path: string | undefined, onListUpdated: (path: st
                 if (!name) return;
                 switch (change.type) {
                   case "created":
-                    const idx = items.findIndex((e) => e.name === name);
-                    if (idx >= 0) {
-                      items = items.set(idx, change.entry);
-                    } else {
-                      items = items.append(change.entry);
+                    {
+                      const idx = items.findIndex((e) => e.name === name);
+                      if (idx >= 0) {
+                        items = items.set(idx, change.entry);
+                      } else {
+                        items = items.append(change.entry);
+                      }
                     }
                     break;
                   case "deleted":
@@ -59,7 +61,7 @@ export function useDirListing(path: string | undefined, onListUpdated: (path: st
               }
             });
           },
-          { signal: abortController.signal }
+          { signal: abortController.signal },
         );
       } catch (err) {
         console.error(err);

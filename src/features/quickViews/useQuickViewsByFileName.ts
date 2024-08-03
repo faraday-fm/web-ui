@@ -1,9 +1,9 @@
 import { useMemo } from "react";
+import type { FileName, FullyQualifiedQuickView } from "../extensions/types";
 import { useQuickViews } from "./useQuickViews";
-import { FileName, FullyQualifiedQuickView } from "../extensions/types";
 
 export function useQuickViewsByFileName() {
-  const quickViews = useQuickViews();
+  const { quickViews } = useQuickViews();
   return useMemo(() => {
     const result: Record<FileName, FullyQualifiedQuickView[]> = {};
     const quickViewsByExtension = Object.entries(quickViews);
@@ -15,7 +15,11 @@ export function useQuickViewsByFileName() {
       const script = qv.script;
       if (qv.definition.filenames) {
         qv.definition.filenames.forEach((fileName) => {
-          (result[fileName] ??= []).push({ extId: qvId, quickView: quickView, script });
+          (result[fileName] ??= []).push({
+            extId: qvId,
+            quickView: quickView,
+            script,
+          });
         });
       }
     });

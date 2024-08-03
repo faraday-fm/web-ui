@@ -12,7 +12,11 @@ interface FileContent {
 
 export function useFileContent(path?: string, skip = false) {
   const fs = useFs();
-  const [result, setResult] = useState<FileContent>({ done: false, path, skipped: skip });
+  const [result, setResult] = useState<FileContent>({
+    done: false,
+    path,
+    skipped: skip,
+  });
   const counter = useRef(0);
 
   useEffect(() => {
@@ -42,7 +46,7 @@ export function useFileContent(path?: string, skip = false) {
               });
           }, 100);
         },
-        { signal: abortController.signal }
+        { signal: abortController.signal },
       ).catch((error: unknown) => {
         if (counter.current === pendingOp) {
           setResult({ done: false, error, path, skipped: false });

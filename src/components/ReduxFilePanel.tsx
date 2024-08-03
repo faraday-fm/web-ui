@@ -1,12 +1,12 @@
 import { memo, useCallback, useEffect, useLayoutEffect, useRef } from "react";
-import { FilePanel, FilePanelActions } from "../components/panels/FilePanel/FilePanel";
+import { FilePanel, type FilePanelActions } from "../components/panels/FilePanel/FilePanel";
 import { ContextVariablesProvider, DebugContextVariables } from "../features/commands";
 import { useDirListing } from "../features/fs/hooks";
-import { FsEntry } from "../features/fs/types";
+import type { FsEntry } from "../features/fs/types";
 import { useGlobalContext } from "../features/globalContext";
-import { CursorPosition, usePanelState, usePanels } from "../features/panels";
+import { type CursorPosition, usePanelState, usePanels } from "../features/panels";
 import { css } from "../features/styles";
-import { FilePanelLayout } from "../types";
+import type { FilePanelLayout } from "../types";
 import { createList } from "../utils/immutableList";
 import { combine, isRoot } from "../utils/path";
 
@@ -14,7 +14,11 @@ interface ReduxFilePanelProps {
   layout: FilePanelLayout & { id: string };
 }
 
-const collator = new Intl.Collator(undefined, { numeric: true, usage: "sort", sensitivity: "case" });
+const collator = new Intl.Collator(undefined, {
+  numeric: true,
+  usage: "sort",
+  sensitivity: "case",
+});
 
 function fsCompare(a: FsEntry, b: FsEntry) {
   if (a.isDir && !b.isDir) return -1;
@@ -25,9 +29,9 @@ function fsCompare(a: FsEntry, b: FsEntry) {
 export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
   const { id } = layout;
   const panelRef = useRef<FilePanelActions>(null);
-  const { activeFilePanel, initPanelState, setPanelItems, setPanelCursorPos, setActivePanel, dirUp } = usePanels();
+  const { activeFilePanel, initPanelState, setPanelItems, setPanelCursorPos, setActivePanelId } = usePanels();
   const state = usePanelState(id);
-  const globalContext = useGlobalContext();
+  const { updateState } = useGlobalContext();
   const isActive = activeFilePanel?.id === id;
 
   const items = state?.items ?? createList();
@@ -36,7 +40,7 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
 
   useEffect(() => {
     if (isActive && state?.pos.path && selectedItem) {
-      globalContext.updateState({
+      updateState({
         "filePanel.path": combine(state.pos.path, selectedItem.name),
         "filePanel.selectedName": selectedItem.name,
         "filePanel.isFileSelected": selectedItem.isFile ?? false,
@@ -44,7 +48,7 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
       });
       panelRef.current?.focus();
     }
-  }, [globalContext, isActive, selectedItem, state?.pos.path]);
+  }, [updateState, isActive, selectedItem, state?.pos.path]);
 
   useLayoutEffect(() => {
     const { path, id } = layout;
@@ -72,18 +76,17 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
         }
         setPanelItems(id, files);
       },
-      [id, setPanelItems]
-    )
+      [id, setPanelItems],
+    ),
   );
 
-  const onFocus = useCallback(() => setActivePanel(id), [id, setActivePanel]);
-  const onDirUp = useCallback(() => dirUp(id), [id, dirUp]);
+  const onFocus = useCallback(() => setActivePanelId(id), [id, setActivePanelId]);
 
   const onCursorPositionChange = useCallback(
     (cursorPos: CursorPosition) => {
       setPanelCursorPos(id, cursorPos);
     },
-    [id, setPanelCursorPos]
+    [id, setPanelCursorPos],
   );
 
   return (
@@ -94,7 +97,6 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
           showCursorWhenBlurred={isActive}
           onFocus={onFocus}
           onCursorPositionChange={onCursorPositionChange}
-          onDirUp={onDirUp}
           cursor={cursor}
           items={items}
           path={state ? state.pos.path : "/"}

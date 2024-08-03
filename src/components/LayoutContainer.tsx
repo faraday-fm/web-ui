@@ -1,11 +1,11 @@
 import { useCallback, useRef } from "react";
+import { useInert } from "../features/inert/hooks";
+import { usePanels } from "../features/panels";
 import { css } from "../features/styles";
-import { PanelsLayout, RowLayout } from "../types";
+import type { PanelsLayout, RowLayout } from "../types";
 import { ReduxFilePanel } from "./ReduxFilePanel";
 import { RenderWhen } from "./RenderWhen";
 import { QuickViewPanel } from "./panels/QuickView";
-import { usePanels } from "../features/panels";
-import { useInert } from "../features/inert/hooks";
 
 interface LayoutContainerProps {
   layout: PanelsLayout;
@@ -32,7 +32,7 @@ function Separator({
   const afterItem = items[after];
   const pointerDownCoords = useRef<{ x: number; y: number } | undefined>();
   const handlePointerDown = useCallback(
-    (e: React.PointerEvent<HTMLDivElement>) => {
+    (e: React.PointerEvent) => {
       const dim = (r?: DOMRect) => (direction === "h" ? r?.width : r?.height);
       const resizeCursor = direction === "h" ? "col-resize" : "row-resize";
       document.body.style.cursor = resizeCursor;
@@ -57,15 +57,11 @@ function Separator({
       window.addEventListener("pointermove", handlePointerMove);
       window.addEventListener("pointerup", handlePointerUp, { once: true });
     },
-    [afterItem, beforeItem, direction, items, resizeChildren, rowId, setInert]
+    [afterItem, beforeItem, direction, items, resizeChildren, rowId, setInert],
   );
   return (
     <div className={css("layout-separator")}>
-      <div
-        className={css("layout-separator-thumb")}
-        style={{ cursor: direction === "h" ? "col-resize" : "row-resize" }}
-        onPointerDown={handlePointerDown}
-      ></div>
+      <div className={css("layout-separator-thumb")} style={{ cursor: direction === "h" ? "col-resize" : "row-resize" }} onPointerDown={handlePointerDown} />
     </div>
   );
 }

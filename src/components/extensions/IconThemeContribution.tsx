@@ -1,10 +1,10 @@
 import { memo, useEffect } from "react";
+import { useIconThemes } from "../../features/extensions/useIconThemes";
 import { useFileJsonContent } from "../../features/fs/hooks";
 import { IconThemeSchema } from "../../schemas/iconTheme";
-import { ExtensionManifest, IconThemeDefinition } from "../../schemas/manifest";
+import type { ExtensionManifest, IconThemeDefinition } from "../../schemas/manifest";
 import { combine, truncateLastDir } from "../../utils/path";
 import { getIconThemeId } from "./utils";
-import { useExtensionStates } from "../../features/extensions/useExtensionStates";
 
 export const IconThemeContribution = memo(function IconThemeContribution({
   path,
@@ -16,7 +16,7 @@ export const IconThemeContribution = memo(function IconThemeContribution({
   iconTheme: IconThemeDefinition;
 }) {
   const id = getIconThemeId(manifest, iconTheme);
-  const { iconThemes, activateIconTheme, deactivateIconTheme, setIconTheme, setIconThemeDefinition } = useExtensionStates();
+  const { iconThemes, activateIconTheme, deactivateIconTheme, setIconTheme, setIconThemeDefinition } = useIconThemes();
   const isActive = iconThemes[id]?.isActive;
   const filePath = combine(path, iconTheme.path);
   const dirPath = truncateLastDir(filePath);

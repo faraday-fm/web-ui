@@ -1,26 +1,24 @@
-/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 import equal from "fast-deep-equal";
 import { forwardRef, memo, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { GlyphSizeProvider } from "../../../contexts/glyphSizeContext";
+import { useCommandBindings, useExecuteBuiltInCommand, useSetContextVariables } from "../../../features/commands";
+import type { FsEntry } from "../../../features/fs/types";
+import type { CursorPosition } from "../../../features/panels";
+import { css } from "../../../features/styles";
+import { useElementSize } from "../../../hooks/useElementSize";
+import { useFocused } from "../../../hooks/useFocused";
+import { usePrevValueIfDeepEqual } from "../../../hooks/usePrevValueIfDeepEqual";
+import { folder_stats } from "../../../paraglide/messages";
+import type { FilePanelView } from "../../../types";
+import type { List } from "../../../utils/immutableList";
+import { clamp } from "../../../utils/number";
+import { Border } from "../../Border";
 import { Breadcrumb } from "../../Breadcrumb";
+import { PanelHeader } from "../../PanelHeader";
 import { FileInfoFooter } from "./FileInfoFooter";
-import { CursorStyle } from "./types";
+import type { CursorStyle } from "./types";
 import { CondensedView } from "./views/CondensedView";
 import { FullView } from "./views/FullView";
-import { FsEntry } from "../../../features/fs/types";
-import { List } from "../../../utils/immutableList";
-import { CursorPosition } from "../../../features/panels";
-import { FilePanelView } from "../../../types";
-import { clamp } from "../../../utils/number";
-import { useElementSize } from "../../../hooks/useElementSize";
-import { usePrevValueIfDeepEqual } from "../../../hooks/usePrevValueIfDeepEqual";
-import { useFocused } from "../../../hooks/useFocused";
-import { useCommandBindings, useSetContextVariables, useExecuteBuiltInCommand } from "../../../features/commands";
-import { GlyphSizeProvider } from "../../../contexts/glyphSizeContext";
-import { css } from "../../../features/styles";
-import { Border } from "../../Border";
-import { PanelHeader } from "../../PanelHeader";
-import { folder_stats } from "../../../paraglide/messages";
 
 export interface FilePanelProps {
   items: List<FsEntry>;
@@ -30,7 +28,6 @@ export interface FilePanelProps {
   showCursorWhenBlurred?: boolean;
   onFocus?: () => void;
   onCursorPositionChange: (newPosition: CursorPosition) => void;
-  onDirUp?: () => void;
 }
 
 export interface FilePanelActions {
@@ -65,11 +62,16 @@ function adjustCursor(cursor: CursorPosition, items: List<FsEntry>, displayedIte
   }
   topmostIndex = clamp(0, topmostIndex, items.size() - displayedItems);
   topmostIndex = clamp(selectedIndex - displayedItems + 1, topmostIndex, selectedIndex);
-  return { selectedIndex, topmostIndex, selectedName: selectedName ?? "", topmostName: topmostName ?? "" };
+  return {
+    selectedIndex,
+    topmostIndex,
+    selectedName: selectedName ?? "",
+    topmostName: topmostName ?? "",
+  };
 }
 
 export const FilePanel = memo(
-  forwardRef<FilePanelActions, FilePanelProps>(({ items, cursor, view, path, showCursorWhenBlurred, onFocus, onCursorPositionChange, onDirUp }, ref) => {
+  forwardRef<FilePanelActions, FilePanelProps>(({ items, cursor, view, path, showCursorWhenBlurred, onFocus, onCursorPositionChange }, ref) => {
     const panelRootRef = useRef<HTMLDivElement>(null);
     const { width } = useElementSize(panelRootRef);
     const [maxItemsPerColumn, setMaxItemsPerColumn] = useState<number>();
@@ -133,7 +135,7 @@ export const FilePanel = memo(
           onCursorPositionChange(c);
         }
       },
-      [items, displayedItems, onCursorPositionChange]
+      [items, displayedItems, onCursorPositionChange],
     );
 
     const moveCursorToPos = useCallback(
@@ -147,7 +149,7 @@ export const FilePanel = memo(
           onCursorPositionChange(c);
         }
       },
-      [adjustedCursor, displayedItems, items, onCursorPositionChange]
+      [adjustedCursor, displayedItems, items, onCursorPositionChange],
     );
 
     function moveCursorPage(direction: "up" | "down") {
@@ -177,9 +179,8 @@ export const FilePanel = memo(
         cursorEnd: () => moveCursorToPos(items.size() - 1),
         cursorPageUp: () => moveCursorPage("up"),
         cursorPageDown: () => moveCursorPage("down"),
-        dirUp: () => onDirUp?.(),
       },
-      focused
+      focused,
     );
 
     const executeBuiltInCommand = useExecuteBuiltInCommand();
@@ -222,6 +223,7 @@ export const FilePanel = memo(
               <PanelHeader active={focused}>
                 <Breadcrumb isActive={focused}>
                   {pathParts.map((x, i) => (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                     <Breadcrumb.Item key={i}>{x}</Breadcrumb.Item>
                   ))}
                 </Breadcrumb>
@@ -263,12 +265,17 @@ export const FilePanel = memo(
                   <FileInfoFooter file={items.get(adjustedCursor.selectedIndex)} />
                 </Border>
               </div>
-              <div className={css("panel-footer")}>{folder_stats({ bytes: bytesCount.toLocaleString(), files: filesCount.toLocaleString() })}</div>
+              <div className={css("panel-footer")}>
+                {folder_stats({
+                  bytes: bytesCount.toLocaleString(),
+                  files: filesCount.toLocaleString(),
+                })}
+              </div>
             </div>
           </Border>
         </GlyphSizeProvider>
       </div>
     );
-  })
+  }),
 );
 FilePanel.displayName = "FilePanel";
