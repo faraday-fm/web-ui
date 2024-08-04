@@ -1,9 +1,9 @@
-import { memo, useCallback } from "react";
+import { memo, useCallback, useRef } from "react";
 import { useGlyphSize } from "../../../../contexts/glyphSizeContext";
 import type { FsEntry } from "../../../../features/fs/types";
 import type { List } from "../../../../utils/immutableList";
 import { Cell } from "../Cell";
-import { ColumnsScroller } from "../ColumnsScroller";
+import { ColumnsScroller, type ColumnsScrollerProps } from "../ColumnsScroller";
 import { FullFileName } from "../FullFileName";
 import type { CursorStyle } from "../types";
 
@@ -36,7 +36,7 @@ export const CondensedView = memo(function CondensedView({
   const rowHeight = Math.ceil(glyphHeight);
   const selectedNames = selectedItemNames.toSet();
 
-  const handlePosChange = useCallback((topmost: number, scroll: number) => onPosChange(topmost, scroll), [onPosChange]);
+  const handlePosChange: ColumnsScrollerProps["onPosChange"] = useCallback((topmost, active) => onPosChange(topmost, active), [onPosChange]);
 
   const itemContent = useCallback(
     (index: number) => (
@@ -58,10 +58,10 @@ export const CondensedView = memo(function CondensedView({
 
   return (
     <ColumnsScroller
-      topmostItem={topmostIndex}
-      activeItem={selectedIndex}
+      topmostIndex={topmostIndex}
+      activeIndex={selectedIndex}
       columnCount={columnCount}
-      itemContent={itemContent}
+      renderItem={itemContent}
       totalCount={items.size()}
       itemHeight={rowHeight}
       onPosChange={handlePosChange}

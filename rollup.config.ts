@@ -36,7 +36,7 @@ export default defineConfig({
     },
   ],
   // external: ["react", "react/jsx-runtime"],
-  external: ["react", "react/jsx-runtime", "fast-deep-equal", "parsimmon", "valibot", "list", "json5", "is-promise"],
+  external: ["react", "react/jsx-runtime", "fast-deep-equal", "parsimmon", "jotai", "valibot", "list", "json5", "is-promise"],
   context: "window",
   plugins: [
     !watch && [terser({ sourceMap: true }), del({ targets: ["dist/*"] })],

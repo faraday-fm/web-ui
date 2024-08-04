@@ -73,6 +73,10 @@ export const FilePanel = memo(
   forwardRef<FilePanelActions, FilePanelProps>((props, ref) => {
     const { items, selectedItemNames, cursor, view, path, showCursorWhenBlurred, onFocus, onCursorPositionChange } = props;
 
+    const onFocusRef = useRef(onFocus);
+    const onCursorPositionChangeRef = useRef(onCursorPositionChange);
+    onCursorPositionChangeRef.current = onCursorPositionChange;
+
     const panelRootRef = useRef<HTMLDivElement>(null);
     const { width } = useElementSize(panelRootRef);
     const [maxItemsPerColumn, setMaxItemsPerColumn] = useState<number>();
@@ -97,27 +101,29 @@ export const FilePanel = memo(
     useSetContextVariables({ "filePanel.activeItem": cursor.activeName }, focused);
     useSetContextVariables({ "filePanel.path": path }, focused);
 
-    function moveCursorLeftRight(direction: "left" | "right", select: boolean) {
-      let newCursor = structuredClone(adjustedCursor);
-      const increment = direction === "right" ? maxItemsPerColumn ?? 0 : -(maxItemsPerColumn ?? 0);
-      if (direction === "right") {
-        newCursor.activeIndex += maxItemsPerColumn ?? 0;
-        if (newCursor.activeIndex >= newCursor.topmostIndex + displayedItems) {
-          newCursor.topmostIndex += maxItemsPerColumn ?? 0;
+    const moveCursorLeftRight = useCallback(
+      (direction: "left" | "right", select: boolean) => {
+        let newCursor = structuredClone(adjustedCursor);
+        if (direction === "right") {
+          newCursor.activeIndex += maxItemsPerColumn ?? 0;
+          if (newCursor.activeIndex >= newCursor.topmostIndex + displayedItems) {
+            newCursor.topmostIndex += maxItemsPerColumn ?? 0;
+          }
+        } else if (direction === "left") {
+          newCursor.activeIndex -= maxItemsPerColumn ?? 0;
+          if (newCursor.activeIndex < newCursor.topmostIndex) {
+            newCursor.topmostIndex -= maxItemsPerColumn ?? 0;
+          }
         }
-      } else if (direction === "left") {
-        newCursor.activeIndex -= maxItemsPerColumn ?? 0;
-        if (newCursor.activeIndex < newCursor.topmostIndex) {
-          newCursor.topmostIndex -= maxItemsPerColumn ?? 0;
+        newCursor.activeName = items.get(newCursor.activeIndex)?.name ?? "";
+        newCursor.topmostName = items.get(newCursor.topmostIndex)?.name ?? "";
+        newCursor = adjustCursor(newCursor, items, displayedItems);
+        if (!equal(newCursor, adjustedCursor)) {
+          onCursorPositionChangeRef.current(newCursor, select);
         }
-      }
-      newCursor.activeName = items.get(newCursor.activeIndex)?.name ?? "";
-      newCursor.topmostName = items.get(newCursor.topmostIndex)?.name ?? "";
-      newCursor = adjustCursor(newCursor, items, displayedItems);
-      if (!equal(newCursor, adjustedCursor)) {
-        onCursorPositionChange(newCursor, select);
-      }
-    }
+      },
+      [adjustedCursor, displayedItems, items, maxItemsPerColumn],
+    );
 
     const adjustedCursorRef = useRef(adjustedCursor);
     adjustedCursorRef.current = adjustedCursor;
@@ -132,10 +138,10 @@ export const FilePanel = memo(
         c.topmostName = items.get(c.topmostIndex)?.name ?? "";
         c = adjustCursor(c, items, displayedItems);
         if (!equal(c, adjustedCursorRef.current)) {
-          onCursorPositionChange(c, select);
+          onCursorPositionChangeRef.current(c, select);
         }
       },
-      [items, displayedItems, onCursorPositionChange],
+      [items, displayedItems],
     );
 
     const moveCursorToPos = useCallback(
@@ -146,28 +152,31 @@ export const FilePanel = memo(
         c.topmostName = items.get(c.topmostIndex)?.name ?? "";
         c = adjustCursor(c, items, displayedItems);
         if (!equal(c, adjustedCursor)) {
-          onCursorPositionChange(c, select);
+          onCursorPositionChangeRef.current(c, select);
         }
       },
-      [adjustedCursor, displayedItems, items, onCursorPositionChange],
+      [adjustedCursor, displayedItems, items],
     );
 
-    function moveCursorPage(direction: "up" | "down", select: boolean) {
-      let c = structuredClone(adjustedCursor);
-      if (direction === "up") {
-        c.activeIndex -= displayedItems - 1;
-        c.topmostIndex -= displayedItems - 1;
-      } else if (direction === "down") {
-        c.activeIndex += displayedItems - 1;
-        c.topmostIndex += displayedItems - 1;
-      }
-      c.activeName = items.get(c.activeIndex)?.name ?? "";
-      c.topmostName = items.get(c.topmostIndex)?.name ?? "";
-      c = adjustCursor(c, items, displayedItems);
-      if (!equal(c, adjustedCursor)) {
-        onCursorPositionChange(c, select);
-      }
-    }
+    const moveCursorPage = useCallback(
+      (direction: "up" | "down", select: boolean) => {
+        let c = structuredClone(adjustedCursor);
+        if (direction === "up") {
+          c.activeIndex -= displayedItems - 1;
+          c.topmostIndex -= displayedItems - 1;
+        } else if (direction === "down") {
+          c.activeIndex += displayedItems - 1;
+          c.topmostIndex += displayedItems - 1;
+        }
+        c.activeName = items.get(c.activeIndex)?.name ?? "";
+        c.topmostName = items.get(c.topmostIndex)?.name ?? "";
+        c = adjustCursor(c, items, displayedItems);
+        if (!equal(c, adjustedCursor)) {
+          onCursorPositionChangeRef.current(c, select);
+        }
+      },
+      [adjustedCursor, displayedItems, items],
+    );
 
     useCommandBindings(
       {
@@ -184,16 +193,14 @@ export const FilePanel = memo(
     );
 
     const executeBuiltInCommand = useExecuteBuiltInCommand();
+    const onItemActivated = useCallback(() => executeBuiltInCommand("open", { path }), [executeBuiltInCommand, path]);
 
     const onMaxItemsPerColumnChanged = useCallback((maxItemsPerColumn: number) => setMaxItemsPerColumn(maxItemsPerColumn), []);
     const onItemClicked = useCallback((pos: number) => moveCursorToPos(pos, false), [moveCursorToPos]);
-    const onItemActivated = useCallback(() => {
-      void executeBuiltInCommand("open", { path });
-    }, [executeBuiltInCommand, path]);
     const selectedIndexRef = useRef(cursor.activeIndex);
     selectedIndexRef.current = cursor.activeIndex;
     const handlePosChange = useCallback((topmost: number, active: number) => scroll(active - (selectedIndexRef.current ?? 0), true, false), [scroll]);
-    const handleFocus = useCallback(() => onFocus?.(), [onFocus]);
+    const handleFocus = useCallback(() => onFocusRef.current?.(), []);
 
     let cursorStyle: CursorStyle;
     if (focused) {
