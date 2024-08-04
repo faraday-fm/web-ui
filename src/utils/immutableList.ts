@@ -12,6 +12,7 @@ export interface List<T> extends Iterable<T> {
   reduce<To>(reducer: (agg: To, item: T) => To, init: To): To;
   sort(sorter: (a: T, b: T) => number): List<T>;
   unshift(item: T): List<T>;
+  toSet(): Set<T>;
 }
 
 function fixOrderingResult<T>(s: (a: T, b: T) => number): (a: T, b: T) => L.Ordering {
@@ -38,5 +39,10 @@ export function createList<T>(e?: Iterable<T>): List<T> {
     sort: (sorter) => createList(L.sortWith(fixOrderingResult(sorter), l)),
     unshift: (i) => createList(L.prepend(i, l)),
     [Symbol.iterator]: () => l[Symbol.iterator](),
+    toSet: () => new Set(l),
   };
+}
+
+export function empty<T>(): List<T> {
+  return createList([]);
 }

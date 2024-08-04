@@ -5,12 +5,12 @@ import ScrollableContainer from "./ScrollableContainer";
 
 interface ColumnsScrollerProps {
   topmostItem: number;
-  selectedItem: number;
+  activeItem: number;
   columnCount: number;
   totalCount: number;
   itemHeight: number;
   itemContent(index: number): ReactNode;
-  onSelect: (newTopmostItem: number, newSelectedItem: number) => void;
+  onPosChange: (newTopmostItem: number, newActiveItem: number) => void;
   onMaxItemsPerColumnChanged?: (count: number) => void;
 }
 
@@ -23,7 +23,7 @@ function Borders({ columnCount }: { columnCount: number }) {
 }
 
 export const ColumnsScroller = memo(
-  ({ topmostItem, selectedItem, columnCount, totalCount, itemHeight, itemContent, onSelect, onMaxItemsPerColumnChanged }: ColumnsScrollerProps) => {
+  ({ topmostItem, activeItem, columnCount, totalCount, itemHeight, itemContent, onPosChange, onMaxItemsPerColumnChanged }: ColumnsScrollerProps) => {
     if (!Number.isInteger(itemHeight) || itemHeight <= 0) {
       throw new Error("itemHeight should be positive");
     }
@@ -40,35 +40,13 @@ export const ColumnsScroller = memo(
       onMaxItemsPerColumnChanged?.(itemsPerColumn);
     }, [itemsPerColumn, onMaxItemsPerColumnChanged]);
 
-    // useEffect(() => {
-    //   if (!scrollableRef.current) {
-    //     return;
-    //   }
-    //   if (Math.abs(scrollableRef.current.scrollTop - selectedItem * itemHeight) >= itemHeight) {
-    //     scrollableRef.current.scrollTop = selectedItem * itemHeight;
-    //   }
-    // }, [itemHeight, selectedItem]);
-
-    if (selectedItem < topmostItem) {
-      topmostItem = selectedItem;
-    } else if (selectedItem > topmostItem + columnCount * itemsPerColumn - 1) {
-      topmostItem = selectedItem - columnCount * itemsPerColumn + 1;
+    if (activeItem < topmostItem) {
+      topmostItem = activeItem;
+    } else if (activeItem > topmostItem + columnCount * itemsPerColumn - 1) {
+      topmostItem = activeItem - columnCount * itemsPerColumn + 1;
     } else if (topmostItem > totalCount - columnCount * itemsPerColumn) {
       topmostItem = Math.max(0, totalCount - columnCount * itemsPerColumn);
     }
-
-    // const handleMouseEvent = useCallback((e: React.MouseEvent) => {
-    //   let targetEl: Element | undefined;
-    //   for (const el of document.elementsFromPoint(e.clientX, e.clientY)) {
-    //     if (fixedRef.current?.contains(el)) {
-    //       targetEl = el;
-    //       break;
-    //     }
-    //   }
-    //   if (targetEl) {
-    //     targetEl.dispatchEvent(new PointerEvent(e.type, e.nativeEvent));
-    //   }
-    // }, []);
 
     const items = useMemo(() => {
       const res = [];
@@ -85,25 +63,25 @@ export const ColumnsScroller = memo(
     const [scrollTop, setScrollTop] = useState(0);
 
     useEffect(() => {
-      setScrollTop(selectedItem * itemHeight);
-    }, [itemHeight, selectedItem]);
+      setScrollTop(activeItem * itemHeight);
+    }, [itemHeight, activeItem]);
 
-    const selectedItemRef = useRef(selectedItem);
+    const activeItemRef = useRef(activeItem);
     const topmostItemRef = useRef(topmostItem);
-    selectedItemRef.current = selectedItem;
+    activeItemRef.current = activeItem;
     topmostItemRef.current = topmostItem;
 
     const onScroll = useCallback(
       (scroll: number) => {
         // console.info(scroll);
         setScrollTop(scroll);
-        const newSelectedItem = Math.round(scroll / itemHeight);
-        const delta = newSelectedItem - selectedItemRef.current;
+        const newActiveItem = Math.round(scroll / itemHeight);
+        const delta = newActiveItem - activeItemRef.current;
         if (delta) {
-          onSelect?.(topmostItemRef.current + delta, newSelectedItem);
+          onPosChange?.(topmostItemRef.current + delta, newActiveItem);
         }
       },
-      [itemHeight, onSelect],
+      [itemHeight, onPosChange],
     );
 
     return (

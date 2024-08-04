@@ -4,12 +4,12 @@
   "version": "0.0.0-development",
   "description": "Web front-end for Faraday file manager",
   "source": "src/index.tsx",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "watch": "rollup -c -w",
-    "build": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide && rollup -c",
+    "watch": "rollup -c -w --configPlugin @rollup/plugin-typescript",
+    "build": "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide && rollup -c --configPlugin @rollup/plugin-typescript",
     "test": "echo \"Error: no test specified\" && exit 0",
     "commit": "git-cz",
     "semantic-release": "semantic-release --branches main",
@@ -48,6 +48,8 @@
     "@rollup/plugin-json": "^6.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@rollup/pluginutils": "^5.1.0",
     "@types/parsimmon": "^1.10.8",
     "@types/react": "^18.3.3",
     "cz-conventional-changelog": "^3.3.0",
@@ -64,7 +66,6 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@dhmk/zustand-lens": "^3.0.2",
     "ansi-colors": "^4.1.3",
     "deepmerge": "^4.3.1",
     "fast-deep-equal": "^3.1.3",
@@ -79,7 +80,6 @@
     "xterm-addon-fit": "^0.8.0",
     "xterm-addon-unicode11": "^0.6.0",
     "xterm-addon-web-links": "^0.9.0",
-    "xterm-addon-webgl": "^0.16.0",
-    "zustand": "^4.4.4"
+    "xterm-addon-webgl": "^0.16.0"
   }
 }

@@ -3,17 +3,10 @@ import { atom, useAtom } from "jotai";
 import { useCallback } from "react";
 import type { FsEntry } from "../../features/fs/types";
 import type { FilePanelLayout, PanelLayout, PanelsLayout } from "../../types";
-import type { List } from "../../utils/immutableList";
+import { createList, type List } from "../../utils/immutableList";
 import { traverseLayout, traverseLayoutRows } from "../../utils/layout";
 import { combine, truncateLastDir } from "../../utils/path";
 import type { CursorPosition, PanelState } from "./types";
-
-interface State {
-  activePanel?: PanelLayout;
-  activeFilePanel?: FilePanelLayout;
-  layout?: PanelsLayout;
-  states: Record<string, PanelState | undefined>;
-}
 
 const activePanelAtom = atom<PanelLayout>();
 const activeFilePanelAtom = atom<FilePanelLayout>();
@@ -86,6 +79,21 @@ export function usePanels() {
     [setStates],
   );
 
+  const setPanelSelectedItems = useCallback(
+    (id: string, itemNames: string[], select: boolean) =>
+      setStates(
+        produce((s) => {
+          const state = s[id];
+          if (!state) {
+            return;
+          }
+          const newItems = select ? new Set(state.selectedItems).union(new Set(itemNames)) : new Set(state.selectedItems).difference(new Set(itemNames));
+          state.selectedItems = createList(newItems);
+        }),
+      ),
+    [setStates],
+  );
+
   const setPanelCursorPos = useCallback(
     (id: string, cursorPos: CursorPosition) =>
       setStates(
@@ -142,10 +150,10 @@ export function usePanels() {
           }
 
           const cursor = state.stack.at(-1);
-          const selectedItemPos = cursor?.cursor.selectedIndex ?? 0;
-          const selectedItem = state.items.get(selectedItemPos);
-          if (selectedItem?.isDir) {
-            if (selectedItem.name === "..") {
+          const activeItemPos = cursor?.cursor.activeIndex ?? 0;
+          const activeItem = state.items.get(activeItemPos);
+          if (activeItem?.isDir) {
+            if (activeItem.name === "..") {
               const targetPath = truncateLastDir(state.pos.path);
               if (targetPath === state.pos.path) {
                 return;
@@ -158,7 +166,7 @@ export function usePanels() {
               };
             } else {
               state.targetPos = {
-                path: combine(state.pos.path, selectedItem.name),
+                path: combine(state.pos.path, activeItem.name),
                 cursor: {},
               };
             }
@@ -178,6 +186,7 @@ export function usePanels() {
     setActivePanelId,
     initPanelState,
     setPanelItems,
+    setPanelSelectedItems,
     setPanelCursorPos,
     focusNextPanel,
     enterDir,
@@ -187,115 +196,3 @@ export function usePanels() {
 export function usePanelState(id: string) {
   return usePanels().states[id];
 }
-
-// interface Actions {
-// 	setPanelsLayout(layout: PanelsLayout): void;
-// 	resizeChildren(id: string, flexes: number[]): void;
-// 	setActivePanel(activePanelId: string): void;
-// 	initPanelState(id: string, state: PanelState): void;
-// 	setPanelItems(id: string, items: List<FsEntry>): void;
-// 	setPanelCursorPos(id: string, cursorPos: CursorPosition): void;
-// 	focusNextPanel(backward: boolean): void;
-// 	enterDir(): void;
-// 	dirUp(id: string): void;
-// }
-
-// export type PanelsSlice = State & Actions;
-
-// export const createPanelsSlice: ImmerStateCreator<PanelsSlice> = (set) => ({
-// 	states: {} as Record<string, PanelState | undefined>,
-
-// 	setPanelCursorPos: (id, cursorPos) =>
-// 		set((s) => {
-// 			const state = s.states[id];
-// 			if (!state) {
-// 				return;
-// 			}
-// 			state.pos.cursor = cursorPos;
-// 			const pos = state.stack.at(-1);
-// 			if (pos) {
-// 				pos.cursor = cursorPos;
-// 			}
-// 		}),
-// 	focusNextPanel: (backward) =>
-// 		set((s) => {
-// 			if (s.layout) {
-// 				let lastTraversedPanel: PanelLayout | undefined;
-// 				let newActivePanelSet = false;
-// 				traverseLayout(
-// 					s.layout,
-// 					(panel) => {
-// 						if (
-// 							lastTraversedPanel &&
-// 							!newActivePanelSet &&
-// 							panel.id === s.activePanel?.id
-// 						) {
-// 							s.activePanel = lastTraversedPanel;
-// 							newActivePanelSet = true;
-// 						}
-// 						lastTraversedPanel = panel;
-// 					},
-// 					!backward,
-// 				);
-// 				if (!newActivePanelSet && lastTraversedPanel) {
-// 					s.activePanel = lastTraversedPanel;
-// 				}
-// 				if (s.activePanel?.type === "file-panel") {
-// 					s.activeFilePanel = s.activePanel;
-// 				}
-// 			}
-// 		}),
-// 	enterDir: () =>
-// 		set((s) => {
-// 			if (!s.layout) return;
-// 			if (!s.activeFilePanel) {
-// 				return;
-// 			}
-// 			const state = s.states[s.activeFilePanel.id];
-// 			if (!state) {
-// 				return;
-// 			}
-
-// 			const cursor = state.stack.at(-1);
-// 			const selectedItemPos = cursor?.cursor.selectedIndex ?? 0;
-// 			const selectedItem = state.items.get(selectedItemPos);
-// 			if (selectedItem?.isDir) {
-// 				if (selectedItem.name === "..") {
-// 					const targetPath = truncateLastDir(state.pos.path);
-// 					if (targetPath === state.pos.path) {
-// 						return;
-// 					}
-// 					state.stack.pop();
-// 					const targetPos = state.stack.pop();
-// 					state.targetPos = {
-// 						path: targetPath,
-// 						cursor: targetPos?.cursor ?? {},
-// 					};
-// 				} else {
-// 					state.targetPos = {
-// 						path: combine(state.pos.path, selectedItem.name),
-// 						cursor: {},
-// 					};
-// 				}
-// 			}
-// 		}),
-// 	dirUp: (id) =>
-// 		set((s) => {
-// 			if (!s.layout) return;
-// 			const state = s.states[id];
-// 			if (!state) {
-// 				return;
-// 			}
-
-// 			const targetPath = truncateLastDir(state.pos.path);
-// 			if (targetPath === state.pos.path) {
-// 				return;
-// 			}
-// 			state.stack.pop();
-// 			const targetPos = state.stack.pop();
-// 			state.targetPos = {
-// 				path: targetPos?.path ?? targetPath,
-// 				cursor: targetPos?.cursor ?? {},
-// 			};
-// 		}),
-// });

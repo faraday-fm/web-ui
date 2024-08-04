@@ -20,5 +20,5 @@
     "declarationDir": "dist",
     "jsx": "react-jsx"
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "scripts", "rollup.config.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

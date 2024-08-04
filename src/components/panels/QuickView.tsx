@@ -28,7 +28,7 @@ export const QuickView = memo(({ layout }: QuickViewPanelProps) => {
   const { activePanel, setActivePanelId } = usePanels();
   const isActive = activePanel?.id === id;
   const {
-    globalContext: { "filePanel.path": path, "filePanel.isFileSelected": isFileSelected },
+    globalContext: { "filePanel.path": path, "filePanel.isFileActive": isFileActive },
   } = useGlobalContext();
 
   const panelRootRef = useRef<HTMLDivElement>(null);
@@ -49,7 +49,7 @@ export const QuickView = memo(({ layout }: QuickViewPanelProps) => {
     }
   }, [isActive]);
 
-  const { content, path: contentPath } = useFileContent(path, !isFileSelected);
+  const { content, path: contentPath } = useFileContent(path, !isFileActive);
 
   return (
     <div className={css("quick-view")} ref={panelRootRef} tabIndex={0}>

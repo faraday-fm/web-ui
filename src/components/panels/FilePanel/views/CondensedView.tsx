@@ -9,12 +9,13 @@ import type { CursorStyle } from "../types";
 
 interface CondensedViewProps {
   items: List<FsEntry>;
+  selectedItemNames: List<string>;
   cursorStyle: CursorStyle;
   topmostIndex: number;
   selectedIndex: number;
   columnCount: number;
   onMaxItemsPerColumnChanged?: (count: number) => void;
-  onSelect: (topmost: number, selected: number) => void;
+  onPosChange: (topmost: number, active: number) => void;
   onItemClicked?: (pos: number) => void;
   onItemActivated?: (pos: number) => void;
 }
@@ -22,22 +23,25 @@ interface CondensedViewProps {
 export const CondensedView = memo(function CondensedView({
   cursorStyle,
   items,
+  selectedItemNames,
   topmostIndex,
   selectedIndex,
   columnCount,
   onMaxItemsPerColumnChanged,
-  onSelect,
+  onPosChange,
   onItemClicked,
   onItemActivated,
 }: CondensedViewProps) {
   const { height: glyphHeight } = useGlyphSize();
   const rowHeight = Math.ceil(glyphHeight);
+  const selectedNames = selectedItemNames.toSet();
 
-  const handleSelect = useCallback((topmost: number, scroll: number) => onSelect(topmost, scroll), [onSelect]);
+  const handlePosChange = useCallback((topmost: number, scroll: number) => onPosChange(topmost, scroll), [onPosChange]);
 
   const itemContent = useCallback(
     (index: number) => (
       <Cell
+        selected={selectedNames.has(items.get(index)?.name ?? "")}
         onMouseDown={() => onItemClicked?.(index)}
         onDoubleClick={(e) => {
           onItemActivated?.(index);
@@ -49,18 +53,18 @@ export const CondensedView = memo(function CondensedView({
         <FullFileName cursorStyle={index === selectedIndex && cursorStyle === "firm" ? "firm" : "hidden"} data={items.get(index)} />
       </Cell>
     ),
-    [cursorStyle, items, onItemActivated, onItemClicked, selectedIndex],
+    [cursorStyle, items, selectedNames, onItemActivated, onItemClicked, selectedIndex],
   );
 
   return (
     <ColumnsScroller
       topmostItem={topmostIndex}
-      selectedItem={selectedIndex}
+      activeItem={selectedIndex}
       columnCount={columnCount}
       itemContent={itemContent}
       totalCount={items.size()}
       itemHeight={rowHeight}
-      onSelect={handleSelect}
+      onPosChange={handlePosChange}
       onMaxItemsPerColumnChanged={onMaxItemsPerColumnChanged}
     />
   );

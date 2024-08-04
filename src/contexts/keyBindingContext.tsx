@@ -95,7 +95,11 @@ export function KeyBindingProvider({ children }: PropsWithChildren) {
       for (let i = bindings.length - 1; i >= 0; i -= 1) {
         const binding = bindings[i];
         if (matchKey(binding.key, e) && (!binding.when || isInContext(binding.when))) {
-          console.debug(binding.command, "(", binding.args, ")");
+          if (binding.args != null) {
+            console.debug(binding.command, "(", JSON.stringify(binding.args), ")");
+          } else {
+            console.debug(binding.command, "()");
+          }
           void executeCommand(binding.command, binding.args);
           e.stopPropagation();
           e.preventDefault();

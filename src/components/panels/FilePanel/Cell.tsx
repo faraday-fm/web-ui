@@ -5,6 +5,7 @@ import { useMediaQuery } from "../../../hooks/useMediaQuery";
 
 interface CellProps {
   cursorStyle: CursorStyle;
+  selected?: boolean;
   onMouseOver?: React.MouseEventHandler<HTMLDivElement>;
   onMouseDown?: React.MouseEventHandler<HTMLDivElement>;
   onDoubleClick?: React.MouseEventHandler<HTMLDivElement>;
@@ -19,13 +20,20 @@ interface CellProps {
 //   return div;
 // }
 
-export function Cell({ children, cursorStyle, onMouseDown, onMouseOver, onDoubleClick }: PropsWithChildren<CellProps>) {
+export function Cell({ children, selected, cursorStyle, onMouseDown, onMouseOver, onDoubleClick }: PropsWithChildren<CellProps>) {
   const isTouchscreen = useMediaQuery("(pointer: coarse)");
 
   const clickHandler = isTouchscreen ? { onClick: onDoubleClick } : { onDoubleClick };
 
   return (
-    <div draggable className={css("cell", `-${cursorStyle}`)} onMouseDown={onMouseDown} onMouseOver={onMouseOver} {...clickHandler}>
+    <div
+      draggable
+      className={css("cell", `-${cursorStyle}`, selected ? "-selected" : "")}
+      style={{ background: selected ? "red" : undefined }}
+      onMouseDown={onMouseDown}
+      onMouseOver={onMouseOver}
+      {...clickHandler}
+    >
       {children}
     </div>
   );

@@ -2,10 +2,10 @@ import { atom, useAtom } from "jotai";
 import { useCallback } from "react";
 
 interface State {
-  "filePanel.selectedName"?: string;
+  "filePanel.activeName"?: string;
   "filePanel.path"?: string;
-  "filePanel.isFileSelected"?: boolean;
-  "filePanel.isDirectorySelected"?: boolean;
+  "filePanel.isFileActive"?: boolean;
+  "filePanel.isDirectoryActive"?: boolean;
 }
 
 const globalContextAtom = atom<State>({});

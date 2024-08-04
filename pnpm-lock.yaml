@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@dhmk/zustand-lens':
-        specifier: ^3.0.2
-        version: 3.0.2(zustand@4.4.4(@types/react@18.3.3)(immer@10.0.3)(react@18.3.1))
       ansi-colors:
         specifier: ^4.1.3
         version: 4.1.3
@@ -56,9 +53,6 @@ importers:
       xterm-addon-webgl:
         specifier: ^0.16.0
         version: 0.16.0(xterm@5.3.0)
-      zustand:
-        specifier: ^4.4.4
-        version: 4.4.4(@types/react@18.3.3)(immer@10.0.3)(react@18.3.1)
     devDependencies:
       '@biomejs/biome':
         specifier: ^1.8.3
@@ -81,6 +75,12 @@ importers:
       '@rollup/plugin-terser':
         specifier: ^0.4.4
         version: 0.4.4(rollup@4.20.0)
+      '@rollup/plugin-typescript':
+        specifier: ^11.1.6
+        version: 11.1.6(rollup@4.20.0)(tslib@2.6.3)(typescript@5.5.4)
+      '@rollup/pluginutils':
+        specifier: ^5.1.0
+        version: 5.1.0(rollup@4.20.0)
       '@types/parsimmon':
         specifier: ^1.10.8
         version: 1.10.8
@@ -227,14 +227,6 @@ packages:
     resolution: {integrity: sha512-tpyc+7i6bPG9mvaBbtKUeghfyZSDgWquIDfMgqYtTbmZ9Y9VzEm2je9EYcQ0aoz5o7NvGS+rcDec93yO08MHYA==}
     engines: {node: '>=v18'}
 
-  '@dhmk/utils@2.4.2':
-    resolution: {integrity: sha512-xNF77VfjTPocSkgs5LkEvNUHE7fqzKr5B9LllMoCbU8BobRSqwssIwIL/zMM6oiMGZoHyYHOj/XpzLdvULZZ1A==}
-
-  '@dhmk/zustand-lens@3.0.2':
-    resolution: {integrity: sha512-4dL7Mad7jyN47MQceLNsCDzkVeaBrDZPBWpx92TrHDrOaH2K9aB2ACQuLclp4yw/2Uko/5XxZJjHIldSlSZEYw==}
-    peerDependencies:
-      zustand: ^4.0.0
-
   '@inlang/detect-json-formatting@1.0.0':
     resolution: {integrity: sha512-o0jeI8U4TgNlsPwI0y92jld8/18Loh2KEgHCYCJ42rCOdxFrA8R60cydlEd2/6jkdHFn5DxKj8rOyiKv3z9uOw==}
 
@@ -380,12 +372,25 @@ packages:
       rollup:
         optional: true
 
+  '@rollup/plugin-typescript@11.1.6':
+    resolution: {integrity: sha512-R92yOmIACgYdJ7dJ97p4K69I8gg6IEHt8M7dUBxN3W6nrO8uUxX5ixl0yU/N3aZTi8WhPuICvOHXQvF6FaykAA==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^2.14.0||^3.0.0||^4.0.0
+      tslib: '*'
+      typescript: '>=3.7.0'
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+      tslib:
+        optional: true
+
   '@rollup/pluginutils@4.2.1':
     resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
     engines: {node: '>= 8.0.0'}
 
-  '@rollup/pluginutils@5.0.5':
-    resolution: {integrity: sha512-6aEYR910NyP73oHiJglti74iRyOwgFU4x3meH/H8OJx6Ry0j6cOVZ5X/wTvub7G7Ao6qaHBEaNsV3GLJkSsF+Q==}
+  '@rollup/pluginutils@5.1.0':
+    resolution: {integrity: sha512-XTIWOPPcpvyKI6L1NHo0lFlCyznUEyPmPY1mc3KpPVDYulHSTvyeLNVW00QTLIAFNhR3kYnJTQHeGqU4M3n09g==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
@@ -2164,11 +2169,6 @@ packages:
     resolution: {integrity: sha512-n2huDr9h9yzd6exQVnH/jU5mr+Pfx08LRXXZhkLLetAMESRj+anQsTAh940iMrIetKAmry9coFuZQ2jY8/p3WA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  use-sync-external-store@1.2.0:
-    resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
@@ -2254,21 +2254,6 @@ packages:
   yocto-queue@1.0.0:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
-
-  zustand@4.4.4:
-    resolution: {integrity: sha512-5UTUIAiHMNf5+mFp7/AnzJXS7+XxktULFN0+D1sCiZWyX7ZG+AQpqs2qpYrynRij4QvoDdCD+U+bmg/cG3Ucxw==}
-    engines: {node: '>=12.7.0'}
-    peerDependencies:
-      '@types/react': '>=16.8'
-      immer: '>=9.0'
-      react: '>=16.8'
-    peerDependenciesMeta:
-      '@types/react':
-        optional: true
-      immer:
-        optional: true
-      react:
-        optional: true
 
 snapshots:
 
@@ -2376,13 +2361,6 @@ snapshots:
       '@types/conventional-commits-parser': 5.0.0
       chalk: 5.3.0
     optional: true
-
-  '@dhmk/utils@2.4.2': {}
-
-  '@dhmk/zustand-lens@3.0.2(zustand@4.4.4(@types/react@18.3.3)(immer@10.0.3)(react@18.3.1))':
-    dependencies:
-      '@dhmk/utils': 2.4.2
-      zustand: 4.4.4(@types/react@18.3.3)(immer@10.0.3)(react@18.3.1)
 
   '@inlang/detect-json-formatting@1.0.0':
     dependencies:
@@ -2516,7 +2494,7 @@ snapshots:
 
   '@rollup/plugin-commonjs@25.0.7(rollup@4.20.0)':
     dependencies:
-      '@rollup/pluginutils': 5.0.5(rollup@4.20.0)
+      '@rollup/pluginutils': 5.1.0(rollup@4.20.0)
       commondir: 1.0.1
       estree-walker: 2.0.2
       glob: 8.1.0
@@ -2527,13 +2505,13 @@ snapshots:
 
   '@rollup/plugin-json@6.0.1(rollup@4.20.0)':
     dependencies:
-      '@rollup/pluginutils': 5.0.5(rollup@4.20.0)
+      '@rollup/pluginutils': 5.1.0(rollup@4.20.0)
     optionalDependencies:
       rollup: 4.20.0
 
   '@rollup/plugin-node-resolve@15.2.3(rollup@4.20.0)':
     dependencies:
-      '@rollup/pluginutils': 5.0.5(rollup@4.20.0)
+      '@rollup/pluginutils': 5.1.0(rollup@4.20.0)
       '@types/resolve': 1.20.2
       deepmerge: 4.3.1
       is-builtin-module: 3.2.1
@@ -2550,14 +2528,23 @@ snapshots:
     optionalDependencies:
       rollup: 4.20.0
 
+  '@rollup/plugin-typescript@11.1.6(rollup@4.20.0)(tslib@2.6.3)(typescript@5.5.4)':
+    dependencies:
+      '@rollup/pluginutils': 5.1.0(rollup@4.20.0)
+      resolve: 1.22.8
+      typescript: 5.5.4
+    optionalDependencies:
+      rollup: 4.20.0
+      tslib: 2.6.3
+
   '@rollup/pluginutils@4.2.1':
     dependencies:
       estree-walker: 2.0.2
       picomatch: 2.3.1
 
-  '@rollup/pluginutils@5.0.5(rollup@4.20.0)':
+  '@rollup/pluginutils@5.1.0(rollup@4.20.0)':
     dependencies:
-      '@types/estree': 1.0.3
+      '@types/estree': 1.0.5
       estree-walker: 2.0.2
       picomatch: 2.3.1
     optionalDependencies:
@@ -4243,10 +4230,6 @@ snapshots:
 
   url-join@5.0.0: {}
 
-  use-sync-external-store@1.2.0(react@18.3.1):
-    dependencies:
-      react: 18.3.1
-
   util-deprecate@1.0.2: {}
 
   valibot@0.37.0(typescript@5.5.4):
@@ -4319,11 +4302,3 @@ snapshots:
       yargs-parser: 21.1.1
 
   yocto-queue@1.0.0: {}
-
-  zustand@4.4.4(@types/react@18.3.3)(immer@10.0.3)(react@18.3.1):
-    dependencies:
-      use-sync-external-store: 1.2.0(react@18.3.1)
-    optionalDependencies:
-      '@types/react': 18.3.3
-      immer: 10.0.3
-      react: 18.3.1
