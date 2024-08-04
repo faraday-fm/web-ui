@@ -73,7 +73,6 @@ export const ColumnsScroller = memo(
 
     const onScroll = useCallback(
       (scroll: number) => {
-        // console.info(scroll);
         setScrollTop(scroll);
         const newActiveItem = Math.round(scroll / itemHeight);
         const delta = newActiveItem - activeItemRef.current;

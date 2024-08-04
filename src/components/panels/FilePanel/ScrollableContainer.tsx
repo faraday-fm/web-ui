@@ -26,8 +26,10 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollPaneRef = useRef<HTMLDivElement>(null);
   const scrollTopRef = useRef(scrollTop);
+  const onScrollRef = useRef(onScroll);
 
   scrollTopRef.current = scrollTop;
+  onScrollRef.current = onScroll;
 
   if (scrollPaneRef.current) {
     scrollPaneRef.current.scrollTop = scrollTop;
@@ -47,12 +49,12 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
     let isInertiaScrolling = false;
 
     const updateScrollTop = (scrollDelta: number) => {
-      if (onScroll && scrollPaneRef.current) {
+      if (onScrollRef.current && scrollPaneRef.current) {
         let newScrollTop = scrollTopRef.current + scrollDelta;
         newScrollTop = Math.min(newScrollTop, scrollHeight);
         newScrollTop = Math.max(0, newScrollTop);
         if (scrollTopRef.current !== newScrollTop) {
-          onScroll(newScrollTop);
+          onScrollRef.current(newScrollTop);
         }
       }
     };
@@ -130,7 +132,7 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
         innerContainer.removeEventListener("pointercancel", handlePointerUp);
       }
     };
-  }, [velocityFactor, frictionFactor, onScroll, scrollHeight, isTouchscreen]);
+  }, [velocityFactor, frictionFactor, scrollHeight, isTouchscreen]);
 
   return (
     <div
