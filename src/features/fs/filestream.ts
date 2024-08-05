@@ -29,7 +29,6 @@ export function filestream(fs: FileSystemProvider, path: string, signal?: AbortS
     async cancel() {
       fs.close(handle!);
     },
-    type: "bytes",
   });
   return stream;
 }
