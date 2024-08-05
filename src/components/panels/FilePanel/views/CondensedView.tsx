@@ -50,7 +50,7 @@ export const CondensedView = memo(function CondensedView({
         }}
         cursorStyle={index === selectedIndex && cursorStyle === "firm" ? "firm" : "hidden"}
       >
-        <FullFileName cursorStyle={index === selectedIndex && cursorStyle === "firm" ? "firm" : "hidden"} data={items.get(index)} />
+        <FullFileName cursorStyle={index === selectedIndex && cursorStyle === "firm" ? "firm" : "hidden"} dirent={items.get(index)} />
       </Cell>
     ),
     [cursorStyle, items, selectedNames, onItemActivated, onItemClicked, selectedIndex],

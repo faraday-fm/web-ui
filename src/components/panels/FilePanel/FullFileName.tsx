@@ -8,9 +8,9 @@ import type { CursorStyle } from "./types";
 import { type Dirent, FileType } from "../../../features/fs/types";
 import { isDir } from "../../../features/fs/utils";
 
-interface CellProps {
+interface FullFileNameProps {
   cursorStyle: CursorStyle;
-  data?: Dirent;
+  dirent?: Dirent;
 }
 
 function getColor(name: string, dir: boolean | undefined, selected: boolean) {
@@ -20,11 +20,14 @@ function getColor(name: string, dir: boolean | undefined, selected: boolean) {
   return selected ? "var(--files-file-foreground-focus)" : "var(--files-file-foreground)";
 }
 
-export const FullFileName = memo(function FullFileName({ cursorStyle, data }: CellProps) {
+export const FullFileName = memo(function FullFileName({ cursorStyle, dirent }: FullFileNameProps) {
   const iconResolver = useFileIconResolver();
   const { height } = useGlyphSize();
 
-  const resolvedIcon = useMemo(() => iconResolver(data?.filename ?? "", (data && isDir(data)) ?? false, data?.filename === "..") ?? null, [data, iconResolver]);
+  const resolvedIcon = useMemo(
+    () => iconResolver(dirent?.path ?? "", (dirent && isDir(dirent)) ?? false, dirent?.filename === "..") ?? null,
+    [dirent, iconResolver],
+  );
 
   const emptyIcon = <div style={{ width: 17 }} />;
   const [icon, setIcon] = useState(!isPromise(resolvedIcon) ? resolvedIcon ?? emptyIcon : emptyIcon);
@@ -38,9 +41,9 @@ export const FullFileName = memo(function FullFileName({ cursorStyle, data }: Ce
     })();
   }, [resolvedIcon]);
 
-  const name: string = data?.filename ?? "";
+  const name: string = dirent?.filename ?? "";
 
-  if (!data) {
+  if (!dirent) {
     return null;
   }
 
@@ -51,7 +54,7 @@ export const FullFileName = memo(function FullFileName({ cursorStyle, data }: Ce
         className={css("line-item")}
         style={{
           lineHeight: `${height}px`,
-          color: getColor(data.filename, data && isDir(data), cursorStyle === "firm"),
+          color: getColor(dirent.filename, dirent && isDir(dirent), cursorStyle === "firm"),
         }}
       >
         <span className={css("file-name")}>

@@ -89,7 +89,7 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
                   }}
                 >
                   {columnDef.field === "name" ? (
-                    <FullFileName data={item} cursorStyle={cursorStyle} />
+                    <FullFileName dirent={item} cursorStyle={cursorStyle} />
                   ) : (
                     <CellText text={item[columnDef.field]} cursorStyle={cursorStyle} />
                   )}

@@ -61,7 +61,7 @@ function realpath(root: string, path: string) {
 
 export class InMemoryFsProvider implements FileSystemProvider {
   #handles = new Map<string, FsEntry>();
-  #root: FsEntry = { attrs: { type: FileType.SSH_FILEXFER_TYPE_DIRECTORY }, filename: "", children: [] };
+  #root: FsEntry = { attrs: { type: FileType.SSH_FILEXFER_TYPE_DIRECTORY }, filename: "", path: "/", children: [] };
 
   #findEntry(path: string): FsEntry {
     const pathArray = realpathArray("/", path);
@@ -96,6 +96,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
   }
 
   open(filename: string, desiredAccess: AceMask, flags: Flags, attrs: Attrs): Promise<FileHandle> {
+    filename = realpath("/", filename);
     const accessDisposition = flags & Flags.SSH_FXF_ACCESS_DISPOSITION;
 
     if (accessDisposition === Flags.SSH_FXF_OPEN_EXISTING || accessDisposition === Flags.SSH_FXF_TRUNCATE_EXISTING) {
@@ -130,7 +131,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
       }
       return SynchronousPromise.resolve(this.#createHandle(existing));
     }
-    const newEntry = { filename: file, attrs: { ...attrs, type: attrs?.type ?? FileType.SSH_FILEXFER_TYPE_REGULAR } };
+    const newEntry: Dirent = { filename: file, path: filename, attrs: { ...attrs, type: attrs?.type ?? FileType.SSH_FILEXFER_TYPE_REGULAR } };
     dirEntry.children.push(newEntry);
     return SynchronousPromise.resolve(this.#createHandle(newEntry));
   }
@@ -163,9 +164,9 @@ export class InMemoryFsProvider implements FileSystemProvider {
     if (!isDir(entry)) {
       throw new FileSystemError();
     }
-    const files = entry.children?.map((c) => ({ filename: c.filename, attrs: c.attrs })) ?? [];
+    const files: Dirent[] = entry.children?.map((c) => ({ filename: c.filename, path: c.path, attrs: c.attrs })) ?? [];
     if (entry !== this.#root) {
-      files.unshift({ filename: "..", attrs: entry.attrs });
+      files.unshift({ filename: "..", attrs: entry.attrs, path: realpath(entry.path, ".") });
     }
     return SynchronousPromise.resolve({ files, endOfList: true });
   }
@@ -206,7 +207,12 @@ export class InMemoryFsProvider implements FileSystemProvider {
     const containingDir = parts.slice(0, parts.length - 1).join("/") || "/";
     const dirName = parts.at(-1)!;
     const dirEntry = this.#findEntry(containingDir);
-    (dirEntry.children ??= []).push({ filename: dirName, children: [], attrs: { ...attrs, type: FileType.SSH_FILEXFER_TYPE_DIRECTORY } });
+    (dirEntry.children ??= []).push({
+      filename: dirName,
+      path: realpath(dirEntry.path, dirName),
+      children: [],
+      attrs: { ...attrs, type: FileType.SSH_FILEXFER_TYPE_DIRECTORY },
+    });
     return SynchronousPromise.resolve();
   }
 
@@ -256,7 +262,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
 
   realpath(originalPath: string, controlByte?: RealPathControlByte, composePath?: string[]): Promise<DirList> {
     return SynchronousPromise.resolve({
-      files: [{ filename: realpath("/", originalPath), attrs: { type: FileType.SSH_FILEXFER_TYPE_UNKNOWN } }],
+      files: [{ filename: realpath("/", originalPath), path: realpath("/", originalPath), attrs: { type: FileType.SSH_FILEXFER_TYPE_UNKNOWN } }],
       endOfList: true,
     });
   }

@@ -138,6 +138,7 @@ export enum RenameFlags {
 
 export type Dirent = {
   filename: string;
+  path: string;
   attrs: Attrs;
 };
 
