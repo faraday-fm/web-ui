@@ -1,46 +1,45 @@
 import { memo } from "react";
 import { useGlyphSize } from "../../../contexts/glyphSizeContext";
-import type { FsEntry } from "../../../features/fs/types";
 import { css } from "../../../features/styles";
 import { formatDateTime } from "../../../utils/date";
 import { bytesToSize } from "../../../utils/number";
+import { type Dirent, FileType } from "../../../features/fs/types";
+import { isDir } from "../../../features/fs/utils";
 
 interface FileInfoFooterProps {
-  file?: FsEntry;
+  file?: Dirent;
 }
 
-function formatFileSize(e?: FsEntry) {
+function formatFileSize(e?: Dirent) {
   if (!e) {
     return "";
   }
-  // if (e.isDir) {
-  //   return e.name === ".." ? "up" : "dir";
-  // }
-  if (e.isSymlink) {
-    return "symlink";
+  if (isDir(e)) {
+    return e.filename === ".." ? "up" : "dir";
   }
-  if (e.isBlockDevice) {
-    return "block dev";
+  switch (e.attrs.type) {
+    case FileType.SSH_FILEXFER_TYPE_SYMLINK:
+      return "symlink";
+    case FileType.SSH_FILEXFER_TYPE_BLOCK_DEVICE:
+      return "block dev";
+    case FileType.SSH_FILEXFER_TYPE_CHAR_DEVICE:
+      return "char dev";
+    case FileType.SSH_FILEXFER_TYPE_FIFO:
+      return "fifo";
+    case FileType.SSH_FILEXFER_TYPE_SOCKET:
+      return "socket";
+    default:
+      return bytesToSize(e.attrs.size ?? 0, 999999);
   }
-  if (e.isCharacterDevice) {
-    return "char dev";
-  }
-  if (e.isFIFO) {
-    return "fifo";
-  }
-  if (e.isSocket) {
-    return "socket";
-  }
-  return bytesToSize(e.size ?? 0, 999999);
 }
 
 export const FileInfoFooter = memo(({ file }: FileInfoFooterProps) => {
   const { height } = useGlyphSize();
   return (
     <div className={css("file-info-root")} style={{ height }}>
-      <div className={css("file-info-name")}>{file?.name}</div>
+      <div className={css("file-info-name")}>{file?.filename}</div>
       <div className={css("file-info-size")}>{formatFileSize(file)}</div>
-      <div className={css("file-info-time")}>{file?.modified ? formatDateTime(new Date(file.modified)) : undefined}</div>
+      <div className={css("file-info-time")}>{file?.attrs.mtime ? formatDateTime(new Date(file.attrs.mtime)) : undefined}</div>
     </div>
   );
 });

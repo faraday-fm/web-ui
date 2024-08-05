@@ -186,6 +186,7 @@ export class InMemoryFsProvider implements FileSystemProvider {
       }
       entry.content.set(data, offset);
     }
+    entry.attrs.size = entry.content.byteLength;
     return SynchronousPromise.resolve();
   }
 
