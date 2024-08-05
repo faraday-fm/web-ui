@@ -1,12 +1,13 @@
 import { produce } from "immer";
 import { atom, useAtom } from "jotai";
 import { useCallback } from "react";
-import type { FsEntry } from "../../features/fs/types";
 import type { FilePanelLayout, PanelLayout, PanelsLayout } from "../../types";
 import { createList, type List } from "../../utils/immutableList";
 import { traverseLayout, traverseLayoutRows } from "../../utils/layout";
 import { combine, truncateLastDir } from "../../utils/path";
+import { type Dirent, FileType } from "../fs/types";
 import type { CursorPosition, PanelState } from "./types";
+import { isDir } from "../fs/utils";
 
 const activePanelAtom = atom<PanelLayout>();
 const activeFilePanelAtom = atom<FilePanelLayout>();
@@ -64,7 +65,7 @@ export function usePanels() {
   );
 
   const setPanelItems = useCallback(
-    (id: string, items: List<FsEntry>) =>
+    (id: string, items: List<Dirent>) =>
       setStates(
         produce((s) => {
           const state = s[id];
@@ -152,8 +153,8 @@ export function usePanels() {
           const cursor = state.stack.at(-1);
           const activeItemPos = cursor?.cursor.activeIndex ?? 0;
           const activeItem = state.items.get(activeItemPos);
-          if (activeItem?.isDir) {
-            if (activeItem.name === "..") {
+          if (activeItem && isDir(activeItem)) {
+            if (activeItem.filename === "..") {
               const targetPath = truncateLastDir(state.pos.path);
               if (targetPath === state.pos.path) {
                 return;
@@ -166,7 +167,7 @@ export function usePanels() {
               };
             } else {
               state.targetPos = {
-                path: combine(state.pos.path, activeItem.name),
+                path: combine(state.pos.path, activeItem.filename),
                 cursor: {},
               };
             }

@@ -2,7 +2,7 @@ import equal from "fast-deep-equal";
 import { forwardRef, memo, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { GlyphSizeProvider } from "../../../contexts/glyphSizeContext";
 import { useCommandBindings, useExecuteBuiltInCommand, useSetContextVariables } from "../../../features/commands";
-import type { FsEntry } from "../../../features/fs/types";
+import { type Dirent, FileType } from "../../../features/fs/types";
 import type { CursorPosition } from "../../../features/panels";
 import { css } from "../../../features/styles";
 import { useElementSize } from "../../../hooks/useElementSize";
@@ -19,9 +19,10 @@ import { FileInfoFooter } from "./FileInfoFooter";
 import type { CursorStyle } from "./types";
 import { CondensedView } from "./views/CondensedView";
 import { FullView } from "./views/FullView";
+import { isDir } from "../../../features/fs/utils";
 
 export interface FilePanelProps {
-  items: List<FsEntry>;
+  items: List<Dirent>;
   selectedItemNames: List<string>;
   cursor: CursorPosition;
   view: FilePanelView;
@@ -36,19 +37,19 @@ export interface FilePanelActions {
   focus(): void;
 }
 
-function adjustCursor(cursor: CursorPosition, items: List<FsEntry>, displayedItems: number): Required<CursorPosition> {
+function adjustCursor(cursor: CursorPosition, items: List<Dirent>, displayedItems: number): Required<CursorPosition> {
   let selectedIndex = cursor.activeIndex ?? 0;
   let topmostIndex = cursor.topmostIndex ?? 0;
-  const selectedName = cursor.activeName ?? items.get(selectedIndex)?.name;
-  const topmostName = cursor.topmostName ?? items.get(topmostIndex)?.name;
+  const selectedName = cursor.activeName ?? items.get(selectedIndex)?.filename;
+  const topmostName = cursor.topmostName ?? items.get(topmostIndex)?.filename;
 
   selectedIndex = clamp(0, selectedIndex, items.size() - 1);
   topmostIndex = clamp(0, topmostIndex, items.size() - displayedItems);
   topmostIndex = clamp(selectedIndex - displayedItems + 1, topmostIndex, selectedIndex);
 
   const updateIndexByName = (name: string | undefined, fallbackIndex: number) => {
-    if (name !== items.get(fallbackIndex)?.name) {
-      const idx = items.findIndex((i) => i.name === name);
+    if (name !== items.get(fallbackIndex)?.filename) {
+      const idx = items.findIndex((i) => i.filename === name);
       if (idx >= 0) {
         return idx;
       }
@@ -115,8 +116,8 @@ export const FilePanel = memo(
             newCursor.topmostIndex -= maxItemsPerColumn ?? 0;
           }
         }
-        newCursor.activeName = items.get(newCursor.activeIndex)?.name ?? "";
-        newCursor.topmostName = items.get(newCursor.topmostIndex)?.name ?? "";
+        newCursor.activeName = items.get(newCursor.activeIndex)?.filename ?? "";
+        newCursor.topmostName = items.get(newCursor.topmostIndex)?.filename ?? "";
         newCursor = adjustCursor(newCursor, items, displayedItems);
         if (!equal(newCursor, adjustedCursor)) {
           onCursorPositionChangeRef.current(newCursor, select);
@@ -134,8 +135,8 @@ export const FilePanel = memo(
         if (followCursor) {
           c.topmostIndex += delta;
         }
-        c.activeName = items.get(c.activeIndex)?.name ?? "";
-        c.topmostName = items.get(c.topmostIndex)?.name ?? "";
+        c.activeName = items.get(c.activeIndex)?.filename ?? "";
+        c.topmostName = items.get(c.topmostIndex)?.filename ?? "";
         c = adjustCursor(c, items, displayedItems);
         if (!equal(c, adjustedCursorRef.current)) {
           onCursorPositionChangeRef.current(c, select);
@@ -148,8 +149,8 @@ export const FilePanel = memo(
       (pos: number, select: boolean) => {
         let c = structuredClone(adjustedCursor);
         c.activeIndex = pos;
-        c.activeName = items.get(pos)?.name ?? "";
-        c.topmostName = items.get(c.topmostIndex)?.name ?? "";
+        c.activeName = items.get(pos)?.filename ?? "";
+        c.topmostName = items.get(c.topmostIndex)?.filename ?? "";
         c = adjustCursor(c, items, displayedItems);
         if (!equal(c, adjustedCursor)) {
           onCursorPositionChangeRef.current(c, select);
@@ -168,8 +169,8 @@ export const FilePanel = memo(
           c.activeIndex += displayedItems - 1;
           c.topmostIndex += displayedItems - 1;
         }
-        c.activeName = items.get(c.activeIndex)?.name ?? "";
-        c.topmostName = items.get(c.topmostIndex)?.name ?? "";
+        c.activeName = items.get(c.activeIndex)?.filename ?? "";
+        c.topmostName = items.get(c.topmostIndex)?.filename ?? "";
         c = adjustCursor(c, items, displayedItems);
         if (!equal(c, adjustedCursor)) {
           onCursorPositionChangeRef.current(c, select);
@@ -211,8 +212,8 @@ export const FilePanel = memo(
       cursorStyle = "hidden";
     }
 
-    const bytesCount = useMemo(() => items.reduce((acc, item) => acc + ((item.isFile ? item.size : 0) ?? 0), 0), [items]);
-    const filesCount = useMemo(() => items.reduce((acc, item) => acc + (item.isFile ? 1 : 0), 0), [items]);
+    const bytesCount = useMemo(() => items.reduce((acc, item) => acc + ((!isDir(item) ? item.attrs.size : 0) ?? 0), 0), [items]);
+    const filesCount = useMemo(() => items.reduce((acc, item) => acc + (!isDir(item) ? 1 : 0), 0), [items]);
 
     const pathParts = path.split("/");
     if (!columnCount) {

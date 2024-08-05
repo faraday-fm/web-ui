@@ -1,5 +1,5 @@
 import type { List } from "../../utils/immutableList";
-import type { FsEntry } from "../fs/types";
+import type { Dirent } from "../fs/types";
 
 export interface CursorPosition {
   activeName?: string;
@@ -14,7 +14,7 @@ export interface PanelPosition {
 }
 
 export interface PanelState {
-  items: List<FsEntry>;
+  items: List<Dirent>;
   selectedItems: List<string>;
   pos: PanelPosition;
   targetPos?: PanelPosition;

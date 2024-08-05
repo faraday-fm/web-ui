@@ -1,14 +1,14 @@
 import { memo, useCallback, useRef } from "react";
 import { useGlyphSize } from "../../../../contexts/glyphSizeContext";
-import type { FsEntry } from "../../../../features/fs/types";
 import type { List } from "../../../../utils/immutableList";
 import { Cell } from "../Cell";
 import { ColumnsScroller, type ColumnsScrollerProps } from "../ColumnsScroller";
 import { FullFileName } from "../FullFileName";
 import type { CursorStyle } from "../types";
+import type { Dirent } from "../../../../features/fs/types";
 
 interface CondensedViewProps {
-  items: List<FsEntry>;
+  items: List<Dirent>;
   selectedItemNames: List<string>;
   cursorStyle: CursorStyle;
   topmostIndex: number;
@@ -41,7 +41,7 @@ export const CondensedView = memo(function CondensedView({
   const itemContent = useCallback(
     (index: number) => (
       <Cell
-        selected={selectedNames.has(items.get(index)?.name ?? "")}
+        selected={selectedNames.has(items.get(index)?.filename ?? "")}
         onMouseDown={() => onItemClicked?.(index)}
         onDoubleClick={(e) => {
           onItemActivated?.(index);

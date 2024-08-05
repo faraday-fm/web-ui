@@ -1,7 +1,7 @@
-import { createFilter } from "@rollup/pluginutils";
+import { createFilter, type FilterPattern } from "@rollup/pluginutils";
 import type { Plugin } from "rollup";
 
-export const string = (opts: { include: string; exclude?: string }): Plugin => {
+export const string = (opts: { include: FilterPattern; exclude?: FilterPattern }): Plugin => {
   if (!opts.include) {
     throw Error("include option should be specified");
   }

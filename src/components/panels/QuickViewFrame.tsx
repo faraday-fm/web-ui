@@ -69,13 +69,21 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
   }, [initialScript]);
 
   useEffect(() => {
-    void (async () => {
+    (async () => {
       const iframeWindow = await loadedPromise.current.promise;
       iframeWindow.postMessage({ type: "theme", theme }, "*");
       themeSetPromise.current.resolve(iframeWindow);
     })();
   }, [theme]);
 
-  // eslint-disable-next-line jsx-a11y/iframe-has-title, jsx-a11y/no-noninteractive-tabindex
-  return <iframe className={css("quick-view-web-view")} ref={iframeRef} tabIndex={0} title="quick view" src={`data:text/html;base64,${quickViewHtmlBase64}`} />;
+  return (
+    <iframe
+      className={css("quick-view-web-view")}
+      ref={iframeRef}
+      sandbox="allow-scripts"
+      tabIndex={0}
+      title="quick view"
+      src={`data:text/html;base64,${quickViewHtmlBase64}`}
+    />
+  );
 });

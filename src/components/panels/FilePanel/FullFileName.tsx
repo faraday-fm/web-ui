@@ -5,10 +5,12 @@ import { useGlyphSize } from "../../../contexts/glyphSizeContext";
 import { css } from "../../../features/styles";
 import { CellText } from "./CellText";
 import type { CursorStyle } from "./types";
+import { type Dirent, FileType } from "../../../features/fs/types";
+import { isDir } from "../../../features/fs/utils";
 
 interface CellProps {
   cursorStyle: CursorStyle;
-  data?: { name: string; isDir?: boolean | undefined };
+  data?: Dirent;
 }
 
 function getColor(name: string, dir: boolean | undefined, selected: boolean) {
@@ -22,7 +24,7 @@ export const FullFileName = memo(function FullFileName({ cursorStyle, data }: Ce
   const iconResolver = useFileIconResolver();
   const { height } = useGlyphSize();
 
-  const resolvedIcon = useMemo(() => iconResolver(data?.name ?? "", data?.isDir ?? false) ?? null, [data, iconResolver]);
+  const resolvedIcon = useMemo(() => iconResolver(data?.filename ?? "", (data && isDir(data)) ?? false, data?.filename === "..") ?? null, [data, iconResolver]);
 
   const emptyIcon = <div style={{ width: 17 }} />;
   const [icon, setIcon] = useState(!isPromise(resolvedIcon) ? resolvedIcon ?? emptyIcon : emptyIcon);
@@ -36,7 +38,7 @@ export const FullFileName = memo(function FullFileName({ cursorStyle, data }: Ce
     })();
   }, [resolvedIcon]);
 
-  const name: string = data?.name ?? "";
+  const name: string = data?.filename ?? "";
 
   if (!data) {
     return null;
@@ -49,7 +51,7 @@ export const FullFileName = memo(function FullFileName({ cursorStyle, data }: Ce
         className={css("line-item")}
         style={{
           lineHeight: `${height}px`,
-          color: getColor(data.name, data?.isDir, cursorStyle === "firm"),
+          color: getColor(data.filename, data && isDir(data), cursorStyle === "firm"),
         }}
       >
         <span className={css("file-name")}>

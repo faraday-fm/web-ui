@@ -2,13 +2,14 @@ import { memo, useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import { FilePanel, type FilePanelActions } from "../components/panels/FilePanel/FilePanel";
 import { ContextVariablesProvider, DebugContextVariables } from "../features/commands";
 import { useDirListing } from "../features/fs/hooks";
-import type { FsEntry } from "../features/fs/types";
 import { useGlobalContext } from "../features/globalContext";
 import { type CursorPosition, usePanelState, usePanels } from "../features/panels";
 import { css } from "../features/styles";
 import type { FilePanelLayout } from "../types";
 import { createList, empty } from "../utils/immutableList";
 import { combine, isRoot } from "../utils/path";
+import { type Dirent, FileType } from "../features/fs/types";
+import { isDir } from "../features/fs/utils";
 
 interface ReduxFilePanelProps {
   layout: FilePanelLayout & { id: string };
@@ -20,10 +21,10 @@ const collator = new Intl.Collator(undefined, {
   sensitivity: "case",
 });
 
-function fsCompare(a: FsEntry, b: FsEntry) {
-  if (a.isDir && !b.isDir) return -1;
-  if (!a.isDir && b.isDir) return 1;
-  return collator.compare(a.name, b.name);
+function fsCompare(a: Dirent, b: Dirent) {
+  if (isDir(a) && !isDir(b)) return -1;
+  if (!isDir(a) && isDir(b)) return 1;
+  return collator.compare(a.filename, b.filename);
 }
 
 export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
@@ -42,10 +43,10 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
   useEffect(() => {
     if (isActive && state?.pos.path && activeItem) {
       updateState({
-        "filePanel.path": combine(state.pos.path, activeItem.name),
-        "filePanel.activeName": activeItem.name,
-        "filePanel.isFileActive": activeItem.isFile ?? false,
-        "filePanel.isDirectoryActive": activeItem.isDir ?? false,
+        "filePanel.path": combine(state.pos.path, activeItem.filename),
+        "filePanel.activeName": activeItem.filename,
+        "filePanel.isFileActive": !isDir(activeItem),
+        "filePanel.isDirectoryActive": isDir(activeItem),
       });
       panelRef.current?.focus();
     }
@@ -70,11 +71,8 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
   useDirListing(
     state?.targetPos?.path,
     useCallback(
-      (dirPath, files) => {
+      (_, files) => {
         files = files.sort(fsCompare);
-        if (!isRoot(dirPath)) {
-          files = files.unshift({ name: "..", isDir: true });
-        }
         setPanelItems(id, files);
       },
       [id, setPanelItems],
@@ -103,7 +101,7 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
           minIndex = targetIdx + 1;
           maxIndex = sourceIdx + 1;
         }
-        const selectedNames = items.slice(minIndex, maxIndex).map((i) => i.name);
+        const selectedNames = items.slice(minIndex, maxIndex).map((i) => i.filename);
         setPanelSelectedItems(id, Array.from(selectedNames), isSelection);
       } else {
         selectionType.current = undefined;

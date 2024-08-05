@@ -11,16 +11,10 @@ import { useStyles } from "./features/styles";
 import { ThemeProvider } from "./features/themes";
 import { darkTheme, lightTheme } from "./features/themes/themes";
 import { useMediaQuery } from "./hooks/useMediaQuery";
-import type { FaradayHost, FaradayProps } from "./types";
+import type { FaradayProps } from "./types";
 
 export { InMemoryFsProvider } from "./features/fs/inMemoryFs";
-export type {
-  FileChangeEvent,
-  FileChangeType,
-  FileSystemProvider,
-  FileSystemWatcher,
-  FsEntry,
-} from "./features/fs/types";
+export * from "./features/fs/types";
 export type {
   FaradayConfig,
   FaradayHost,
@@ -42,8 +36,8 @@ export function Faraday({ host }: FaradayProps) {
               <GlyphSizeProvider>
                 <FileIconsProvider>
                   <App />
-                  <Extensions root="~/.faraday/extensions" />
-                  <SettingsTracker path="~/.faraday/settings.json5" />
+                  <Extensions root=".faraday/extensions" />
+                  <SettingsTracker path=".faraday/settings.json5" />
                 </FileIconsProvider>
               </GlyphSizeProvider>
             </KeyBindingProvider>
