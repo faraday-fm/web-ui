@@ -1,18 +1,18 @@
 import { SynchronousPromise } from "synchronous-promise";
 import { FileSystemError } from "./FileSystemError";
 import {
-  Flags,
-  type Dirent,
+  AttribBits,
   FileType,
+  Flags,
   type AceMask,
   type AttrFlags,
   type Attrs,
+  type Dirent,
   type DirList,
   type FileHandle,
   type FileSystemProvider,
   type RealPathControlByte,
   type RenameFlags,
-  type RequestOptions,
 } from "./types";
 import { isDir } from "./utils";
 
@@ -20,6 +20,18 @@ type FsEntry = Dirent & {
   content?: Uint8Array;
   children?: FsEntry[];
 };
+
+function createAttrs({ hidden }: { hidden?: boolean }): AttribBits {
+  let attribBits = 0 as AttribBits;
+  if (hidden != null) {
+    if (hidden) {
+      attribBits |= AttribBits.SSH_FILEXFER_ATTR_FLAGS_HIDDEN;
+    } else {
+      attribBits &= ~AttribBits.SSH_FILEXFER_ATTR_FLAGS_HIDDEN;
+    }
+  }
+  return attribBits;
+}
 
 function realpathArray(home: string, path: string) {
   path = path.replaceAll("//", "/");
@@ -131,7 +143,17 @@ export class InMemoryFsProvider implements FileSystemProvider {
       }
       return SynchronousPromise.resolve(this.#createHandle(existing));
     }
-    const newEntry: Dirent = { filename: file, path: filename, attrs: { ...attrs, type: attrs?.type ?? FileType.SSH_FILEXFER_TYPE_REGULAR } };
+    const attribBits = createAttrs({ hidden: file.startsWith(".") });
+    const newEntry: Dirent = {
+      filename: file,
+      path: filename,
+      attrs: {
+        ...attrs,
+        type: attrs?.type ?? FileType.SSH_FILEXFER_TYPE_REGULAR,
+        attribBits,
+        attribBitsValid: AttribBits.SSH_FILEXFER_ATTR_FLAGS_HIDDEN,
+      },
+    };
     dirEntry.children.push(newEntry);
     return SynchronousPromise.resolve(this.#createHandle(newEntry));
   }
@@ -207,11 +229,17 @@ export class InMemoryFsProvider implements FileSystemProvider {
     const containingDir = parts.slice(0, parts.length - 1).join("/") || "/";
     const dirName = parts.at(-1)!;
     const dirEntry = this.#findEntry(containingDir);
+    const attribBits = createAttrs({ hidden: dirName.startsWith(".") });
     (dirEntry.children ??= []).push({
       filename: dirName,
       path: realpath(dirEntry.path, dirName),
       children: [],
-      attrs: { ...attrs, type: FileType.SSH_FILEXFER_TYPE_DIRECTORY },
+      attrs: {
+        ...attrs,
+        type: FileType.SSH_FILEXFER_TYPE_DIRECTORY,
+        attribBits,
+        attribBitsValid: AttribBits.SSH_FILEXFER_ATTR_FLAGS_HIDDEN,
+      },
     });
     return SynchronousPromise.resolve();
   }

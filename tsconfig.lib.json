@@ -19,7 +19,8 @@
     "declaration": true,
     "stripInternal": true,
     "declarationDir": "dist",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": "./src"
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["**/*.js"]
