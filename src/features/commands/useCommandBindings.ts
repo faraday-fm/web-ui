@@ -1,12 +1,11 @@
 import { useContext, useEffect } from "react";
 import { type Callback, CommandBindingsContext } from "./commandBindingsContext";
-import type { BuiltInCommand } from "./types";
 
 type PartialRecord<K extends keyof never, T> = {
   [P in K]?: T;
 };
 
-export function useCommandBindings(commandBindings: PartialRecord<BuiltInCommand, Callback>, isActive = true) {
+export function useCommandBindings(commandBindings: PartialRecord<string, Callback>, isActive = true) {
   const bindings = useContext(CommandBindingsContext);
   useEffect(() => {
     if (!isActive) return;
@@ -16,13 +15,13 @@ export function useCommandBindings(commandBindings: PartialRecord<BuiltInCommand
         callbacks = new Set();
         bindings[command] = callbacks;
       }
-      callbacks.add(callback);
+      callbacks.add(callback!);
     });
     return () => {
       Object.entries(commandBindings).forEach(([command, callback]) => {
         const callbacks = bindings[command];
         if (callbacks) {
-          callbacks.delete(callback);
+          callbacks.delete(callback!);
           if (callbacks.size === 0) {
             delete bindings[command];
           }

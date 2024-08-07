@@ -424,6 +424,10 @@
   box-shadow: 0.5rem 0.5rem #0004;
 }
 
+.frdy.dialog-title {
+  color: var(--dialog-foreground);
+}
+
 .frdy.dialog-content {
   color: var(--dialog-foreground);
   box-shadow: var(--dialog-shadow);

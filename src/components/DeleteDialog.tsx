@@ -16,13 +16,13 @@ import {
 import { AutoHotKeyLabel } from "./AutoHotKeyLabel";
 import { Border } from "./Border";
 
-interface DialogPlaceholderProps {
+interface CopyDialogProps {
   open: boolean;
   onClose?: () => void;
 }
 
-export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderProps) {
-  useSetContextVariables("copyDialog", open);
+export default function DeleteDialog({ open, onClose }: CopyDialogProps) {
+  useSetContextVariables("deleteDialog", open);
   const dialogId = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -42,6 +42,7 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
   return (
     <QuickNavigationProvider>
       <dialog className={css("dialog-backdrop")} ref={dialogRef} onMouseDown={() => onClose?.()} onCancel={handleCancel} {...{ popover: "manual" }}>
+        <div className={css("dialog-title")}>Delete</div>
         <div className={css("dialog-content")} onMouseDown={(e) => e.stopPropagation()}>
           <Border color={"dialog-border"}>
             <Border color={"dialog-border"}>
@@ -83,20 +84,20 @@ export default function DialogPlaceholder({ open, onClose }: DialogPlaceholderPr
                 <AutoHotKeyLabel text={with_symlinks()} />
               </p>
             </Border>
-            <Border color={"dialog-border"}>
-              <button type="button" className={css("dialog-button")} id={`${dialogId}copy`} tabIndex={0}>
-                <AutoHotKeyLabel text="Copy" htmlFor={`${dialogId}copy`} />
-              </button>
-              <button type="button" className={css("dialog-button")} id={`${dialogId}tree`} tabIndex={0}>
-                <AutoHotKeyLabel text="F10-Tree" htmlFor={`${dialogId}tree`} />
-              </button>
-              <button type="button" className={css("dialog-button")} id={`${dialogId}filter`} tabIndex={0}>
-                <AutoHotKeyLabel text="Filter" htmlFor={`${dialogId}filter`} />
-              </button>
-              <button type="button" className={css("dialog-button")} id={`${dialogId}cancel`} tabIndex={0}>
-                <AutoHotKeyLabel text="Cancel" htmlFor={`${dialogId}cancel`} />
-              </button>
-            </Border>
+          </Border>
+          <Border color={"dialog-border"}>
+            <button type="button" className={css("dialog-button")} id={`${dialogId}copy`} tabIndex={0}>
+              <AutoHotKeyLabel text="Copy" htmlFor={`${dialogId}copy`} />
+            </button>
+            <button type="button" className={css("dialog-button")} id={`${dialogId}tree`} tabIndex={0}>
+              <AutoHotKeyLabel text="F10-Tree" htmlFor={`${dialogId}tree`} />
+            </button>
+            <button type="button" className={css("dialog-button")} id={`${dialogId}filter`} tabIndex={0}>
+              <AutoHotKeyLabel text="Filter" htmlFor={`${dialogId}filter`} />
+            </button>
+            <button type="button" className={css("dialog-button")} id={`${dialogId}cancel`} tabIndex={0}>
+              <AutoHotKeyLabel text="Cancel" htmlFor={`${dialogId}cancel`} />
+            </button>
           </Border>
         </div>
       </dialog>

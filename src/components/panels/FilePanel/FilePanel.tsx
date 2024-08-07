@@ -1,8 +1,9 @@
 import equal from "fast-deep-equal";
 import { forwardRef, memo, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { GlyphSizeProvider } from "../../../contexts/glyphSizeContext";
-import { useCommandBindings, useExecuteBuiltInCommand, useSetContextVariables } from "../../../features/commands";
-import { type Dirent, FileType } from "../../../features/fs/types";
+import { useCommandBindings, useExecuteCommand, useSetContextVariables } from "../../../features/commands";
+import type { Dirent } from "../../../features/fs/types";
+import { isDir } from "../../../features/fs/utils";
 import type { CursorPosition } from "../../../features/panels";
 import { css } from "../../../features/styles";
 import { useElementSize } from "../../../hooks/useElementSize";
@@ -19,7 +20,6 @@ import { FileInfoFooter } from "./FileInfoFooter";
 import type { CursorStyle } from "./types";
 import { CondensedView } from "./views/CondensedView";
 import { FullView } from "./views/FullView";
-import { isDir } from "../../../features/fs/utils";
 
 export interface FilePanelProps {
   items: List<Dirent>;
@@ -193,8 +193,8 @@ export const FilePanel = memo(
       focused,
     );
 
-    const executeBuiltInCommand = useExecuteBuiltInCommand();
-    const onItemActivated = useCallback(() => executeBuiltInCommand("open", { path }), [executeBuiltInCommand, path]);
+    const executeCommand = useExecuteCommand();
+    const onItemActivated = useCallback(() => executeCommand("open", { path }), [executeCommand, path]);
 
     const onMaxItemsPerColumnChanged = useCallback((maxItemsPerColumn: number) => setMaxItemsPerColumn(maxItemsPerColumn), []);
     const onItemClicked = useCallback((pos: number) => moveCursorToPos(pos, false), [moveCursorToPos]);

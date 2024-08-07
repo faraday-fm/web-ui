@@ -1,6 +1,5 @@
 import { useCallback, useContext } from "react";
 import { CommandBindingsContext } from "./commandBindingsContext";
-import type { BuiltInCommand } from "./types";
 
 export function useExecuteCommand() {
   const bindings = useContext(CommandBindingsContext);
@@ -22,5 +21,3 @@ export function useExecuteCommand() {
 
   return executor;
 }
-
-export const useExecuteBuiltInCommand = useExecuteCommand as () => (command: BuiltInCommand, args?: unknown) => Promise<boolean>;

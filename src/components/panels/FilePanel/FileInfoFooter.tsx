@@ -18,15 +18,15 @@ function formatFileSize(e?: Dirent) {
     return e.filename === ".." ? "up" : "dir";
   }
   switch (e.attrs.type) {
-    case FileType.SSH_FILEXFER_TYPE_SYMLINK:
+    case FileType.SYMLINK:
       return "symlink";
-    case FileType.SSH_FILEXFER_TYPE_BLOCK_DEVICE:
+    case FileType.BLOCK_DEVICE:
       return "block dev";
-    case FileType.SSH_FILEXFER_TYPE_CHAR_DEVICE:
+    case FileType.CHAR_DEVICE:
       return "char dev";
-    case FileType.SSH_FILEXFER_TYPE_FIFO:
+    case FileType.TYPE_FIFO:
       return "fifo";
-    case FileType.SSH_FILEXFER_TYPE_SOCKET:
+    case FileType.SOCKET:
       return "socket";
     default:
       return bytesToSize(e.attrs.size ?? 0, 999999);

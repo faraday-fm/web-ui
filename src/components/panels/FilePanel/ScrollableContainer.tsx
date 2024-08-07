@@ -1,4 +1,4 @@
-import { useMediaQuery } from "hooks/useMediaQuery";
+import { useMediaQuery } from "../../../hooks/useMediaQuery";
 import type React from "react";
 import { type CSSProperties, type ReactNode, useEffect, useRef } from "react";
 

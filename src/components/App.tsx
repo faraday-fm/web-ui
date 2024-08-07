@@ -2,7 +2,7 @@ import JSON5 from "json5";
 import { useEffect, useRef, useState } from "react";
 import defaultLayout from "../assets/layout.json5";
 import { ActionsBar } from "../components/ActionsBar";
-import DialogPlaceholder from "../components/DialogPlaceholder";
+import CopyDialog from "./CopyDialog";
 import { LayoutContainer } from "../components/LayoutContainer";
 import { useFaradayHost } from "../contexts/faradayHostContext";
 import { useGlyphSize } from "../contexts/glyphSizeContext";
@@ -12,6 +12,7 @@ import { useInert } from "../features/inert/hooks";
 import { usePanels } from "../features/panels";
 import { css } from "../features/styles";
 import type { PanelsLayout } from "../types";
+import DeleteDialog from "./DeleteDialog";
 
 // const Terminal = lazy(() => import("@components/Terminal/Terminal"));
 
@@ -20,7 +21,8 @@ const decoder = new TextDecoder();
 export function App() {
   const { inert } = useInert();
   const rootRef = useRef<HTMLDivElement>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [copyDialogOpen, setCopyDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [panelsOpen, setPanelsOpen] = useState(true);
   const [executing] = useState(false);
   const { layout, setPanelsLayout, focusNextPanel, enterDir } = usePanels();
@@ -48,8 +50,9 @@ export function App() {
     focusPrevPanel: () => focusNextPanel(true),
     // open: () => setDialogOpen(true),
     open: () => enterDir(),
-    openShell: () => setDialogOpen(true),
-    copyFiles: () => setDialogOpen(true),
+    openShell: () => setCopyDialogOpen(true),
+    copyFiles: () => setCopyDialogOpen(true),
+    deleteFiles: () => setDeleteDialogOpen(true),
     switchDevMode: () => setDevMode((d) => !d),
   });
 
@@ -85,7 +88,8 @@ export function App() {
       <div className={css("footer-div")}>
         <ActionsBar />
       </div>
-      <DialogPlaceholder open={dialogOpen} onClose={() => setDialogOpen(false)} />
+      <CopyDialog open={copyDialogOpen} onClose={() => setCopyDialogOpen(false)} />
+      <DeleteDialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} />
       {/* <TopMenu /> */}
     </div>
   );

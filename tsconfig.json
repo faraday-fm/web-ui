@@ -19,8 +19,7 @@
     "declaration": true,
     "stripInternal": true,
     "declarationDir": "dist",
-    "jsx": "react-jsx",
-    "baseUrl": "./src"
+    "jsx": "react-jsx"
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "scripts", "rollup.config.ts"]
 }

@@ -13,7 +13,8 @@ import { darkTheme, lightTheme } from "./features/themes/themes";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import type { FaradayProps } from "./types";
 
-export { InMemoryFsProvider } from "./features/fs/inMemoryFs";
+export { isDir } from "./features/fs/utils";
+export * from "./features/fs/FileSystemError";
 export * from "./features/fs/types";
 export type {
   FaradayConfig,

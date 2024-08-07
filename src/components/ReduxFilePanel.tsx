@@ -1,15 +1,16 @@
 import { memo, useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import { FilePanel, type FilePanelActions } from "../components/panels/FilePanel/FilePanel";
-import { ContextVariablesProvider, DebugContextVariables } from "../features/commands";
+import { ContextVariablesProvider, DebugContextVariables, useCommandBindings } from "../features/commands";
 import { useDirListing } from "../features/fs/hooks";
+import type { Dirent } from "../features/fs/types";
+import { isDir } from "../features/fs/utils";
 import { useGlobalContext } from "../features/globalContext";
 import { type CursorPosition, usePanelState, usePanels } from "../features/panels";
 import { css } from "../features/styles";
 import type { FilePanelLayout } from "../types";
 import { createList, empty } from "../utils/immutableList";
-import { combine, isRoot } from "../utils/path";
-import { type Dirent, FileType } from "../features/fs/types";
-import { isDir } from "../features/fs/utils";
+import { combine } from "../utils/path";
+import { useFocused } from "../hooks/useFocused";
 
 interface ReduxFilePanelProps {
   layout: FilePanelLayout & { id: string };
@@ -57,16 +58,6 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
     const pos = { path, cursor: {} };
     initPanelState(id, { items: createList(), selectedItems: empty<string>(), pos, targetPos: pos, stack: [] });
   }, [initPanelState, layout]);
-
-  // FIXME: If "ready" event is not fired by the filesystem watcher, we should add ".." directory
-  // Below code is invalid because it breaks the cursor position when navigating to parent directory.
-
-  // useEffect(() => {
-  //   const path = state?.path;
-  //   if (path && !isRoot(path)) {
-  //     dispatch(setPanelItems({ id, items: list({ name: "..", isDir: true }) }));
-  //   }
-  // }, [dispatch, id, state?.path]);
 
   useDirListing(
     state?.targetPos?.path,

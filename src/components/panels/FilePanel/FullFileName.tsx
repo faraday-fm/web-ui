@@ -1,12 +1,12 @@
 import isPromise from "is-promise";
 import { memo, useEffect, useMemo, useState } from "react";
-import { useFileIconResolver } from "contexts/fileIconsContext";
-import { useGlyphSize } from "contexts/glyphSizeContext";
-import { AttribBits, type Dirent } from "features/fs/types";
-import { isDir } from "features/fs/utils";
+import { useFileIconResolver } from "../../../contexts/fileIconsContext";
+import { useGlyphSize } from "../../../contexts/glyphSizeContext";
+import { AttribBits, type Dirent } from "../../../features/fs/types";
+import { isDir } from "../../../features/fs/utils";
 import { CellText } from "./CellText";
 import type { CursorStyle } from "./types";
-import { css } from "features/styles";
+import { css } from "../../../features/styles";
 
 interface FullFileNameProps {
   cursorStyle: CursorStyle;
@@ -51,7 +51,7 @@ export const FullFileName = memo(function FullFileName({ cursorStyle, dirent }: 
     <div
       style={{
         display: "flex",
-        opacity: (dirent.attrs.attribBits ?? 0 & AttribBits.SSH_FILEXFER_ATTR_FLAGS_HIDDEN) !== 0 ? 0.5 : 1,
+        opacity: (dirent.attrs.attribBits ?? 0 & AttribBits.HIDDEN) !== 0 ? 0.5 : 1,
       }}
     >
       <div>{icon}</div>

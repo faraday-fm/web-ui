@@ -7,7 +7,7 @@ export function filestream(fs: FileSystemProvider, path: string, signal?: AbortS
   let offs = 0;
   const stream = new ReadableStream({
     async start() {
-      handle = await fs.open(path, AceMask.ACE4_READ_DATA, Flags.SSH_FXF_OPEN_EXISTING, undefined, { signal });
+      handle = await fs.open(path, AceMask.READ_DATA, Flags.OPEN_EXISTING, undefined, { signal });
     },
     async pull(controller) {
       if (signal?.aborted) {
